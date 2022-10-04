@@ -1,5 +1,5 @@
 ---
-layout: defense
+layout: memory
 title: Azure Threat Detection
 ---
 
