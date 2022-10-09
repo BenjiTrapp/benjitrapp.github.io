@@ -521,6 +521,7 @@
     "sourcedir",
     "sourcetype",
     "spid",
+    "splunkresearch",
     "sprintf",
     "sqli",
     "sqlmap",
@@ -628,6 +629,7 @@
     "yodawgassume",
     "Ystream",
     "zaproxy",
+    "Zeek",
     "zfill",
     "zipndownload",
     "ἐντροπία"
