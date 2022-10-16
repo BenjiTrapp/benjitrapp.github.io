@@ -66,6 +66,7 @@
     "awscli",
     "awslabs",
     "awslambda",
+    "AWSX",
     "backpipe",
     "Baroni",
     "baseimage",
