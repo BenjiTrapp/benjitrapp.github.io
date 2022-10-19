@@ -5,7 +5,7 @@ title: AWS native Monitoring
 
 Short writeup about native and common AWS monitoring solutions: CloudWatch, X-Ray, and CloudTrail
 
-## Native AWS monitoring services
+## Overview of AWS native monitoring services
 
 - AWS CloudWatch
   - Metrics: Collect and track key metrics
@@ -16,8 +16,8 @@ Short writeup about native and common AWS monitoring solutions: CloudWatch, X-Ra
   - Troubleshooting application performance and errors
   - Distributed tracing of microservice
 - AWS CloudTrail
-  - Internal monitoring of API calls being made
-  - Audit changes to AWS resources by your users
+  - Internal monitoring of API calls being made towards AWS Management API
+  - Audit changes regarding AWS resources done (IAM) users
 
 ## AWS CloudWatch
 
@@ -47,19 +47,16 @@ Short writeup about native and common AWS monitoring solutions: CloudWatch, X-Ra
   - Environment.name
 - Metric resolution
   - Standard: 1 minute
-  - High Resolution: up to 1 second (StorageResolution API Parameter) - Higher cost
+  - High Resolution: up to 1 second (StorageResolution API Parameter) - lead to Higher cost
 - Use API call "PutMetricData"
-- Use exponential back off in case of throttle errors
+- Use exponential back off in case of throttle errors if talking to gibberish with the Management API
 
 ### AWS CloudWatch Alarms
 
 - Alarms are used to trigger notifications for any metric
 - Alarms can go to Auto Scaling, EC2 Actions, SNS notifications
 - Various options (sampling, %, max, min, etc...)
-- Alarm states:
-  - OK
-  - INSUFFICIENT_DATA
-  - ALARM
+- Alarm states: `OK, INSUFFICIENT_DATA, ALARM`
 - Period:
   - Length of time in seconds to evaluate the metric
   - High resolution custom metrics: can only choose 10 secs or 30 secs
@@ -148,7 +145,6 @@ Short writeup about native and common AWS monitoring solutions: CloudWatch, X-Ra
 - Debugging: monolith "easy", distributed services "hard"
 - No common views of your entire architecture!
 
-.....Enter AWS X-Ray.....
 
 ### AWS X-Ray advantages
 
