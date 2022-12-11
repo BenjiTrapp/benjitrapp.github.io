@@ -7,18 +7,18 @@ title: Internet-Facing Attack Surface
 
 > Internet-facing applications are programs and services that are accessible from the internet, as opposed to only through an internal network
 
-Typically internet-facing aplications are required for multiple reasons:
+Typically internet-facing applications are required for multiple reasons:
 * Required to interact with customers or business partners
 * Necessary for employees who are working from home or out in the field
 
 An example for an internet application includes:
 * Web Applications
 * APIs
-* SSH/RDP/VNC Service to acces machines
+* SSH/RDP/VNC Service to access machines
 * VPN Gateways
 * Cloud Services
 * Internet-Facing Firewalls
-* any other remotely accessible services that are either deliberatley or accidently places on an internet-facing server
+* any other remotely accessible services that are either deliberately or by accident places on an internet-facing server
 
 For the sake of being Internet-Facing it doesn't care if the assets resides on-premises, in the cloud, or in any hybrid combination of hosted, managed or virtualized infrastructure. 
 
@@ -28,7 +28,7 @@ Therefore like you could also phrase it like the [United States Postal Service](
 
 ## Why identify internet-facing applications?
 
-Without keeping a complete and frequently-updated inventory of internet-facing applications, its hart to know what data is potentially vulnerable and how attackers may target your organization. When looking at the [Cyber Kill Chain](https://benjitrapp.github.io/defenses/2022-10-01-cyberkillchain-meets-mitre/) a lot of attacks begin with an external attacker gainin a foothold in a organization through an initial compromise of an internet-facing application.
+Without keeping a complete and frequently-updated inventory of internet-facing applications, its hart to know what data is potentially vulnerable and how attackers may target your organization. When looking at the [Cyber Kill Chain](https://benjitrapp.github.io/defenses/2022-10-01-cyberkillchain-meets-mitre/) a lot of attacks begin with an external attacker gaining a foothold in a organization through an initial compromise of an internet-facing application.
 
 Professional attackers like [Sandworm](https://collaborate.mitre.org/attackics/index.php/Group/G0007), [Magic Hound](https://attack.mitre.org/groups/G0059/), and [Axiom]/https://attack.mitre.org/groups/G0001/) keep track of critical vulnerabilities and use a range of techniques to compromise internet-facing applications (mostly in a 100% automated way). 
 
@@ -70,13 +70,13 @@ There are some exceptions that are important to address:
 
 * Applications that are not behind a firewall, either intentionally or unintentionally. Even if there is a sound reason for not placing certain applications behind a firewall, it’s essential to identify them on the internet-facing application asset list so that teams know where to look in the event of a breach.
 * Firewalls work at the protocol level, which means that if a protocol is allowed, most firewalls are not able to distinguish which instances of the application are allowed so long as they operate on the same protocol. In order to fully assess which applications are exposed, you need to identify not only those that were intentionally allowed but also those that may have been unintentionally allowed under the same protocol.
-* Tunnels, VPNs, and Netbonds are interfaces that connect networks together. Therefore, anything on the other end of a tunnel is likely a separate network that would have its own separate firewall perimeter.
+* Tunnels, VPNs, and (some) Firewalls are interfaces that connect networks together. Therefore, anything on the other end of a tunnel is likely a separate network that would have its own separate firewall perimeter.
 * Anything that operates outside your network can still have internet facing applications. This can include external cloud environments, services, and applications that your organization may be unaware are owned by you but hosted elsewhere on the internet.
 
 
 ### Know What the World Knows
 
-The easiest way is to ask a Service like [shodan.io](shodan.io/) or use a Portscanner like NMAP on the corporates IP ranges to cover most of the internet-facing assets. Some additional sources could be:
+The easiest way is to ask a Service like [shodan.io](shodan.io/) or use a port scanner like NMAP on the corporate IP ranges to cover most of the internet-facing assets. Some additional sources could be:
 
 #### DNS Reconnaissance
 
@@ -88,7 +88,7 @@ WHOIS records also provide searchable data sources for the owners of domain name
 
 TLS certificates are used to identify a host and bind a cryptographic key to the hostname, allowing users to establish an encrypted connection that is verified by a certificate authority. The global certificate authority infrastructure has created a public transparency log that is required to create and sign valid TLS certificates. This provides a log of all TLS certificates created globally.
 
-This data, when carefully analyzed, can help discover if someone in your organization is creating certificates or hosts outside of the usual procedure. This can also be a useful threat intel datapoint if an attacker is attempting to create lookalike domains, or otherwise targeting your TLS infrastructure.
+This data, when carefully analyzed, can help discover if someone in your organization is creating certificates or hosts outside of the usual procedure. This can also be a useful threat intel indicator if an attacker is attempting to create lookalike domains, or otherwise targeting your TLS infrastructure.
 
 #### Host and Port Detection
 
@@ -120,7 +120,7 @@ There is no single right way to keep track of scan data — just ensure that the
 
 #### Know What Lies in the Cloud
 
-> Friends don't let friends build datacenters - AWS 
+> Friends don't let friends build datacenter - AWS 
 
 With the rise of the cloud, more and more data and services get moved into the cloud. Knowing what is there and what internet-facing services those cloud operations require becomes crucial. Knowing your cloud attack surface and your level of responsibility requires performing the following tasks:
 
@@ -130,10 +130,10 @@ With the rise of the cloud, more and more data and services get moved into the c
 * Be aware of the relationship your cloud service provider has with you, including their implementation of shared responsibility.
 * Know what security testing is consistently performed by the cloud services provider.
 * Know what security testing is or is not allowed to be performed by your organization.
-* Understand the security configurations that are available for each cloud service, and use that knowledge to document and apply a proper security policy for each application or service. AWS f.e. provides great guides and sources like the TrendMicro Knowledgebase help you out here
+* Understand the security configurations that are available for each cloud service, and use that knowledge to document and apply a proper security policy for each application or service. AWS f.e. provides great guides and sources like the [TrendMicro Knowledge Base](https://www.trendmicro.com/cloudoneconformity/) help you out here
 
 
-> The key to identify ressources which are internet-facing is tagging and best done in an automated way f.e. with Yor or CloudCustodian
+> The key to identify resources which are internet-facing is tagging and best done in an automated way f.e. with Yor or CloudCustodian
 
 A lot of organizations utilize the cloud in some way. The external service or application is still considered a public-facing entity of your organization. As part of your attack surface mapping, thoroughly tracking every cloud element optimizes your processes for future queries.
 
