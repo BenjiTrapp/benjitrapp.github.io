@@ -33,7 +33,7 @@ Another approach to phrase it could sound like the definition of the [United Sta
 
 Without keeping a complete and frequently-updated inventory of internet-facing applications, its hart to know what data is potentially vulnerable and how attackers may target your organization. When looking at the [Cyber Kill Chain](https://benjitrapp.github.io/defenses/2022-10-01-cyberkillchain-meets-mitre/) a lot of attacks begin with an external attacker gaining a foothold in a organization through an initial compromise of an internet-facing application.
 
-Professional attackers like [Sandworm](https://collaborate.mitre.org/attackics/index.php/Group/G0007), [Magic Hound](https://attack.mitre.org/groups/G0059/), and [Axiom]/https://attack.mitre.org/groups/G0001/) keep track of critical vulnerabilities and use a range of techniques to compromise internet-facing applications (mostly in a 100% automated way). 
+Professional attackers like [Sandworm](https://collaborate.mitre.org/attackics/index.php/Group/G0007), [Magic Hound](https://attack.mitre.org/groups/G0059/), and [Axiom](https://attack.mitre.org/groups/G0001/) keep track of critical vulnerabilities and use a range of techniques to compromise internet-facing applications (mostly in a 100% automated way). 
 
 
 ## How can internet-facing applications systematically be found? 
