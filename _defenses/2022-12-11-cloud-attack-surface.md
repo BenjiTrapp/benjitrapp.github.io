@@ -3,14 +3,14 @@ layout: defense
 title: Internet-Facing Attack Surface
 ---
 
-Based on the internet-facing applications of your coprorate, you can derive the attack surface and look through the eyes of an attacker. With this post I'll try to do some definitions, explain why, and give some best practices how you could adopt it to the cloud.
+Based on the internet-facing applications of your corporate, you can derive the attack surface and look through the eyes of an attacker. With this post I'll try to do some definitions, explain why, and give some best practices how you could adopt it to the cloud.
 
 ## What are internet-facing applications? 
 
 > Internet-facing applications are programs and services that are accessible from the internet, as opposed to only through an internal network
 
 Typically internet-facing applications are required for multiple reasons:
-* Interaction with customers, remote maintanance, or business partners
+* Interaction with customers, remote maintenance, or business partners
 * Necessary for employees who are working from home or out in the field
 
 An example for an internet application includes:
