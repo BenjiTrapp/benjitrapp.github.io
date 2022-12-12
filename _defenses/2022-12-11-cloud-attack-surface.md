@@ -10,23 +10,24 @@ Based on the internet-facing applications of your coprorate, you can derive the 
 > Internet-facing applications are programs and services that are accessible from the internet, as opposed to only through an internal network
 
 Typically internet-facing applications are required for multiple reasons:
-* Required to interact with customers or business partners
+* Interaction with customers, remote maintanance, or business partners
 * Necessary for employees who are working from home or out in the field
 
 An example for an internet application includes:
 * Web Applications
 * APIs
-* SSH/RDP/VNC Service to access machines
-* VPN Gateways
-* Cloud Services
-* Internet-Facing Firewalls
-* any other remotely accessible services that are either deliberately or by accident places on an internet-facing server
+* SSH/RDP/VNC Service to access/administrate machines
+* VPN- or other Gateways
+* Cloud services/resources
+* Internet-facing Firewalls
+* Any other remotely accessible services that are either deliberately or placed by accident on an internet-facing server
 
-For the sake of being Internet-Facing it doesn't care if the assets resides on-premises, in the cloud, or in any hybrid combination of hosted, managed or virtualized infrastructure. 
+For the sake of being internet-facing: `it doesn't care if the assets resides on-premises, in the cloud, or in any hybrid combination of hosted, managed ,or virtualized infrastructure.` 
 
-Therefore like you could also phrase it like the [United States Postal Service](https://www.uspsoig.gov/document/internet-facing-devices) like: 
+Another approach to phrase it could sound like the definition of the [United States Postal Service](https://www.uspsoig.gov/document/internet-facing-devices): 
 
 > Internet-facing hosts are entry points that are typically the most attacked hosts on an organization’s network
+
 
 ## Why identify internet-facing applications?
 
@@ -37,7 +38,7 @@ Professional attackers like [Sandworm](https://collaborate.mitre.org/attackics/i
 
 ## How can internet-facing applications systematically be found? 
 
-To help you identify the internet-facing applications in your organization, we can derive quite a lot of actions from [Sun Tzu's](https://en.wikipedia.org/wiki/Sun_Tzu). 
+To help you identify the internet-facing applications in your organization, we can derive quite a lot of actions from the philosophies of [Sun Tzu](https://en.wikipedia.org/wiki/Sun_Tzu). 
 
 >  “If you know the enemy and know yourself, you need not fear the result of a hundred battles. If you know yourself but not the enemy, for every victory gained you will also suffer a defeat. If you know neither the enemy nor yourself, you will succumb in every battle.” ― Sun Tzu, The Art of War 
 
@@ -122,7 +123,7 @@ There is no single right way to keep track of scan data — just ensure that the
 
 #### Know What Lies in the Cloud
 
-> Friends don't let friends build datacenter - AWS 
+> Friends don't let friends build data centers - [AWS](https://aws.amazon.com/de/blogs/apn/friends-dont-let-friends-build-data-centers/) 
 
 With the rise of the cloud, more and more data and services get moved into the cloud. Knowing what is there and what internet-facing services those cloud operations require becomes crucial. Knowing your cloud attack surface and your level of responsibility requires performing the following tasks:
 
