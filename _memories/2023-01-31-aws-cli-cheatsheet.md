@@ -232,7 +232,7 @@ aws iam create-access-key \
 aws iam get-access-key-last-used \
     --access-key-id AKIAINA6AJZY4EXAMPLE
 
-# deactivate an acccss key
+# deactivate an acccess key
 aws iam update-access-key \
     --access-key-id AKIAI44QH8DHBEXAMPLE \
     --status Inactive \
@@ -351,12 +351,12 @@ aws s3api list-buckets --query 'Buckets[*].[Name]' --output text | xargs -I {} b
 
 ## EC2
 
-### keypairs
+### keypair
 
 http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html
 
 ```shell
-# list all keypairs
+# list all keypair
 # http://docs.aws.amazon.com/cli/latest/reference/ec2/describe-key-pairs.html
 aws ec2 describe-key-pairs
 
