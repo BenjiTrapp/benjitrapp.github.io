@@ -59,7 +59,7 @@ def get_policy_by_arn(arn):
 
 
 if __name__ == '__main__':
-    openai.api_key = os.getenv('OPENAI_KEY', '### SET YOUR OPENAPI API KEY HERE ###')
+    openai.api_key = os.getenv('OPENAI_KEY', '###ADD_YOUR_OPENAI_API_KEY_HERE###')
     session = boto3.session.Session()
     client = session.client('iam')
 
