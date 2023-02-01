@@ -232,7 +232,7 @@ aws iam create-access-key \
 aws iam get-access-key-last-used \
     --access-key-id AKIAINA6AJZY4EXAMPLE
 
-# deactivate an acccess key
+# deactivate an access key
 aws iam update-access-key \
     --access-key-id AKIAI44QH8DHBEXAMPLE \
     --status Inactive \
@@ -371,7 +371,7 @@ ssh-keygen -t rsa -b 4096
 # import an existing keypair
 # http://docs.aws.amazon.com/cli/latest/reference/ec2/import-key-pair.html
 aws ec2 import-key-pair \
-    --key-name keyname_test \
+    --key-name key_name_test \
     --public-key-material file:///home/apollo/id_rsa.pub
 
 # delete a keypair
@@ -397,7 +397,7 @@ aws ec2 create-security-group \
     --group-name web-access \
     --description "web access"
 
-# list details about a securty group
+# list details about a security group
 aws ec2 describe-security-groups \
     --group-id sg-0000000
 
