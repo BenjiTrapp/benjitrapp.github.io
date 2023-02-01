@@ -3,7 +3,7 @@ layout: post
 title: Beat IAM Vulnerabilities with ChatGPT
 ---
 
-<img height="200" align="left" src="/images/chatgpt_meme.jpg" > After playing around with ChatGPT and f.e. created some CloudCustodian policies, Splunk queries and other cool things like unit tests for written code, it's time to move on to something else. Since IAM is the killer feature, but also the killer feature - we could simply use the APIs and get some automated feedback. This isn't entirely automated yet but still a lot of fun to see. The results are nearly always very precise  and astonishing. I used [iam-vulnerable(https://github.com/BishopFox/iam-vulnerable) in a Sandbox as a proof of concept, since I don't want to mess around with my real stuff.
+<img height="200" align="left" src="/images/chatgpt_meme.jpg" > After playing around with ChatGPT and f.e. created some CloudCustodian policies, Splunk queries and other cool things like unit tests for written code, it's time to move on to something else. Since IAM is the killer feature, but also the killer feature - we could simply use the APIs and get some automated feedback. This isn't entirely automated yet but still a lot of fun to see. The results are nearly always very precise  and astonishing. I used [BishopFox/iam-vulnerable](https://github.com/BishopFox/iam-vulnerable) in a Sandbox, as a proof of concept since I don't want to mess around with my real stuff in combination with an AI.
 
 Anyway here's the Code Snippet, to run it you require boto3 and openai as dependencies:
 
