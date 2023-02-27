@@ -1,8 +1,8 @@
 ---
 layout: defense
-title: Linux Hardening
+title: Linux Hardening - etckeeper
 ---
-
+<!-- cSpell:disable -->
 
 ## etckeeper
 
@@ -157,3 +157,4 @@ Itemize
 
 etckeeper git repository (etckeeper.branchable.com)
 git-rm documentation (kernel.org)
+<!-- cSpell:enable -->
