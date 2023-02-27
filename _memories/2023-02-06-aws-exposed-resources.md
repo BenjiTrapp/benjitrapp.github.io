@@ -1,4 +1,4 @@
----
+g---
 layout: memory
 title: AWS Exposable Resources
 ---
@@ -9,7 +9,7 @@ The goal of the SummitRoute/aws_exposable_resources repo is to maintain a list o
 
 The following concepts are applied in this list:
 - Resources that could be indirectly exposed through another resource are not included. For example, CloudTrail logs can be sent to an S3 bucket that is public, but it is the S3 bucket that is misconfigured, so CloudTrail is not listed as a resource that can be made public.
-- Some resources may require multiple things configured a certain way to be considered public. For example, a Secrets Manager secret that is encrypted with a KMS, would need both the Secret and KMS key to be public for access to the Secret. For the purposes of this list, I consider the Secret resource policy only.  Similarly, for Managed ElasticSearch clusters, you need both the resource policy to allow public access, and for it to have a non-VPC IP. I consider only the resource policy. For an EC2, you could create an EC2 with a public IP, but associate a restricted Security Group to it that perhaps later is opened up to allow public access. I view the creation of the EC2 with a public IP, and not the modification of the Securtiy Group to be the action of interest.
+- Some resources may require multiple things configured a certain way to be considered public. For example, a Secrets Manager secret that is encrypted with a KMS, would need both the Secret and KMS key to be public for access to the Secret. For the purposes of this list, I consider the Secret resource policy only.  Similarly, for Managed ElasticSearch clusters, you need both the resource policy to allow public access, and for it to have a non-VPC IP. I consider only the resource policy. For an EC2, you could create an EC2 with a public IP, but associate a restricted Security Group to it that perhaps later is opened up to allow public access. I view the creation of the EC2 with a public IP, and not the modification of the Security Group to be the action of interest.
 
 
 # Roadmap
