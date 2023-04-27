@@ -174,6 +174,10 @@ function extract () {
     fi
 }
 
+function urlDecode() {
+    echo "$1" | python -c "import sys; from urllib.parse import unquote; print(unquote(sys.stdin.read()));"
+}
+
 function countLocs() {
     if [ -z "$1" ]; then
         logError "Missing argument call this function like 'count_locs py' to count all LoCs of all present python files"
