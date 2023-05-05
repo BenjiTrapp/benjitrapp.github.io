@@ -11,16 +11,16 @@ Event codes are typically displayed in the Windows Event Viewer, which is a tool
 
 Some common Windows Security Event Codes include:
 
-4624 - Successful account logon
-4625 - Failed account logon
-4634 - User logoff
-4648 - A logon was attempted using explicit credentials
-4768 - A Kerberos authentication ticket was requested
-4769 - A Kerberos service ticket was requested
-4771 - Kerberos pre-authentication failed
-4776 - The domain controller attempted to validate the credentials for an account
-4798 - A user's local group membership was enumerated
-5140 - A network share object was accessed
+* 4624 - Successful account logon
+* 4625 - Failed account logon
+* 4634 - User logoff
+* 4648 - A logon was attempted using explicit credentials
+* 4768 - A Kerberos authentication ticket was requested
+* 4769 - A Kerberos service ticket was requested
+* 4771 - Kerberos pre-authentication failed
+* 4776 - The domain controller attempted to validate the credentials for an account
+* 4798 - A user's local group membership was enumerated
+* 5140 - A network share object was accessed
 
 The full list is collected in [WindowsSecurityAuditEvents.xlsx](/assets/defense/WindowsSecurityAuditEvents.xlsx) and in the list below.
 
@@ -418,7 +418,7 @@ The full list is collected in [WindowsSecurityAuditEvents.xlsx](/assets/defense/
 | 5889       | An object was deleted from the COM+ Catalog                  |
 | 5890       | An object was added to the COM+ Catalog                      |
 | 6144       | Security policy in the group policy objects has been applied successfully |
-| 6145       | One or more errors occured while processing security policy in the group policy objects |
+| 6145       | One or more errors occurred while processing security policy in the group policy objects |
 | 6272       | Network Policy Server granted access to a user               |
 | 6273       | Network Policy Server denied access to a user                |
 | 6274       | Network Policy Server discarded the request for a user       |
