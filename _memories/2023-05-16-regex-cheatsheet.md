@@ -4,7 +4,8 @@ title: RegEx Cheat Sheet
 ---
 > Give a man a RegEx and he'll parse strings for a function. Teach a man to regex and he'll be stuck in debugging hell for the rest of his life
 
-RegEx is one of the "beatiful" things that I learn from zero every time I have to use it. To speed things up I use this quick reference guide for regular expressions (regex), including symbols, ranges, grouping, assertions and some sample patterns.
+RegEx is one of the "beautiful" things that I learn from zero every time I have to use it. To speed things up I use this quick reference guide for regular expressions (regex), including symbols, ranges, grouping, assertions and some sample patterns.
+
 
 ## Basic Syntax
 
@@ -33,7 +34,7 @@ RegEx is one of the "beatiful" things that I learn from zero every time I have t
 - `\W`: Not word
 - `\d`: Digit
 - `\D`: Not digit
-- `\x`: Hexade­cimal digit
+- `\x`: Hexadecimal digit
 - `\O`: Octal digit
 
 
@@ -53,7 +54,7 @@ RegEx is one of the "beatiful" things that I learn from zero every time I have t
 - `.`: Any character except newline (\n)
 - `(a|b)`: a or b
 - `(…)`: Group
-- `(?:…)`: Passive (non-c­apt­uring) group
+- `(?:…)`: Passive (non-capturing) group
 - `[abc]`: a, b or c
 - `[^abc]`: Not a, b or c
 - `[a-z]`: Letters from a to z
@@ -92,7 +93,7 @@ RegEx is one of the "beatiful" things that I learn from zero every time I have t
 - `$+`: Last matched string
 - `$&`: Entire matched string
 
-> Note: Some regex implem­ent­ations use \ instead of $.
+> Note: Some regex implementations use \ instead of $.
 
 
 ## Assertions
@@ -101,7 +102,7 @@ RegEx is one of the "beatiful" things that I learn from zero every time I have t
 - `?!`: Negative lookahead
 - `?<=`: Lookbehind assertion
 - ``?!=, ?<!``: Negative lookbehind
-- `?>`: Once-only subexp­ression
+- `?>`: Once-only subexpression
 - `?()`: Condition if-then
 - `?()|`: Condition if-then-else
 - `?#`: Comment
@@ -114,8 +115,8 @@ RegEx is one of the "beatiful" things that I learn from zero every time I have t
 - `[:alpha:]`: All letters
 - `[:alnum:]`: Digits and letters
 - `[:digit:]`: Digits
-- `[:xdigit:]`: Hexade­cimal digits
-- `[:punct:]`: Punctu­ation
+- `[:xdigit:]`: Hexadecimal digits
+- `[:punct:]`: Punctuation
 - `[:blank:]`: Space and tab
 - `[:space:]`: Blank characters
 - `[:cntrl:]`: Control characters
@@ -127,9 +128,9 @@ RegEx is one of the "beatiful" things that I learn from zero every time I have t
 ## Pattern Modifiers
 
 - `g`: Global match
-- `i`: Case-i­nse­nsitive
+- `i`: Case-insensitive
 - `m`: Multi-line mode. Causes ^ and $ to also match the start/end of lines.
 - `s`: Single-line mode. Causes . to match all, including line breaks.
 - `x`: Allow comments and whitespace in pattern
-- `e`: Evaluate replac­ement
+- `e`: Evaluate replacement
 - `U`: Ungreedy mode
