@@ -1,4 +1,4 @@
-g---
+---
 layout: memory
 title: AWS Exposable Resources
 ---
