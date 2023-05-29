@@ -3,6 +3,7 @@ layout: memory
 title: GCP Cheat Sheet
 ---
 
+Writeup and collection around GCP and some first steps into the Google Cloud
 
 <!-- cSpell:disable -->
 - [0.1. References](#01-references)
