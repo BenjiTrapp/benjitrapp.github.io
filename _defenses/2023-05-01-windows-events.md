@@ -24,6 +24,7 @@ Some common Windows Security Event Codes include:
 
 The full list is collected in [WindowsSecurityAuditEvents.xlsx](/assets/defense/WindowsSecurityAuditEvents.xlsx) and in the list below.
 
+<!-- cSpell:disable -->
 ## Event Codes overview
 
 | event_code | description                                                  |
@@ -450,3 +451,5 @@ The full list is collected in [WindowsSecurityAuditEvents.xlsx](/assets/defense/
 | 6423       | The installation of this device is forbidden by system policy |
 | 6424       | The installation of this device was allowed, after having previously been forbidden by policy |
 | 8191       | Highest System-Defined Audit Message Value                   |
+
+<!-- cSpell:enable -->
