@@ -270,10 +270,17 @@ function jsonPrettyPrint() {
 }
 
 ### AWS stuff ###
+function awsAssumeRole() {
+    OUT=$(aws sts assume-role --role-arn $1 --role-session-name $2);\
+    export AWS_ACCESS_KEY_ID=$(echo $OUT | jq -r '.Credentials''.AccessKeyId');\
+    export AWS_SECRET_ACCESS_KEY=$(echo $OUT | jq -r '.Credentials''.SecretAccessKey');\
+    export AWS_SESSION_TOKEN=$(echo $OUT | jq -r '.Credentials''.SessionToken');
+}
+
 function cdk_autocompleter {
     STACK_CMDS="list synthesize bootstrap deploy destroy diff metadata init context docs doctor"
 
-    if [ "$3" == "cdk" ]; then
+    if [ "$3" == "cdk" ]; t
         COMPREPLY=($(compgen -W "$STACK_CMDS" $2))
     elif [[ -d "cdk.out" ]] && ! [[ "$2" == "-"* ]]; then
         echo "cdk.out"
