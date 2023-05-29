@@ -6,7 +6,7 @@ title: RegEx Cheat Sheet
 
 RegEx is one of the "beautiful" things that I learn from zero every time I have to use it. To speed things up I use this quick reference guide for regular expressions (regex), including symbols, ranges, grouping, assertions and some sample patterns.
 
-
+<!-- cSpell:disable -->
 ## Basic Syntax
 
 - `/.../`: Start and end regex delimiters
@@ -134,3 +134,5 @@ RegEx is one of the "beautiful" things that I learn from zero every time I have 
 - `x`: Allow comments and whitespace in pattern
 - `e`: Evaluate replacement
 - `U`: Ungreedy mode
+
+<!-- cSpell:enable -->
