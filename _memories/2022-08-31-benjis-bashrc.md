@@ -317,6 +317,39 @@ function appendFileExtensionToEveryFile() {
     for f in *; do mv "$f" "$f.$1"; done
 }
 
+#### AWS cli helper functions that can be used for SSH'ing into EC2 instances
+# Return public DNS name from instance name tag
+function ec2_hostname_from_tag() {
+  echo $(aws ec2 describe-instances --filters "{\"Name\":\"tag:Name\", \"Values\":[\"$1\"]}" --query='Reservations[0].Instances[0].PublicDnsName' | tr -d '"')
+}
+
+# Return InstanceId from instance name tag
+function ec2_id_from_tag() {
+  echo $(aws ec2 describe-instances --filters "{\"Name\":\"tag:Name\", \"Values\":[\"$1\"]}" --query='Reservations[0].Instances[0].InstanceId' | tr -d '"')
+}
+
+# Return private IP address from instance name tag
+function ec2_pub_ip_from_tag() {
+  echo $(aws ec2 describe-instances --filters "{\"Name\":\"tag:Name\", \"Values\":[\"$1\"]}" --query='Reservations[0].Instances[0].PublicIp' | tr -d '"')
+}
+
+# Return private IP address from instance name tag
+function ec2_priv_ip_from_tag() {
+  echo $(aws ec2 describe-instances --filters "{\"Name\":\"tag:Name\", \"Values\":[\"$1\"]}" --query='Reservations[0].Instances[0].PrivateIpAddress' | tr -d '"')
+}
+
+# ssh into an amazon instance using it's name tag.
+# Specify your ssh key name.
+# I am using options from my ssh config for the "bastion" hop. Specify the user/IP if needed.
+function assh() {
+  ssh -A -i ~/.ssh/<your key here> \
+  -o ForwardAgent=yes \
+  -o StrictHostKeyChecking=no \
+  -o UserKnownHostsFile=/dev/null \
+  -o "ProxyCommand ssh -W %h:%p bastion" \
+  ubuntu@$(ec2_priv_ip_from_tag "$1")
+}
+
 #### OpenShift Stuff ###
 function removeAllFailedBuildsDryRun() {
   for build in $(oc get builds | grep Failed | awk '{print $1}'); do oc delete build ${build} --dry-run=client; done
@@ -336,6 +369,34 @@ function removeAllPodsInStateTerminating() {
 
 function removeAllGarbageReplicaSets() {
  for replicaset in $(oc get rs | awk '{if ($2 + $3 + $4 == 0) print $1}' | grep -v 'NAME'); do oc delete rs ${replicaset}; done
+}
+
+#### GCP Stuff
+
+function gcpShowCloudbuild-us_central1() {
+  local build_id
+  gcloud builds list --region=us-central1 --limit=3
+  build_id=$(gcloud builds list --region=us-central1 --limit=1 --format="value(id)")
+  gcloud builds log --region=us-central1 --stream "${build_id}"
+}
+
+function gcpShowCloudbuildGlobal() {
+  local build_id
+  gcloud builds list --limit=3
+  build_id=$(gcloud builds list --limit=1 --format="value(id)")
+  gcloud builds log --stream "${build_id:?}"
+}
+
+function gcpListComputeInstances() {
+  gcloud compute instances list --sort-by=name
+}
+
+function sslShowServerCrt() {
+  if [ -z "$1" ]; then
+    echo -e "Usage: ${FUNCNAME[0]} <server_name:server_port>"
+    return 1
+  fi
+  openssl s_client -connect "$1" | openssl x509 -noout -text
 }
 
 #### OpenShift Secrets + SealedSecrets
