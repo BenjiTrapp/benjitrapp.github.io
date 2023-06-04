@@ -1210,7 +1210,9 @@ The Network Security Configuration feature lets you customize your app's network
 
 Credit: [https://www.linkedin.com/in/isdebuggerpresent](https://www.linkedin.com/in/isdebuggerpresent)
 
-`[{"op":"Regular expression","args":["User defined","includeSubdomains\\=\\\"\\w+\\\"\\>(?<lista>.*)\\<",true,true,false,false,false,false,"List capture groups"]},{"op":"Unique","args":["Line feed",false]}]`  
+```json
+[{"op":"Regular expression","args":["User defined","includeSubdomains\\=\\\"\\w+\\\"\\>(?<lista>.*)\\<",true,true,false,false,false,false,"List capture groups"]},{"op":"Unique","args":["Line feed",false]}]
+```
 
 ![Recipe 70](/images/cyberchef/recipe_70.png)  
 
