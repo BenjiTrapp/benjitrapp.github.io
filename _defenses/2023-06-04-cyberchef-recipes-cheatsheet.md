@@ -9,7 +9,7 @@ The tool itself used [online](https://gchq.github.io/CyberChef/) or if you prefe
 
 If you're brave and want to test all recipes with real malware you could do the following:
 
-1. Run my boxed-kali or a Kali/REMnuX instance on Kasm or your favorite sandbox solution
+1. Run my [boxed-kali](https://github.com/BenjiTrapp/boxed-kali) or a Kali/REMnuX instance on [Kasm](https://www.kasmweb.com/) or your favorite sandbox solution
 2. Clone [this folder](/assets/defense/cyberchef/)
 3. Pick the recipe you're interested in from below in the folder and copy it into your sandbox (for my boxed-kali docker cp will do the trick)
 4. Extract the malware sample. In tradition of using files like this the password is `infected` (you might find also inside another .zip which got probably the same password)
@@ -205,7 +205,9 @@ Sample: SHA256 cc9c6c38840af8573b8175f34e5c54078c1f3fb7c686a6dc49264a0812d56b54
 
 ### Recipe Details
 
-```[{"op":"Regular expression","args":["User defined","[a-zA-Z0-9+/=]{30,}",true,true,false,false,false,false,"List matches"]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"Raw Inflate","args":[0,0,"Adaptive",false,false]},{"op":"Generic Code Beautify","args":[]}]```
+```json
+[{"op":"Regular expression","args":["User defined","[a-zA-Z0-9+/=]{30,}",true,true,false,false,false,false,"List matches"]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"Raw Inflate","args":[0,0,"Adaptive",false,false]},{"op":"Generic Code Beautify","args":[]}]
+```
 
 ![Recipe_1](/images/cyberchef/recipe_1.PNG)
 
@@ -223,7 +225,9 @@ Sample: SHA256 1240695523bbfe3ed450b64b80ed018bd890bfa81259118ca2ac534c2895c835
 
 ### Recipe Details
 
-```[{"op":"Find / Replace","args":[{"option":"Regex","string":"\\^|\\\\|-|_|\\/|\\s"},"",true,false,true,false]},{"op":"Reverse","args":["Character"]},{"op":"Generic Code Beautify","args":[]},{"op":"Find / Replace","args":[{"option":"Simple string","string":"http:"},"http://",true,false,true,false]},{"op":"Extract URLs","args":[false]},{"op":"Defang URL","args":[true,true,true,"Valid domains and full URLs"]}]```
+```json
+[{"op":"Find / Replace","args":[{"option":"Regex","string":"\\^|\\\\|-|_|\\/|\\s"},"",true,false,true,false]},{"op":"Reverse","args":["Character"]},{"op":"Generic Code Beautify","args":[]},{"op":"Find / Replace","args":[{"option":"Simple string","string":"http:"},"http://",true,false,true,false]},{"op":"Extract URLs","args":[false]},{"op":"Defang URL","args":[true,true,true,"Valid domains and full URLs"]}]
+```
 
 ![Recipe_2](/images/cyberchef/recipe_2.PNG)
 
@@ -237,7 +241,9 @@ Source: <https://gist.github.com/jonmarkgo/3431818>
 
 ### Recipe Details
 
-```[{"op":"Regular expression","args":["User defined","([0-9]{2,3}(,\\s|))+",true,true,false,false,false,false,"List matches"]},{"op":"From Charcode","args":["Comma",10]},{"op":"Regular expression","args":["User defined","([0-9]{2,3}(,\\s|))+",true,true,false,false,false,false,"List matches"]},{"op":"From Charcode","args":["Space",10]}]```
+```json
+[{"op":"Regular expression","args":["User defined","([0-9]{2,3}(,\\s|))+",true,true,false,false,false,false,"List matches"]},{"op":"From Charcode","args":["Comma",10]},{"op":"Regular expression","args":["User defined","([0-9]{2,3}(,\\s|))+",true,true,false,false,false,false,"List matches"]},{"op":"From Charcode","args":["Space",10]}]
+```
 
 ![Recipe_3](/images/cyberchef/recipe_3.PNG)
 
@@ -253,7 +259,9 @@ Source 2: <https://adsecurity.org/?p=2288>
 
 ### Recipe Details
 
-```[{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"To Hex","args":["None"]},{"op":"AES Decrypt","args":[{"option":"Hex","string":"4e9906e8fcb66cc9faf49310620ffee8f496e806cc057990209b09a433b66c1b"},{"option":"Hex","string":""},"CBC","Hex","Raw",{"option":"Hex","string":""}]},{"op":"Decode text","args":["UTF16LE (1200)"]}]```
+```json
+[{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"To Hex","args":["None"]},{"op":"AES Decrypt","args":[{"option":"Hex","string":"4e9906e8fcb66cc9faf49310620ffee8f496e806cc057990209b09a433b66c1b"},{"option":"Hex","string":""},"CBC","Hex","Raw",{"option":"Hex","string":""}]},{"op":"Decode text","args":["UTF16LE (1200)"]}]
+```
 
 ![Recipe_4](/images/cyberchef/recipe_4.PNG)
 
@@ -273,7 +281,9 @@ Also see more example of loops over Base64: <https://twitter.com/QW5kcmV3/status
 
 ### Recipe Details
 
-```[{"op":"Label","args":["top"]},{"op":"Regular expression","args":["User defined","[a-zA-Z0-9+/=]{30,}",true,true,false,false,false,false,"List matches"]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"Raw Inflate","args":[0,0,"Adaptive",false,false]},{"op":"Jump","args":["top",28]},{"op":"Generic Code Beautify","args":[]}]```
+```json
+[{"op":"Label","args":["top"]},{"op":"Regular expression","args":["User defined","[a-zA-Z0-9+/=]{30,}",true,true,false,false,false,false,"List matches"]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"Raw Inflate","args":[0,0,"Adaptive",false,false]},{"op":"Jump","args":["top",28]},{"op":"Generic Code Beautify","args":[]}]
+```
 
 ![Recipe_5](/images/cyberchef/recipe_5.PNG)
 
@@ -285,7 +295,9 @@ Source: <https://bitofhex.com/2018/05/29/cyberchef/>
 
 ### Recipe Details
 
-```[{"op":"From Base64","args":["A-Za-z0-9-_=",true]},{"op":"To Hex","args":["None"]},{"op":"Take bytes","args":[0,8,false]},{"op":"Swap endianness","args":["Hex",4,true]},{"op":"From Base","args":[16]},{"op":"From UNIX Timestamp","args":["Seconds (s)"]}]```
+```json
+[{"op":"From Base64","args":["A-Za-z0-9-_=",true]},{"op":"To Hex","args":["None"]},{"op":"Take bytes","args":[0,8,false]},{"op":"Swap endianness","args":["Hex",4,true]},{"op":"From Base","args":[16]},{"op":"From UNIX Timestamp","args":["Seconds (s)"]}]
+```
 
 ![Recipe_6](/images/cyberchef/recipe_6.PNG)
 
@@ -303,7 +315,9 @@ Source 2: <https://twitter.com/JohnLaTwC/status/1062419803304976385>
 
 ### Recipe Details
 
-```[{"op":"Regular expression","args":["","[A-Za-z0-9=/]{40,}",true,true,false,false,false,false,"List matches"]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"Remove null bytes","args":[]},{"op":"Regular expression","args":["User defined","[A-Za-z0-9+/=]{40,}",true,true,false,false,false,false,"List matches"]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"Gunzip","args":[]},{"op":"Regular expression","args":["User defined","[A-Za-z0-9+/=]{40,}",true,true,false,false,false,false,"List matches"]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"To Hex","args":["Space"]},{"op":"Remove whitespace","args":[true,true,true,true,true,false]},{"op":"Disassemble x86","args":["32","Full x86 architecture",16,0,true,true]}]```
+```json
+[{"op":"Regular expression","args":["","[A-Za-z0-9=/]{40,}",true,true,false,false,false,false,"List matches"]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"Remove null bytes","args":[]},{"op":"Regular expression","args":["User defined","[A-Za-z0-9+/=]{40,}",true,true,false,false,false,false,"List matches"]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"Gunzip","args":[]},{"op":"Regular expression","args":["User defined","[A-Za-z0-9+/=]{40,}",true,true,false,false,false,false,"List matches"]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"To Hex","args":["Space"]},{"op":"Remove whitespace","args":[true,true,true,true,true,false]},{"op":"Disassemble x86","args":["32","Full x86 architecture",16,0,true,true]}]
+```
 
 ![Recipe_7](/images/cyberchef/recipe_7.png)
 
@@ -317,7 +331,9 @@ Source 2: <https://twitter.com/ScumBots/status/1081949877272276992>
 
 ### Recipe Details
 
-```[{"op":"Regular expression","args":["User defined","[a-fA-F0-9]{200,}",true,true,false,false,false,false,"List matches"]},{"op":"From Hex","args":["Auto"]},{"op":"To Hexdump","args":[16,false,false]}]```
+```json
+[{"op":"Regular expression","args":["User defined","[a-fA-F0-9]{200,}",true,true,false,false,false,false,"List matches"]},{"op":"From Hex","args":["Auto"]},{"op":"To Hexdump","args":[16,false,false]}]
+```
 
 ![Recipe_8](/images/cyberchef/recipe_8.png)
 
@@ -333,7 +349,9 @@ Source 2: <https://twitter.com/pmelson/status/1076893022758100998>
 
 ### Recipe Details
 
-```[{"op":"Reverse","args":["Character"]},{"op":"Find / Replace","args":[{"option":"Regex","string":"%"},"A",true,false,true,false]},{"op":"Find / Replace","args":[{"option":"Regex","string":"×"},"T",true,false,false,false]},{"op":"Find / Replace","args":[{"option":"Simple string","string":"÷"},"V",true,false,false,false]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"To Hexdump","args":[16,false,false]}]```
+```json
+[{"op":"Reverse","args":["Character"]},{"op":"Find / Replace","args":[{"option":"Regex","string":"%"},"A",true,false,true,false]},{"op":"Find / Replace","args":[{"option":"Regex","string":"×"},"T",true,false,false,false]},{"op":"Find / Replace","args":[{"option":"Simple string","string":"÷"},"V",true,false,false,false]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"To Hexdump","args":[16,false,false]}]
+```
 
 ![Recipe_9](/images/cyberchef/recipe_9.png)
 
@@ -345,7 +363,9 @@ Source: 00000915 (output should be TrueCrypt_Setup_7.1a.exe with SHA256 e95eca39
 
 ### Recipe Details
 
-```[{"op":"To Hex","args":["None"]},{"op":"Regular expression","args":["User defined","(?<=0D0A0D0A).*$",true,false,false,false,false,false,"List matches"]},{"op":"From Hex","args":["Auto"]},{"op":"Gunzip","args":[]}]```
+```json
+[{"op":"To Hex","args":["None"]},{"op":"Regular expression","args":["User defined","(?<=0D0A0D0A).*$",true,false,false,false,false,false,"List matches"]},{"op":"From Hex","args":["Auto"]},{"op":"Gunzip","args":[]}]
+```
 
 ![Recipe_10](/images/cyberchef/recipe_10.png)
 
@@ -355,7 +375,9 @@ If you need to quickly triage where a photo was taken and you're lucky enought t
 
 ### Recipe Details
 
-```[{"op":"Extract EXIF","args":[]},{"op":"Regular expression","args":["User defined","((?<=GPSLatitude:).*$)|((?<=GPSLongitude: ).*$)",true,true,false,false,false,false,"List matches"]},{"op":"Find / Replace","args":[{"option":"Extended (\\n, \\t, \\x...)","string":"\\n"},",",true,false,true,false]},{"op":"Find / Replace","args":[{"option":"Simple string","string":" "},"https://maps.google.com/?q=",true,false,true,false]}]```
+```json
+[{"op":"Extract EXIF","args":[]},{"op":"Regular expression","args":["User defined","((?<=GPSLatitude:).*$)|((?<=GPSLongitude: ).*$)",true,true,false,false,false,false,"List matches"]},{"op":"Find / Replace","args":[{"option":"Extended (\\n, \\t, \\x...)","string":"\\n"},",",true,false,true,false]},{"op":"Find / Replace","args":[{"option":"Simple string","string":" "},"https://maps.google.com/?q=",true,false,true,false]}]
+```
 
 ![Recipe_11](/images/cyberchef/recipe_11.png)
 
@@ -369,7 +391,9 @@ Source: <https://twitter.com/QW5kcmV3/status/949437437473968128>
 
 ### Recipe Details
 
-```[{"op":"To Base","args":[16]},{"op":"Regular expression","args":["User defined","[a-f0-9]{2,2}",true,true,false,false,false,false,"List matches"]},{"op":"Find / Replace","args":[{"option":"Extended (\\n, \\t, \\x...)","string":"\\n"},":",true,false,true,false]}]```
+```json
+[{"op":"To Base","args":[16]},{"op":"Regular expression","args":["User defined","[a-f0-9]{2,2}",true,true,false,false,false,false,"List matches"]},{"op":"Find / Replace","args":[{"option":"Extended (\\n, \\t, \\x...)","string":"\\n"},":",true,false,true,false]}]
+```
 
 ![Recipe_12](/images/cyberchef/recipe_12.png)
 
@@ -381,7 +405,9 @@ IP addresses in DNS PTR records are stored as least significant octet first. For
 
 ### Recipe Details
 
-```[{"op":"Fork","args":["\\n","\\n",false]},{"op":"Register","args":["(\\d{1,3}).(\\d{1,3}).(\\d{1,3}).(\\d{1,3})",true,false,false]},{"op":"Find / Replace","args":[{"option":"Regex","string":"$R0.$R1.$R2.$R3"},"$R3.$R2.$R1.$R0",true,false,true,false]},{"op":"Find / Replace","args":[{"option":"Regex","string":".in-addr.arpa"},"",true,false,true,false]}]```
+```json
+[{"op":"Fork","args":["\\n","\\n",false]},{"op":"Register","args":["(\\d{1,3}).(\\d{1,3}).(\\d{1,3}).(\\d{1,3})",true,false,false]},{"op":"Find / Replace","args":[{"option":"Regex","string":"$R0.$R1.$R2.$R3"},"$R3.$R2.$R1.$R0",true,false,true,false]},{"op":"Find / Replace","args":[{"option":"Regex","string":".in-addr.arpa"},"",true,false,true,false]}]
+```
 
 ## Recipe 14 - Decoding POSHC2 executables
 
@@ -397,7 +423,9 @@ Source: posh.zip
 
 ### Recipe Details
 
-```[{"op":"Strings","args":["All",4,"Alphanumeric + punctuation (A)",false]},{"op":"Remove null bytes","args":[]},{"op":"Regular expression","args":["User defined","[a-zA-Z0-9+=]{200,}",true,true,false,false,false,false,"List matches"]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"Remove null bytes","args":[]},{"op":"Regular expression","args":["User defined","[a-z0-9/\\\\+=]{100,}",true,true,false,false,false,false,"List matches"]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"Raw Inflate","args":[0,0,"Adaptive",false,false]}]```
+```json
+[{"op":"Strings","args":["All",4,"Alphanumeric + punctuation (A)",false]},{"op":"Remove null bytes","args":[]},{"op":"Regular expression","args":["User defined","[a-zA-Z0-9+=]{200,}",true,true,false,false,false,false,"List matches"]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"Remove null bytes","args":[]},{"op":"Regular expression","args":["User defined","[a-z0-9/\\\\+=]{100,}",true,true,false,false,false,false,"List matches"]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"Raw Inflate","args":[0,0,"Adaptive",false,false]}]
+```
 
 ## Recipe 15 - Parsing $MFT $SI Timestamps
 
@@ -407,7 +435,9 @@ CyberChef can do just about anything with data. Here are raw hex bytes from a $M
 
 ### Recipe Details
 
-```[{"op":"Take bytes","args":[160,64,false]},{"op":"Regular expression","args":["User defined",".{16}",true,true,true,false,false,false,"List matches with capture groups"]},{"op":"Fork","args":["\\n","\\n",false]},{"op":"Swap endianness","args":["Hex",10,true]},{"op":"Remove whitespace","args":[true,true,true,true,true,false]},{"op":"Windows Filetime to UNIX Timestamp","args":["Nanoseconds (ns)","Hex"]},{"op":"From UNIX Timestamp","args":["Nanoseconds (ns)"]},{"op":"Merge","args":[]},{"op":"Register","args":["(.*)\\n(.*)\\n(.*)\\n(.*)",true,false,false]},{"op":"Find / Replace","args":[{"option":"Regex","string":"$R0"},"$SI Creation Time: $R0",true,false,true,false]},{"op":"Find / Replace","args":[{"option":"Regex","string":"$R1"},"$SI Modified Time: $R1",true,false,true,false]},{"op":"Find / Replace","args":[{"option":"Regex","string":"$R2"},"$SI MFT Change Time: $R2",true,false,true,false]},{"op":"Find / Replace","args":[{"option":"Regex","string":"$R3"},"$SI Access Time: $R3",false,false,true,false]}]```
+```json
+[{"op":"Take bytes","args":[160,64,false]},{"op":"Regular expression","args":["User defined",".{16}",true,true,true,false,false,false,"List matches with capture groups"]},{"op":"Fork","args":["\\n","\\n",false]},{"op":"Swap endianness","args":["Hex",10,true]},{"op":"Remove whitespace","args":[true,true,true,true,true,false]},{"op":"Windows Filetime to UNIX Timestamp","args":["Nanoseconds (ns)","Hex"]},{"op":"From UNIX Timestamp","args":["Nanoseconds (ns)"]},{"op":"Merge","args":[]},{"op":"Register","args":["(.*)\\n(.*)\\n(.*)\\n(.*)",true,false,false]},{"op":"Find / Replace","args":[{"option":"Regex","string":"$R0"},"$SI Creation Time: $R0",true,false,true,false]},{"op":"Find / Replace","args":[{"option":"Regex","string":"$R1"},"$SI Modified Time: $R1",true,false,true,false]},{"op":"Find / Replace","args":[{"option":"Regex","string":"$R2"},"$SI MFT Change Time: $R2",true,false,true,false]},{"op":"Find / Replace","args":[{"option":"Regex","string":"$R3"},"$SI Access Time: $R3",false,false,true,false]}]
+```
 
 ## Recipe 16 - Decoding PHP gzinflate and base64 webshells
 
@@ -419,7 +449,9 @@ Source: <https://github.com/LordWolfer/webshells/blob/b7eefaff64049e3ff61e90c850
 
 ### Recipe Details
 
-```[{"op":"Label","args":["start"]},{"op":"Regular expression","args":["User defined","[a-zA-Z0-9=/+]{10,}",true,true,false,false,false,false,"List matches"]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"Raw Inflate","args":[0,0,"Block",false,false]},{"op":"Jump","args":["start",21]}]```
+```json
+[{"op":"Label","args":["start"]},{"op":"Regular expression","args":["User defined","[a-zA-Z0-9=/+]{10,}",true,true,false,false,false,false,"List matches"]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"Raw Inflate","args":[0,0,"Block",false,false]},{"op":"Jump","args":["start",21]}]
+```
 
 ## Recipe 17 - Extracting shellcode from a Powershell Meterpreter Reverse TCP script
 
@@ -433,7 +465,9 @@ Source: <https://pastebin.com/9DnD6t6W> / 9DnD6t6W.txt
 
 ### Recipe Details
 
-```[{"op":"Regular expression","args":["User defined","[a-zA-Z0-9=/+]{30,}",true,true,false,false,false,false,"List matches"]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"Remove null bytes","args":[]},{"op":"Regular expression","args":["User defined","[a-zA-Z0-9=/+]{30,}",true,true,false,false,false,false,"List matches"]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"Gunzip","args":[]},{"op":"Regular expression","args":["User defined","[a-zA-Z0-9=/+]{30,}",true,true,false,false,false,false,"List matches"]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"To Hex","args":["None"]},{"op":"Disassemble x86","args":["32","Full x86 architecture",16,0,true,true]}]```
+```json
+[{"op":"Regular expression","args":["User defined","[a-zA-Z0-9=/+]{30,}",true,true,false,false,false,false,"List matches"]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"Remove null bytes","args":[]},{"op":"Regular expression","args":["User defined","[a-zA-Z0-9=/+]{30,}",true,true,false,false,false,false,"List matches"]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"Gunzip","args":[]},{"op":"Regular expression","args":["User defined","[a-zA-Z0-9=/+]{30,}",true,true,false,false,false,false,"List matches"]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"To Hex","args":["None"]},{"op":"Disassemble x86","args":["32","Full x86 architecture",16,0,true,true]}]
+```
 
 ## Recipe 18 - Recycle Bin Parser with Subsections and Merges
 
@@ -447,7 +481,9 @@ Credit: <https://twitter.com/GlassSec>
 
 ### Recipe Details
 
-```[{"op":"Conditional Jump","args":["^(\\x01|\\x02)",true,"Error",10]},{"op":"Find / Replace","args":[{"option":"Regex","string":"^(\\x02.{23})(....)"},"$1",false,false,false,false]},{"op":"Subsection","args":["^.{24}(.*)",true,true,false]},{"op":"Decode text","args":["UTF16LE (1200)"]},{"op":"Find / Replace","args":[{"option":"Regex","string":"^(.*)."},"\\nDeleted File Path: $1",false,false,false,false]},{"op":"Merge","args":[]},{"op":"Subsection","args":["^.{16}(.{8})",false,true,false]},{"op":"Swap endianness","args":["Raw",8,true]},{"op":"To Hex","args":["None"]},{"op":"Windows Filetime to UNIX Timestamp","args":["Seconds (s)","Hex"]},{"op":"From UNIX Timestamp","args":["Seconds (s)"]},{"op":"Find / Replace","args":[{"option":"Regex","string":"^(.* UTC)"},"\\nFile Deletion Time: $1",true,false,true,false]},{"op":"Merge","args":[]},{"op":"Subsection","args":["^.{8}(.{8})",true,true,false]},{"op":"To Hex","args":["None"]},{"op":"Swap endianness","args":["Hex",8,true]},{"op":"From Base","args":[16]},{"op":"Find / Replace","args":[{"option":"Regex","string":"^(.*)"},"\\nDeleted File Size: $1 bytes",true,false,true,true]},{"op":"Merge","args":[]},{"op":"Find / Replace","args":[{"option":"Regex","string":"^.{8}"},"******** WINDOWS RECYCLE BIN METADATA ********",true,false,false,false]},{"op":"Jump","args":["Do Nothing",10]},{"op":"Label","args":["Error"]},{"op":"Find / Replace","args":[{"option":"Regex","string":"^.*$"},"This doesn't look like a Recycle Bin file to me ",true,false,true,false]},{"op":"Label","args":["Do Nothing"]}]```
+```json
+[{"op":"Conditional Jump","args":["^(\\x01|\\x02)",true,"Error",10]},{"op":"Find / Replace","args":[{"option":"Regex","string":"^(\\x02.{23})(....)"},"$1",false,false,false,false]},{"op":"Subsection","args":["^.{24}(.*)",true,true,false]},{"op":"Decode text","args":["UTF16LE (1200)"]},{"op":"Find / Replace","args":[{"option":"Regex","string":"^(.*)."},"\\nDeleted File Path: $1",false,false,false,false]},{"op":"Merge","args":[]},{"op":"Subsection","args":["^.{16}(.{8})",false,true,false]},{"op":"Swap endianness","args":["Raw",8,true]},{"op":"To Hex","args":["None"]},{"op":"Windows Filetime to UNIX Timestamp","args":["Seconds (s)","Hex"]},{"op":"From UNIX Timestamp","args":["Seconds (s)"]},{"op":"Find / Replace","args":[{"option":"Regex","string":"^(.* UTC)"},"\\nFile Deletion Time: $1",true,false,true,false]},{"op":"Merge","args":[]},{"op":"Subsection","args":["^.{8}(.{8})",true,true,false]},{"op":"To Hex","args":["None"]},{"op":"Swap endianness","args":["Hex",8,true]},{"op":"From Base","args":[16]},{"op":"Find / Replace","args":[{"option":"Regex","string":"^(.*)"},"\\nDeleted File Size: $1 bytes",true,false,true,true]},{"op":"Merge","args":[]},{"op":"Find / Replace","args":[{"option":"Regex","string":"^.{8}"},"******** WINDOWS RECYCLE BIN METADATA ********",true,false,false,false]},{"op":"Jump","args":["Do Nothing",10]},{"op":"Label","args":["Error"]},{"op":"Find / Replace","args":[{"option":"Regex","string":"^.*$"},"This doesn't look like a Recycle Bin file to me ",true,false,true,false]},{"op":"Label","args":["Do Nothing"]}]
+```
 
 ## Recipe 19 - Identify Obfuscated Base64 with Regular Expression Highlighting
 
@@ -463,7 +499,9 @@ Source: <https://pastebin.com/TmJsB0Nv> & <https://twitter.com/pmelson/status/11
 
 ### Recipe Details
 
-```[{"op":"Find / Replace","args":[{"option":"Simple string","string":"@<!"},"A",true,false,true,false]},{"op":"Regular expression","args":["User defined","[a-zA-Z0-9+/=]{20,}",true,true,false,false,false,false,"List matches"]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"Regular expression","args":["User defined","[a-zA-Z0-9+/=]{50,}",true,true,false,false,false,false,"List matches"]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"Find / Replace","args":[{"option":"Simple string","string":"@<!"},"A",true,false,true,false]},{"op":"Regular expression","args":["User defined","[a-zA-Z0-9+/=]{50,}",true,true,false,false,false,false,"List matches"]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]}]```
+```json
+[{"op":"Find / Replace","args":[{"option":"Simple string","string":"@<!"},"A",true,false,true,false]},{"op":"Regular expression","args":["User defined","[a-zA-Z0-9+/=]{20,}",true,true,false,false,false,false,"List matches"]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"Regular expression","args":["User defined","[a-zA-Z0-9+/=]{50,}",true,true,false,false,false,false,"List matches"]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"Find / Replace","args":[{"option":"Simple string","string":"@<!"},"A",true,false,true,false]},{"op":"Regular expression","args":["User defined","[a-zA-Z0-9+/=]{50,}",true,true,false,false,false,false,"List matches"]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]}]
+```
 
 ## Recipe 20 - Using Yara rules with deobfuscated malicious scripts
 
@@ -475,7 +513,9 @@ Source: <https://twitter.com/ScumBots/status/1168528510681538560> & <https://pas
 
 ### Recipe Details
 
-```[{"op":"Regular expression","args":["User defined","\\(.*\\);",true,false,false,false,false,false,"List matches"]},{"op":"Find / Replace","args":[{"option":"Regex","string":",|\\(|\\);"}," ",true,false,true,false]},{"op":"From Charcode","args":["Space",10]},{"op":"YARA Rules","args":["rule SuspiciousPowerShell {\n   meta:\n      description = \"Testing Yara on Cyberchef for Powershell\"\n   strings:\n      $a1 = \"[System.Reflection.Assembly]\" ascii\n      $a2 = \"IEX\" ascii nocase\n      $a3 = \"powershell.exe -w hidden -ep bypass -enc\" ascii\n   condition:\n      2 of them\n}",true,true,true,true]}]```
+```json
+[{"op":"Regular expression","args":["User defined","\\(.*\\);",true,false,false,false,false,false,"List matches"]},{"op":"Find / Replace","args":[{"option":"Regex","string":",|\\(|\\);"}," ",true,false,true,false]},{"op":"From Charcode","args":["Space",10]},{"op":"YARA Rules","args":["rule SuspiciousPowerShell {\n   meta:\n      description = \"Testing Yara on Cyberchef for Powershell\"\n   strings:\n      $a1 = \"[System.Reflection.Assembly]\" ascii\n      $a2 = \"IEX\" ascii nocase\n      $a3 = \"powershell.exe -w hidden -ep bypass -enc\" ascii\n   condition:\n      2 of them\n}",true,true,true,true]}]
+```
 
 ## Recipe 21 - Inline deobfuscation of hex encoded VBE script attached to a malicious LNK file
 
@@ -487,7 +527,9 @@ Source: malicious.lnk.bin
 
 ### Recipe Details
 
-```[{"op":"Microsoft Script Decoder","args":[]},{"op":"Subsection","args":["(?<=\\(\\\")(.*?)(?=\\\"\\))",true,true,false]},{"op":"Fork","args":["\\n","\\n",false]},{"op":"From Hex","args":["Auto"]}]```
+```json
+[{"op":"Microsoft Script Decoder","args":[]},{"op":"Subsection","args":["(?<=\\(\\\")(.*?)(?=\\\"\\))",true,true,false]},{"op":"Fork","args":["\\n","\\n",false]},{"op":"From Hex","args":["Auto"]}]
+```
 
 ## Recipe 22 - JA3 API search with HTTP Request and Registers
 
@@ -499,7 +541,9 @@ Source: Input hashes: 1aa7bf8b97e540ca5edd75f7b8384bfa, 1be3ecebe5aa9d3654e6e703
 
 ### Recipe Details
 
-```[{"op":"Comment","args":["https://ja3er.com/search/hash"]},{"op":"Fork","args":["\\n","\\n",false]},{"op":"Register","args":["(.*)",true,false,false]},{"op":"HTTP request","args":["GET","https://ja3er.com/search/$R0","","Cross-Origin Resource Sharing",false]},{"op":"JSON Beautify","args":["    ",false]}]```
+```json
+[{"op":"Comment","args":["https://ja3er.com/search/hash"]},{"op":"Fork","args":["\\n","\\n",false]},{"op":"Register","args":["(.*)",true,false,false]},{"op":"HTTP request","args":["GET","https://ja3er.com/search/$R0","","Cross-Origin Resource Sharing",false]},{"op":"JSON Beautify","args":["    ",false]}]
+```
 
 ## Recipe 23 - Defeating DOSfuscation embedded in a malicious DOC file with Regular Expression capture groups
 
@@ -513,7 +557,9 @@ Credit: Adapted from Hack eXPlorer's video [Hiding Malicious code using windows 
 
 ### Recipe Details
 
-```[{"op":"Gunzip","args":[]},{"op":"Regular expression","args":["User defined","c:\\\\.*\"",true,true,false,false,false,false,"List matches"]},{"op":"Find / Replace","args":[{"option":"Simple string","string":"^"},"",true,false,true,false]},{"op":"Regular expression","args":["User defined","(?<=9ojB\\=)(.*?)(?=\\)  )",true,true,false,false,false,false,"List matches"]},{"op":"Reverse","args":["Character"]},{"op":"Regular expression","args":["User defined","(.)..",true,true,false,false,false,false,"List capture groups"]},{"op":"Find / Replace","args":[{"option":"Regex","string":"\\n"},"",true,false,true,false]},{"op":"Extract URLs","args":[false]},{"op":"Extract domains","args":[true]}]```  
+```json
+[{"op":"Gunzip","args":[]},{"op":"Regular expression","args":["User defined","c:\\\\.*\"",true,true,false,false,false,false,"List matches"]},{"op":"Find / Replace","args":[{"option":"Simple string","string":"^"},"",true,false,true,false]},{"op":"Regular expression","args":["User defined","(?<=9ojB\\=)(.*?)(?=\\)  )",true,true,false,false,false,false,"List matches"]},{"op":"Reverse","args":["Character"]},{"op":"Regular expression","args":["User defined","(.)..",true,true,false,false,false,false,"List capture groups"]},{"op":"Find / Replace","args":[{"option":"Regex","string":"\\n"},"",true,false,true,false]},{"op":"Extract URLs","args":[false]},{"op":"Extract domains","args":[true]}]
+```  
 
 ## Recipe 24 - Picking a random letter from a six-byte string
 
@@ -523,7 +569,9 @@ Credit: Adapted from [Steve Thompson](https://twitter.com/poohstix16/status/1244
 
 ### Recipe Details
 
-`[{"op":"Register","args":["(.*)",true,false,false]},{"op":"HTTP request","args":["GET","https://www.random.org/integers/?num=1&min=1&max=6&col=1&base=10&format=plain&rnd=new","","Cross-Origin Resource Sharing",false]},{"op":"Register","args":["(.)",true,false,false]},{"op":"Find / Replace","args":[{"option":"Regex","string":"(.)"},"$R0",true,false,true,false]},{"op":"Regular expression","args":["User defined","(.){$R1}",true,true,false,false,false,false,"List capture groups"]},{"op":"Head","args":["Line feed",1]}]`
+```json
+[{"op":"Register","args":["(.*)",true,false,false]},{"op":"HTTP request","args":["GET","https://www.random.org/integers/?num=1&min=1&max=6&col=1&base=10&format=plain&rnd=new","","Cross-Origin Resource Sharing",false]},{"op":"Register","args":["(.)",true,false,false]},{"op":"Find / Replace","args":[{"option":"Regex","string":"(.)"},"$R0",true,false,true,false]},{"op":"Regular expression","args":["User defined","(.){$R1}",true,true,false,false,false,false,"List capture groups"]},{"op":"Head","args":["Line feed",1]}]
+```
 
 ## Recipe 25 - Creating a WiFi QR code
 
@@ -545,7 +593,9 @@ Credit: <https://twitter.com/thebluetoob>
 
 ### Recipe Details
 
-`[{"op":"Regular expression","args":["User defined","(?<=')(.*?)(?=')",true,true,false,false,false,false,"List matches"]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"ROT13","args":[true,true,13]},{"op":"Raw Inflate","args":[0,0,"Adaptive",false,false]},{"op":"ROT13","args":[true,true,13]},{"op":"Extract URLs","args":[false]},{"op":"Register","args":["(.*)",true,false,false]},{"op":"HTTP request","args":["GET","$R0","","Cross-Origin Resource Sharing",false]},{"op":"Strings","args":["Single byte",4,"Alphanumeric + punctuation (A)",false]},{"op":"Regular expression","args":["User defined","[a-zA-Z0-9+=/]{30,}",true,true,false,false,false,false,"List matches"]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"Regular expression","args":["User defined","(?<=')(.*?)(?=')",true,true,false,false,false,false,"List matches"]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"Raw Inflate","args":[0,0,"Adaptive",false,false]},{"op":"ROT13","args":[true,true,13]},{"op":"Regular expression","args":["User defined","[a-zA-Z0-9+=/]{30,}",true,true,false,false,false,false,"List matches"]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]}]`
+```json
+[{"op":"Regular expression","args":["User defined","(?<=')(.*?)(?=')",true,true,false,false,false,false,"List matches"]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"ROT13","args":[true,true,13]},{"op":"Raw Inflate","args":[0,0,"Adaptive",false,false]},{"op":"ROT13","args":[true,true,13]},{"op":"Extract URLs","args":[false]},{"op":"Register","args":["(.*)",true,false,false]},{"op":"HTTP request","args":["GET","$R0","","Cross-Origin Resource Sharing",false]},{"op":"Strings","args":["Single byte",4,"Alphanumeric + punctuation (A)",false]},{"op":"Regular expression","args":["User defined","[a-zA-Z0-9+=/]{30,}",true,true,false,false,false,false,"List matches"]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"Regular expression","args":["User defined","(?<=')(.*?)(?=')",true,true,false,false,false,false,"List matches"]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"Raw Inflate","args":[0,0,"Adaptive",false,false]},{"op":"ROT13","args":[true,true,13]},{"op":"Regular expression","args":["User defined","[a-zA-Z0-9+=/]{30,}",true,true,false,false,false,false,"List matches"]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]}]
+```
 
 ![Recipe 26](/images/cyberchef/recipe_26.PNG)
 
@@ -557,7 +607,9 @@ Credit: Original script provided by [@NtSetDefault](https://twitter.com/NtSetDef
 
 ### Recipe Details
 
-`[{"op":"Regular expression","args":["User defined","(?<=')(.*?)(?=')",true,true,false,false,false,false,"List matches"]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"ROT13","args":[true,true,13]},{"op":"Raw Inflate","args":[0,0,"Adaptive",false,false]},{"op":"ROT13","args":[true,true,13]},{"op":"Subsection","args":["(?<=\\$Fadly.*?\")(.*?)(?=\\\")",true,true,false]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"URL Decode","args":[]},{"op":"From HTML Entity","args":[]},{"op":"Merge","args":[]},{"op":"Subsection","args":["(?<=\\$Gans.*?\")(.*?)(?=\\\")",true,true,false]},{"op":"Reverse","args":["Character"]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"Label","args":["jump"]},{"op":"Raw Inflate","args":[0,0,"Adaptive",false,false]},{"op":"Jump","args":["jump",2]},{"op":"Zlib Inflate","args":[0,0,"Adaptive",false,false]},{"op":"Zlib Inflate","args":[0,0,"Adaptive",false,false]}]`
+```json
+[{"op":"Regular expression","args":["User defined","(?<=')(.*?)(?=')",true,true,false,false,false,false,"List matches"]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"ROT13","args":[true,true,13]},{"op":"Raw Inflate","args":[0,0,"Adaptive",false,false]},{"op":"ROT13","args":[true,true,13]},{"op":"Subsection","args":["(?<=\\$Fadly.*?\")(.*?)(?=\\\")",true,true,false]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"URL Decode","args":[]},{"op":"From HTML Entity","args":[]},{"op":"Merge","args":[]},{"op":"Subsection","args":["(?<=\\$Gans.*?\")(.*?)(?=\\\")",true,true,false]},{"op":"Reverse","args":["Character"]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"Label","args":["jump"]},{"op":"Raw Inflate","args":[0,0,"Adaptive",false,false]},{"op":"Jump","args":["jump",2]},{"op":"Zlib Inflate","args":[0,0,"Adaptive",false,false]},{"op":"Zlib Inflate","args":[0,0,"Adaptive",false,false]}]
+```
 
 ![Recipe 27](/images/cyberchef/recipe_27.PNG)
 
@@ -569,7 +621,9 @@ Credit: <https://twitter.com/0xtornado/status/1255866333545316352>
 
 ### Recipe Details
 
-`[{"op":"Conditional Jump","args":["bxor",false,"Decode_Shellcode",10]},{"op":"Label","args":["Decode_beacon"]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"Decode text","args":["UTF-16LE (1200)"]},{"op":"Regular expression","args":["User defined","[a-zA-Z0-9+/=]{30,}",true,true,false,false,false,false,"List matches"]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"Gunzip","args":[]},{"op":"Label","args":["Decode_Shellcode"]},{"op":"Regular expression","args":["User defined","[a-zA-Z0-9+/=]{30,}",true,true,false,false,false,false,"List matches"]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"XOR","args":[{"option":"Decimal","string":"35"},"Standard",false]}]`  
+```json
+[{"op":"Conditional Jump","args":["bxor",false,"Decode_Shellcode",10]},{"op":"Label","args":["Decode_beacon"]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"Decode text","args":["UTF-16LE (1200)"]},{"op":"Regular expression","args":["User defined","[a-zA-Z0-9+/=]{30,}",true,true,false,false,false,false,"List matches"]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"Gunzip","args":[]},{"op":"Label","args":["Decode_Shellcode"]},{"op":"Regular expression","args":["User defined","[a-zA-Z0-9+/=]{30,}",true,true,false,false,false,false,"List matches"]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"XOR","args":[{"option":"Decimal","string":"35"},"Standard",false]}]
+```
 
 ![Recipe 28_1](/images/cyberchef/recipe_28_1.png)  
 
@@ -583,7 +637,9 @@ Credit: [@gazambelli](https://twitter.com/gazambelli/status/1312767188365905920)
 
 ### Recipe Details
 
-`[{"op":"Fork","args":["\\n","\\n",false]},{"op":"Subsection","args":["\\[.*\\+0100\\]",true,true,false]},{"op":"Find / Replace","args":[{"option":"Regex","string":"\\[|\\]"},"",true,false,true,false]},{"op":"Translate DateTime Format","args":["Standard date and time","DD/MMM/YYYY:HH:mm:ss ZZ","Etc/GMT-1","YYYY-MM-DDTHH:mm:ss ZZ","UTC"]},{"op":"Merge","args":[]},{"op":"Fork","args":["\\n","\\n",false]},{"op":"Register","args":["(.*)(\\d{4}-.*\\+0000)(.*)",true,false,false]},{"op":"Find / Replace","args":[{"option":"Simple string","string":"$R0$R1$R2"},"$R1 $R0 $R2",true,false,true,false]}]`
+```json
+[{"op":"Fork","args":["\\n","\\n",false]},{"op":"Subsection","args":["\\[.*\\+0100\\]",true,true,false]},{"op":"Find / Replace","args":[{"option":"Regex","string":"\\[|\\]"},"",true,false,true,false]},{"op":"Translate DateTime Format","args":["Standard date and time","DD/MMM/YYYY:HH:mm:ss ZZ","Etc/GMT-1","YYYY-MM-DDTHH:mm:ss ZZ","UTC"]},{"op":"Merge","args":[]},{"op":"Fork","args":["\\n","\\n",false]},{"op":"Register","args":["(.*)(\\d{4}-.*\\+0000)(.*)",true,false,false]},{"op":"Find / Replace","args":[{"option":"Simple string","string":"$R0$R1$R2"},"$R1 $R0 $R2",true,false,true,false]}]
+```
 
 ![Recipe 29](/images/cyberchef/recipe_29.png)
 
@@ -595,7 +651,9 @@ Source: [@scumbots](https://twitter.com/ScumBots/status/1314562082491322369) & <
 
 ### Recipe Details
 
-`[{"op":"Regular expression","args":["User defined","\\d{1,3}",true,true,false,false,false,false,"List matches"]},{"op":"From Charcode","args":["Line feed",10]},{"op":"Gunzip","args":[]},{"op":"Regular expression","args":["User defined","[a-zA-Z0-9+/=]{30,}",true,true,false,false,false,false,"List matches"]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"XOR","args":[{"option":"Decimal","string":"35"},"Standard",false]},{"op":"Strings","args":["Single byte",5,"All printable chars (A)",false]}]`
+```json
+[{"op":"Regular expression","args":["User defined","\\d{1,3}",true,true,false,false,false,false,"List matches"]},{"op":"From Charcode","args":["Line feed",10]},{"op":"Gunzip","args":[]},{"op":"Regular expression","args":["User defined","[a-zA-Z0-9+/=]{30,}",true,true,false,false,false,false,"List matches"]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"XOR","args":[{"option":"Decimal","string":"35"},"Standard",false]},{"op":"Strings","args":["Single byte",5,"All printable chars (A)",false]}]
+```
 
 ![Recipe 30](/images/cyberchef/recipe_30.png)
 
@@ -608,7 +666,9 @@ Source: <https://twitter.com/cybercdh/status/1338885244246765569> & <https://twi
 
 ### Recipe Details
 
-`[{"op":"Subsection","args":["(?<=\\(\\\")(.*)(?=\\\"\\))",true,true,false]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"Raw Inflate","args":[0,0,"Adaptive",false,false]}]`  
+```json
+[{"op":"Subsection","args":["(?<=\\(\\\")(.*)(?=\\\"\\))",true,true,false]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"Raw Inflate","args":[0,0,"Adaptive",false,false]}]
+```
 
 ![Recipe 31](/images/cyberchef/recipe_31.png)
 
@@ -620,7 +680,9 @@ Source: <https://github.com/StefanKelm/cyberchef-recipes>
 
 ### Recipe Details
 
-`[{"op":"Decode text","args":["UTF-16LE (1200)"]},{"op":"Regular expression","args":["User defined","[a-zA-Z0-9+/=]{30,}",true,true,false,false,false,false,"List matches"]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"Decode text","args":["UTF-16LE (1200)"]},{"op":"Regular expression","args":["User defined","[a-zA-Z0-9+/=]{30,}",true,true,false,false,false,false,"List matches"]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"Raw Inflate","args":[0,0,"Adaptive",false,false]}]`
+```json
+[{"op":"Decode text","args":["UTF-16LE (1200)"]},{"op":"Regular expression","args":["User defined","[a-zA-Z0-9+/=]{30,}",true,true,false,false,false,false,"List matches"]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"Decode text","args":["UTF-16LE (1200)"]},{"op":"Regular expression","args":["User defined","[a-zA-Z0-9+/=]{30,}",true,true,false,false,false,false,"List matches"]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"Raw Inflate","args":[0,0,"Adaptive",false,false]}]
+```
 
 ![Recipe 32](/images/cyberchef/recipe_32.png)
 
@@ -633,7 +695,9 @@ Source: <https://twitter.com/Cryptolaemus1/status/1319357369902649344>
 
 ### Recipe Details
 
-`[{"op":"Regular expression","args":["User defined","[a-zA-Z0-9+/=]{30,}",true,true,false,false,false,false,"List matches"]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"Decode text","args":["UTF-16LE (1200)"]},{"op":"Find / Replace","args":[{"option":"Regex","string":"'\\)?\\+\\(?'"},"",true,false,true,false]},{"op":"Register","args":["\\(+'(=[\\w\\d]*)'\\)+,'/'\\)",true,false,false]},{"op":"Find / Replace","args":[{"option":"Simple string","string":"$R0"},"/",true,false,true,false]},{"op":"Register","args":["\\/(.)http",true,false,false]},{"op":"Find / Replace","args":[{"option":"Simple string","string":"$R1"},"\\n",true,false,true,false]},{"op":"Find / Replace","args":[{"option":"Regex","string":"'"},"\\n",true,false,true,false]},{"op":"Extract URLs","args":[false]}]`
+```json
+[{"op":"Regular expression","args":["User defined","[a-zA-Z0-9+/=]{30,}",true,true,false,false,false,false,"List matches"]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"Decode text","args":["UTF-16LE (1200)"]},{"op":"Find / Replace","args":[{"option":"Regex","string":"'\\)?\\+\\(?'"},"",true,false,true,false]},{"op":"Register","args":["\\(+'(=[\\w\\d]*)'\\)+,'/'\\)",true,false,false]},{"op":"Find / Replace","args":[{"option":"Simple string","string":"$R0"},"/",true,false,true,false]},{"op":"Register","args":["\\/(.)http",true,false,false]},{"op":"Find / Replace","args":[{"option":"Simple string","string":"$R1"},"\\n",true,false,true,false]},{"op":"Find / Replace","args":[{"option":"Regex","string":"'"},"\\n",true,false,true,false]},{"op":"Extract URLs","args":[false]}]
+```
 
 ![Recipe 33](/images/cyberchef/recipe_33.png)
 
@@ -646,7 +710,9 @@ Source: <https://isc.sans.edu/diary/27020>
 
 ### Recipe Details
 
-`[{"op":"Unzip","args":["",false]},{"op":"Extract URLs","args":[false]},{"op":"Filter","args":["Line feed","http://schemas\\.openxmlformats\\.org/",true]},{"op":"Filter","args":["Line feed","http://schemas\\.microsoft\\.com/",true]},{"op":"Filter","args":["Line feed","http://purl\\.org/",true]},{"op":"Filter","args":["Line feed","http://www\\.w3\\.org/",true]},{"op":"Defang URL","args":[true,true,true,"Valid domains and full URLs"]}]`
+```json
+[{"op":"Unzip","args":["",false]},{"op":"Extract URLs","args":[false]},{"op":"Filter","args":["Line feed","http://schemas\\.openxmlformats\\.org/",true]},{"op":"Filter","args":["Line feed","http://schemas\\.microsoft\\.com/",true]},{"op":"Filter","args":["Line feed","http://purl\\.org/",true]},{"op":"Filter","args":["Line feed","http://www\\.w3\\.org/",true]},{"op":"Defang URL","args":[true,true,true,"Valid domains and full URLs"]}]
+```
 
 ![Recipe 34](/images/cyberchef/recipe_34.png)
 
@@ -658,7 +724,9 @@ Further Info: [Powershell Dropping a REvil Ransomware](https://isc.sans.edu/foru
 
 ### Recipe Details  
 
-`[{"op":"Subsection","args":["(?<=\\\")([a-zA-Z0-9+/=]{20,})(?=\\\")",true,true,false]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"To Hex","args":["None",0]},{"op":"Merge","args":[]},{"op":"Register","args":["(?<=\\\")([a-fA-F0-9]{32})(?=\\\")",true,false,false]},{"op":"Register","args":["(?<=\\\")([a-fA-F0-9]{64})(?=\\\")",true,false,false]},{"op":"Regular expression","args":["User defined","[a-f0-9]{100,}",true,true,false,false,false,false,"List matches"]},{"op":"AES Decrypt","args":[{"option":"Hex","string":"$R1"},{"option":"Hex","string":"$R0"},"CBC","Hex","Raw",{"option":"Hex","string":""},""]},{"op":"Regular expression","args":["User defined","[a-f0-9]{30,}",true,true,false,false,false,false,"List matches"]},{"op":"From Hex","args":["Auto"]},{"op":"Drop bytes","args":[0,1925,false]},{"op":"SHA2","args":["256",64,160]}]`  
+```json
+[{"op":"Subsection","args":["(?<=\\\")([a-zA-Z0-9+/=]{20,})(?=\\\")",true,true,false]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"To Hex","args":["None",0]},{"op":"Merge","args":[]},{"op":"Register","args":["(?<=\\\")([a-fA-F0-9]{32})(?=\\\")",true,false,false]},{"op":"Register","args":["(?<=\\\")([a-fA-F0-9]{64})(?=\\\")",true,false,false]},{"op":"Regular expression","args":["User defined","[a-f0-9]{100,}",true,true,false,false,false,false,"List matches"]},{"op":"AES Decrypt","args":[{"option":"Hex","string":"$R1"},{"option":"Hex","string":"$R0"},"CBC","Hex","Raw",{"option":"Hex","string":""},""]},{"op":"Regular expression","args":["User defined","[a-f0-9]{30,}",true,true,false,false,false,false,"List matches"]},{"op":"From Hex","args":["Auto"]},{"op":"Drop bytes","args":[0,1925,false]},{"op":"SHA2","args":["256",64,160]}]
+```
 
 ![Recipe 35](/images/cyberchef/recipe_35.png)
 
@@ -669,7 +737,9 @@ Tiny cheat here, as the bulk of the work is being done by an API. But it's a goo
 
 ### Recipe Details  
 
-`[{"op":"Register","args":["(?<=number:\\s)(.*)",true,false,false]},{"op":"Register","args":["(?<=words:\\s)(.*)",true,false,false]},{"op":"Register","args":["(?<=length:\\s)(.*)",true,false,false]},{"op":"HTTP request","args":["GET","https://makemeapassword.ligos.net/api/v1/passphrase/plain?pc=$R0&wc=$R1&sp=y&maxCh=$R2","","Cross-Origin Resource Sharing",false]},{"op":"Find / Replace","args":[{"option":"Regex","string":" "},"-",true,false,true,false]}]`  
+```json
+[{"op":"Register","args":["(?<=number:\\s)(.*)",true,false,false]},{"op":"Register","args":["(?<=words:\\s)(.*)",true,false,false]},{"op":"Register","args":["(?<=length:\\s)(.*)",true,false,false]},{"op":"HTTP request","args":["GET","https://makemeapassword.ligos.net/api/v1/passphrase/plain?pc=$R0&wc=$R1&sp=y&maxCh=$R2","","Cross-Origin Resource Sharing",false]},{"op":"Find / Replace","args":[{"option":"Regex","string":" "},"-",true,false,true,false]}]
+```  
 
 ![Recipe 36](/images/cyberchef/recipe_36.png)  
 
@@ -681,7 +751,9 @@ Source: [Any.run](https://app.any.run/tasks/181c1d93-c838-49a4-8e62-76ee696d1b72
 
 ### Recipe Details  
 
-`[{"op":"Unzip","args":["infected",false]},{"op":"Find / Replace","args":[{"option":"Regex","string":"\\n"},"",true,false,true,false]},{"op":"Regular expression","args":["User defined","[a-zA-Z0-9+/=]{400,}",true,true,false,false,false,false,"List matches"]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"Strings","args":["16-bit littleendian",400,"Null-terminated strings (U)",false]},{"op":"Decode text","args":["UTF-16LE (1200)"]},{"op":"Regular expression","args":["User defined","[a-zA-Z0-9+/=]{2000,}",true,true,false,false,false,false,"List matches"]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"Decode text","args":["UTF-16LE (1200)"]},{"op":"Extract URLs","args":[false]},{"op":"Defang URL","args":[true,true,true,"Valid domains and full URLs"]}]`  
+```json
+[{"op":"Unzip","args":["infected",false]},{"op":"Find / Replace","args":[{"option":"Regex","string":"\\n"},"",true,false,true,false]},{"op":"Regular expression","args":["User defined","[a-zA-Z0-9+/=]{400,}",true,true,false,false,false,false,"List matches"]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"Strings","args":["16-bit littleendian",400,"Null-terminated strings (U)",false]},{"op":"Decode text","args":["UTF-16LE (1200)"]},{"op":"Regular expression","args":["User defined","[a-zA-Z0-9+/=]{2000,}",true,true,false,false,false,false,"List matches"]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"Decode text","args":["UTF-16LE (1200)"]},{"op":"Extract URLs","args":[false]},{"op":"Defang URL","args":[true,true,true,"Valid domains and full URLs"]}]
+```
 
 ![Recipe 37](/images/cyberchef/recipe_37.png)  
 
@@ -694,7 +766,9 @@ Credit: <https://twitter.com/neonprimetime/status/1365351048525791232>
 
 ### Recipe Details  
 
-`[{"op":"Find / Replace","args":[{"option":"Regex","string":"☠"},"B",true,false,true,false]},{"op":"Subsection","args":["[a-zA-Z0-9+/=]{300,}",true,true,false]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"Decode text","args":["UTF-16LE (1200)"]},{"op":"Reverse","args":["Character"]},{"op":"Merge","args":[]},{"op":"Find / Replace","args":[{"option":"Simple string","string":"_✉✈_"},"A",true,false,true,false]},{"op":"Regular expression","args":["User defined","[a-zA-Z0-9+/=]{300,}",true,true,false,false,false,false,"List matches"]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]}]`  
+```json
+[{"op":"Find / Replace","args":[{"option":"Regex","string":"☠"},"B",true,false,true,false]},{"op":"Subsection","args":["[a-zA-Z0-9+/=]{300,}",true,true,false]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"Decode text","args":["UTF-16LE (1200)"]},{"op":"Reverse","args":["Character"]},{"op":"Merge","args":[]},{"op":"Find / Replace","args":[{"option":"Simple string","string":"_✉✈_"},"A",true,false,true,false]},{"op":"Regular expression","args":["User defined","[a-zA-Z0-9+/=]{300,}",true,true,false,false,false,false,"List matches"]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]}]
+``` 
 
 ![Recipe 38](/images/cyberchef/recipe_38.png)  
 
@@ -707,7 +781,9 @@ Source 2: <https://www.fireeye.com/blog/threat-research/2021/03/sunshuttle-secon
 
 ### Recipe Details  
 
-`[{"op":"From Base64","args":["A-Za-z0-9-_",true]},{"op":"AES Decrypt","args":[{"option":"UTF8","string":"hz8l2fnpvp71ujfy8rht6b0smouvp9k8"},{"option":"Hex","string":"00000000000000000000000000000000"},"CFB","Raw","Raw",{"option":"Hex","string":""}]},{"op":"Subsection","args":["[a-zA-Z0-9+/=]{50,}",true,true,false]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"Merge","args":[]},{"op":"Drop bytes","args":[0,16,false]},{"op":"Take bytes","args":[0,120,false]},{"op":"Register","args":["(^.*?)\\|(.*?)\\|(.*?)\\|(.*)\\|(.*)",true,false,false]},{"op":"Find / Replace","args":[{"option":"Regex","string":".*"},"MD5 of Execution Time:\\t\\t\\t$R0\\nLower/Upper Limit for Sleep Time:\\t$R1\\nUtilize “blend-in” traffic requests:\\t$R2\\nEnd execution timestamp:\\t\\t$R2\\nUser-agent for HTTPS requests:\\t\\t$R4",false,false,false,false]}]`
+```json
+[{"op":"From Base64","args":["A-Za-z0-9-_",true]},{"op":"AES Decrypt","args":[{"option":"UTF8","string":"hz8l2fnpvp71ujfy8rht6b0smouvp9k8"},{"option":"Hex","string":"00000000000000000000000000000000"},"CFB","Raw","Raw",{"option":"Hex","string":""}]},{"op":"Subsection","args":["[a-zA-Z0-9+/=]{50,}",true,true,false]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"Merge","args":[]},{"op":"Drop bytes","args":[0,16,false]},{"op":"Take bytes","args":[0,120,false]},{"op":"Register","args":["(^.*?)\\|(.*?)\\|(.*?)\\|(.*)\\|(.*)",true,false,false]},{"op":"Find / Replace","args":[{"option":"Regex","string":".*"},"MD5 of Execution Time:\\t\\t\\t$R0\\nLower/Upper Limit for Sleep Time:\\t$R1\\nUtilize “blend-in” traffic requests:\\t$R2\\nEnd execution timestamp:\\t\\t$R2\\nUser-agent for HTTPS requests:\\t\\t$R4",false,false,false,false]}]
+```
 
 ![Recipe 39](/images/cyberchef/recipe_39.png)  
 
@@ -720,7 +796,9 @@ Recipe: <https://twitter.com/cyber__sloth/status/1367904890157211654>
 
 ### Recipe Details  
 
-`[{"op":"From Binary","args":["Space",8]},{"op":"From Morse Code","args":["Space","Forward slash"]},{"op":"Reverse","args":["Character"]},{"op":"ROT13","args":[true,true,false,13]}]`  
+```json
+[{"op":"From Binary","args":["Space",8]},{"op":"From Morse Code","args":["Space","Forward slash"]},{"op":"Reverse","args":["Character"]},{"op":"ROT13","args":[true,true,false,13]}]
+```
 
 ![Recipe 40](/images/cyberchef/recipe_40.png)  
 
@@ -734,7 +812,9 @@ Source: <https://twitter.com/JCyberSec_/status/1368963598475739137>
 
 ### Recipe Details  
 
-`[{"op":"Fork","args":["\\n","\\n",false]},{"op":"Subsection","args":["\\\\x[a-fA-F0-9]{2}",true,true,false]},{"op":"From Hex","args":["\\x"]},{"op":"Merge","args":[]},{"op":"Subsection","args":["\\\\\\d{3}",true,true,false]},{"op":"Find / Replace","args":[{"option":"Regex","string":"\\\\"},"",true,false,true,false]},{"op":"From Octal","args":["Space"]}]`  
+```json
+[{"op":"Fork","args":["\\n","\\n",false]},{"op":"Subsection","args":["\\\\x[a-fA-F0-9]{2}",true,true,false]},{"op":"From Hex","args":["\\x"]},{"op":"Merge","args":[]},{"op":"Subsection","args":["\\\\\\d{3}",true,true,false]},{"op":"Find / Replace","args":[{"option":"Regex","string":"\\\\"},"",true,false,true,false]},{"op":"From Octal","args":["Space"]}]
+```
 
 ![Recipe 41](/images/cyberchef/recipe_41.png)  
 
@@ -744,7 +824,9 @@ This multi-layered webshell is a good case for subsections and jumps. You can br
 
 ### Recipe Details  
 
-`[{"op":"Regular expression","args":["User defined","[a-zA-Z0-9+/=]{30,}",true,true,false,false,false,false,"List matches"]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"Subsection","args":["(?<=\\\\x)([a-fA-F0-9]{2})",true,true,false]},{"op":"From Hex","args":["\\x"]},{"op":"Merge","args":[]},{"op":"Find / Replace","args":[{"option":"Regex","string":"\\\\x"},"",true,false,true,false]},{"op":"Subsection","args":["[a-zA-Z0-9+/=]{30,}=",true,true,false]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"Raw Inflate","args":[0,0,"Adaptive",false,false]},{"op":"From HTML Entity","args":[]},{"op":"Merge","args":[]},{"op":"Subsection","args":["[a-zA-Z0-9+/=]{30,}",true,true,false]},{"op":"Reverse","args":["Character"]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"Label","args":["decompress"]},{"op":"Zlib Inflate","args":[0,0,"Adaptive",false,false]},{"op":"Raw Inflate","args":[0,0,"Adaptive",false,false]},{"op":"Jump","args":["decompress",3]},{"op":"ROT13","args":[true,true,false,13]}]`
+```json
+[{"op":"Regular expression","args":["User defined","[a-zA-Z0-9+/=]{30,}",true,true,false,false,false,false,"List matches"]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"Subsection","args":["(?<=\\\\x)([a-fA-F0-9]{2})",true,true,false]},{"op":"From Hex","args":["\\x"]},{"op":"Merge","args":[]},{"op":"Find / Replace","args":[{"option":"Regex","string":"\\\\x"},"",true,false,true,false]},{"op":"Subsection","args":["[a-zA-Z0-9+/=]{30,}=",true,true,false]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"Raw Inflate","args":[0,0,"Adaptive",false,false]},{"op":"From HTML Entity","args":[]},{"op":"Merge","args":[]},{"op":"Subsection","args":["[a-zA-Z0-9+/=]{30,}",true,true,false]},{"op":"Reverse","args":["Character"]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"Label","args":["decompress"]},{"op":"Zlib Inflate","args":[0,0,"Adaptive",false,false]},{"op":"Raw Inflate","args":[0,0,"Adaptive",false,false]},{"op":"Jump","args":["decompress",3]},{"op":"ROT13","args":[true,true,false,13]}]
+```
 
 ![Recipe 42](/images/cyberchef/recipe_42.png)  
 
@@ -756,7 +838,9 @@ Source: <https://twitter.com/unmaskparasites/status/1370151988285992960>
 
 ### Recipe Details  
 
-`[{"op":"Subsection","args":["(?<=\\\")([\\w\\\\]+)(?=\\\")",true,true,false]},{"op":"From Hex","args":["\\x"]},{"op":"Merge","args":[]},{"op":"Subsection","args":["(?<=\\\")([a-f0-9\\$]+)(?=\\\")",true,true,false]},{"op":"Find / Replace","args":[{"option":"Simple string","string":"$"},",",true,false,true,false]},{"op":"From Hex","args":["Comma"]}]`  
+```json
+[{"op":"Subsection","args":["(?<=\\\")([\\w\\\\]+)(?=\\\")",true,true,false]},{"op":"From Hex","args":["\\x"]},{"op":"Merge","args":[]},{"op":"Subsection","args":["(?<=\\\")([a-f0-9\\$]+)(?=\\\")",true,true,false]},{"op":"Find / Replace","args":[{"option":"Simple string","string":"$"},",",true,false,true,false]},{"op":"From Hex","args":["Comma"]}]
+```
 
 ![Recipe 43](/images/cyberchef/recipe_43.png)  
 
@@ -786,7 +870,9 @@ Sample Data: <https://www.linuxquestions.org/questions/linux-server-73/sample-sq
 
 ### Recipe Details  
 
-`[{"op":"Fork","args":["\\n","\\n",false]},{"op":"Subsection","args":["^(.*?)(?=\\s)",true,true,false]},{"op":"Translate DateTime Format","args":["UNIX timestamp (seconds)","X.SSS","UTC","YYYY-MM-DDTHH:mm:ss.SSS","UTC"]}]`  
+```json
+[{"op":"Fork","args":["\\n","\\n",false]},{"op":"Subsection","args":["^(.*?)(?=\\s)",true,true,false]},{"op":"Translate DateTime Format","args":["UNIX timestamp (seconds)","X.SSS","UTC","YYYY-MM-DDTHH:mm:ss.SSS","UTC"]}]
+```
 
 ![Recipe 45](/images/cyberchef/recipe_45.png)  
 
@@ -800,7 +886,9 @@ Source: <https://app.any.run/tasks/b6d9a548-722c-4066-9448-11a966be2a73/>
 
 ### Recipe Details  
 
-`[{"op":"Regular expression","args":["User defined","[a-zA-Z0-9+/=]{30,}",true,true,false,false,false,false,"List matches"]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"Decode text","args":["UTF-16LE (1200)"]},{"op":"Regular expression","args":["User defined","\\d{2,3}",true,true,false,false,false,false,"List matches"]},{"op":"From Charcode","args":["Line feed",10]},{"op":"Extract URLs","args":[false],"disabled":true},{"op":"Regular expression","args":["URL","([A-Za-z]+://)([-\\w]+(?:\\.\\w[-\\w]*)+)(:\\d+)?(/[^.!,?\"<>\\[\\]{}\\s\\x7F-\\xFF]*(?:[.!,?]+[^.!,?'\"<>\\[\\]{}\\s\\x7F-\\xFF]+)*)?",true,true,false,false,false,false,"List matches"]},{"op":"Split","args":[",","\\n"]}]`  
+```json
+[{"op":"Regular expression","args":["User defined","[a-zA-Z0-9+/=]{30,}",true,true,false,false,false,false,"List matches"]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"Decode text","args":["UTF-16LE (1200)"]},{"op":"Regular expression","args":["User defined","\\d{2,3}",true,true,false,false,false,false,"List matches"]},{"op":"From Charcode","args":["Line feed",10]},{"op":"Extract URLs","args":[false],"disabled":true},{"op":"Regular expression","args":["URL","([A-Za-z]+://)([-\\w]+(?:\\.\\w[-\\w]*)+)(:\\d+)?(/[^.!,?\"<>\\[\\]{}\\s\\x7F-\\xFF]*(?:[.!,?]+[^.!,?'\"<>\\[\\]{}\\s\\x7F-\\xFF]+)*)?",true,true,false,false,false,false,"List matches"]},{"op":"Split","args":[",","\\n"]}]
+```
 
 ![Recipe 46a](/images/cyberchef/recipe_46a.png)  
 
@@ -813,7 +901,9 @@ The malware author here has attempted to fool automated analysis by slicing the 
 
 ### Recipe Details  
 
-`[{"op":"Filter","args":["Line feed","^'",true]},{"op":"Subsection","args":["(?<=\\()(\\d{2,3})(?=\\))",true,true,false]},{"op":"From Charcode","args":["Space",10]},{"op":"Merge","args":[]},{"op":"Regular expression","args":["User defined","(?<=\\()([a-zA-Z0-9+/=]{1}?)(?=\\))|[a-zA-Z0-9+/=]{20,}",true,true,false,false,false,false,"List matches"]},{"op":"Find / Replace","args":[{"option":"Regex","string":"\\n"},"",true,false,true,false]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"SHA2","args":["256",64,160]}]`  
+```json
+[{"op":"Filter","args":["Line feed","^'",true]},{"op":"Subsection","args":["(?<=\\()(\\d{2,3})(?=\\))",true,true,false]},{"op":"From Charcode","args":["Space",10]},{"op":"Merge","args":[]},{"op":"Regular expression","args":["User defined","(?<=\\()([a-zA-Z0-9+/=]{1}?)(?=\\))|[a-zA-Z0-9+/=]{20,}",true,true,false,false,false,false,"List matches"]},{"op":"Find / Replace","args":[{"option":"Regex","string":"\\n"},"",true,false,true,false]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"SHA2","args":["256",64,160]}]
+``` 
 
 ![Recipe 47](/images/cyberchef/recipe_47.png)  
 
@@ -856,7 +946,9 @@ Source: <https://gist.github.com/tomekziel/eaaabd55f2d244adf5fcf7db4db0387f>
 
 ### Recipe Details  
 
-`[{"op":"Comment","args":["CYBERCHEF BASE-45 DECODER\n\nTomasz Zielinski (tomasz.zielinski@gmail.com)\npublic domain\n"]},{"op":"Conditional Jump","args":["^(...)+$",false,"multiply3",10]},{"op":"Comment","args":["Flow for case with number of input characters that not divide by 3"]},{"op":"Comment","args":["\nSTEP 1\nReplace BASE-45 alphabet with numeric values\nhttps://datatracker.ietf.org/doc/html/draft-faltstrom-base45-04"]},{"op":"Substitute","args":["0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ $%*+\\-./:","\\x00\\x01\\x02\\x03\\x04\\x05\\x06\\x07\\x08\\x09\\x0a\\x0b\\x0c\\x0d\\x0e\\x0f\\x10\\x11\\x12\\x13\\x14\\x15\\x16\\x17\\x18\\x19\\x1a\\x1b\\x1c\\x1d\\x1e\\x1f\\x20\\x21\\x22\\x23\\x24\\x25\\x26\\x27\\x28\\x29\\x2a\\x2b\\x2c"]},{"op":"Comment","args":["STEP 2\nIf the length of vector is not divisible by 3, add 0 as last value"]},{"op":"To Decimal","args":["Space",false]},{"op":"Find / Replace","args":[{"option":"Regex","string":"((\\d+ \\d+ \\d+[ ]*)+)(\\d+ \\d+[ ]*)*"},"$1/$3_",false,false,false,false]},{"op":"Find / Replace","args":[{"option":"Regex","string":"((\\d)+[ ]*)_$"},"$1 0",true,false,true,false]},{"op":"Find / Replace","args":[{"option":"Regex","string":"[ _]*$|/"},"",true,false,true,false]},{"op":"Comment","args":["Take three-number sequences and prepare multiplication by 1, 45, and 2025"]},{"op":"Find / Replace","args":[{"option":"Regex","string":"(\\d+) (\\d+) (\\d+){0,1}"},"$1\\n$2 45\\n$3 2025\\n",true,false,true,false]},{"op":"Fork","args":["\\n","\\n",false]},{"op":"Multiply","args":["Space"]},{"op":"Merge","args":[]},{"op":"Find / Replace","args":[{"option":"Regex","string":"NaN"},"",true,false,true,false]},{"op":"Find / Replace","args":[{"option":"Regex","string":"\\n"}," ",true,false,true,false]},{"op":"Comment","args":["Sum sequences of three numbers"]},{"op":"Find / Replace","args":[{"option":"Regex","string":"(\\d+) (\\d+) (\\d+)"},"$1 $2 $3\\n",true,false,true,false]},{"op":"Fork","args":["\\n","\\n",false]},{"op":"Sum","args":["Space"]},{"op":"Merge","args":[]},{"op":"Find / Replace","args":[{"option":"Regex","string":"NaN"},"",true,false,true,false]},{"op":"Fork","args":["\\n","\\n",false]},{"op":"To Base","args":[16]},{"op":"Find / Replace","args":[{"option":"Regex","string":"NaN"},"",true,false,true,false]},{"op":"Find / Replace","args":[{"option":"Regex","string":"^(\\w\\w\\w)$"},"0$1",true,false,true,false]},{"op":"Find / Replace","args":[{"option":"Regex","string":"^(\\w\\w)$"},"00$1",true,false,false,false]},{"op":"Comment","args":["Split a number to two bytes (effectively DIV256 and MOD256)"]},{"op":"Find / Replace","args":[{"option":"Regex","string":"(\\w\\w)(\\w\\w)"},"$1\\n$2",true,false,true,false]},{"op":"Merge","args":[]},{"op":"Comment","args":["Change hex to chars"]},{"op":"Fork","args":["\\n","",false]},{"op":"Merge","args":[]},{"op":"Comment","args":["Special case, last byte is malformed as two bytes, remove unnecessary 0"]},{"op":"Find / Replace","args":[{"option":"Regex","string":"00(\\w\\w)$"},"$1",true,false,true,false]},{"op":"From Hex","args":["Line feed"]},{"op":"Jump","args":["end",10]},{"op":"Label","args":["multiply3"]},{"op":"Comment","args":["Flow for case with number of input characters that divide by 3"]},{"op":"Substitute","args":["0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ $%*+\\-./:","\\x00\\x01\\x02\\x03\\x04\\x05\\x06\\x07\\x08\\x09\\x0a\\x0b\\x0c\\x0d\\x0e\\x0f\\x10\\x11\\x12\\x13\\x14\\x15\\x16\\x17\\x18\\x19\\x1a\\x1b\\x1c\\x1d\\x1e\\x1f\\x20\\x21\\x22\\x23\\x24\\x25\\x26\\x27\\x28\\x29\\x2a\\x2b\\x2c"]},{"op":"To Decimal","args":["Space",false]},{"op":"Comment","args":["Take three-number sequences and prepare multiplication by 1, 45, and 2025"]},{"op":"Find / Replace","args":[{"option":"Regex","string":"(\\d+) (\\d+) (\\d+){0,1}"},"$1\\n$2 45\\n$3 2025\\n",true,false,true,false]},{"op":"Fork","args":["\\n","\\n",false]},{"op":"Multiply","args":["Space"]},{"op":"Merge","args":[]},{"op":"Find / Replace","args":[{"option":"Regex","string":"NaN"},"",true,false,true,false]},{"op":"Find / Replace","args":[{"option":"Regex","string":"\\n"}," ",true,false,true,false]},{"op":"Comment","args":["Sum sequences of three numbers"]},{"op":"Find / Replace","args":[{"option":"Regex","string":"(\\d+) (\\d+) (\\d+)"},"$1 $2 $3\\n",true,false,true,false]},{"op":"Fork","args":["\\n","\\n",false]},{"op":"Sum","args":["Space"]},{"op":"Merge","args":[]},{"op":"Find / Replace","args":[{"option":"Regex","string":"NaN"},"",true,false,true,false]},{"op":"Fork","args":["\\n","\\n",false]},{"op":"To Base","args":[16]},{"op":"Find / Replace","args":[{"option":"Regex","string":"NaN"},"",true,false,true,false]},{"op":"Find / Replace","args":[{"option":"Regex","string":"^(\\w\\w\\w)$"},"0$1",true,false,true,false]},{"op":"Find / Replace","args":[{"option":"Regex","string":"^(\\w\\w)$"},"00$1",true,false,false,false]},{"op":"Comment","args":["Split a number to two bytes (effectively DIV256 and MOD256)"]},{"op":"Find / Replace","args":[{"option":"Regex","string":"(\\w\\w)(\\w\\w)"},"$1\\n$2",true,false,true,false]},{"op":"Comment","args":["Change hex to chars"]},{"op":"From Hex","args":["Line feed"]},{"op":"Merge","args":[]},{"op":"Fork","args":["\\n","",false]},{"op":"Merge","args":[]},{"op":"Label","args":["end"]}]`
+```json
+[{"op":"Comment","args":["CYBERCHEF BASE-45 DECODER\n\nTomasz Zielinski (tomasz.zielinski@gmail.com)\npublic domain\n"]},{"op":"Conditional Jump","args":["^(...)+$",false,"multiply3",10]},{"op":"Comment","args":["Flow for case with number of input characters that not divide by 3"]},{"op":"Comment","args":["\nSTEP 1\nReplace BASE-45 alphabet with numeric values\nhttps://datatracker.ietf.org/doc/html/draft-faltstrom-base45-04"]},{"op":"Substitute","args":["0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ $%*+\\-./:","\\x00\\x01\\x02\\x03\\x04\\x05\\x06\\x07\\x08\\x09\\x0a\\x0b\\x0c\\x0d\\x0e\\x0f\\x10\\x11\\x12\\x13\\x14\\x15\\x16\\x17\\x18\\x19\\x1a\\x1b\\x1c\\x1d\\x1e\\x1f\\x20\\x21\\x22\\x23\\x24\\x25\\x26\\x27\\x28\\x29\\x2a\\x2b\\x2c"]},{"op":"Comment","args":["STEP 2\nIf the length of vector is not divisible by 3, add 0 as last value"]},{"op":"To Decimal","args":["Space",false]},{"op":"Find / Replace","args":[{"option":"Regex","string":"((\\d+ \\d+ \\d+[ ]*)+)(\\d+ \\d+[ ]*)*"},"$1/$3_",false,false,false,false]},{"op":"Find / Replace","args":[{"option":"Regex","string":"((\\d)+[ ]*)_$"},"$1 0",true,false,true,false]},{"op":"Find / Replace","args":[{"option":"Regex","string":"[ _]*$|/"},"",true,false,true,false]},{"op":"Comment","args":["Take three-number sequences and prepare multiplication by 1, 45, and 2025"]},{"op":"Find / Replace","args":[{"option":"Regex","string":"(\\d+) (\\d+) (\\d+){0,1}"},"$1\\n$2 45\\n$3 2025\\n",true,false,true,false]},{"op":"Fork","args":["\\n","\\n",false]},{"op":"Multiply","args":["Space"]},{"op":"Merge","args":[]},{"op":"Find / Replace","args":[{"option":"Regex","string":"NaN"},"",true,false,true,false]},{"op":"Find / Replace","args":[{"option":"Regex","string":"\\n"}," ",true,false,true,false]},{"op":"Comment","args":["Sum sequences of three numbers"]},{"op":"Find / Replace","args":[{"option":"Regex","string":"(\\d+) (\\d+) (\\d+)"},"$1 $2 $3\\n",true,false,true,false]},{"op":"Fork","args":["\\n","\\n",false]},{"op":"Sum","args":["Space"]},{"op":"Merge","args":[]},{"op":"Find / Replace","args":[{"option":"Regex","string":"NaN"},"",true,false,true,false]},{"op":"Fork","args":["\\n","\\n",false]},{"op":"To Base","args":[16]},{"op":"Find / Replace","args":[{"option":"Regex","string":"NaN"},"",true,false,true,false]},{"op":"Find / Replace","args":[{"option":"Regex","string":"^(\\w\\w\\w)$"},"0$1",true,false,true,false]},{"op":"Find / Replace","args":[{"option":"Regex","string":"^(\\w\\w)$"},"00$1",true,false,false,false]},{"op":"Comment","args":["Split a number to two bytes (effectively DIV256 and MOD256)"]},{"op":"Find / Replace","args":[{"option":"Regex","string":"(\\w\\w)(\\w\\w)"},"$1\\n$2",true,false,true,false]},{"op":"Merge","args":[]},{"op":"Comment","args":["Change hex to chars"]},{"op":"Fork","args":["\\n","",false]},{"op":"Merge","args":[]},{"op":"Comment","args":["Special case, last byte is malformed as two bytes, remove unnecessary 0"]},{"op":"Find / Replace","args":[{"option":"Regex","string":"00(\\w\\w)$"},"$1",true,false,true,false]},{"op":"From Hex","args":["Line feed"]},{"op":"Jump","args":["end",10]},{"op":"Label","args":["multiply3"]},{"op":"Comment","args":["Flow for case with number of input characters that divide by 3"]},{"op":"Substitute","args":["0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ $%*+\\-./:","\\x00\\x01\\x02\\x03\\x04\\x05\\x06\\x07\\x08\\x09\\x0a\\x0b\\x0c\\x0d\\x0e\\x0f\\x10\\x11\\x12\\x13\\x14\\x15\\x16\\x17\\x18\\x19\\x1a\\x1b\\x1c\\x1d\\x1e\\x1f\\x20\\x21\\x22\\x23\\x24\\x25\\x26\\x27\\x28\\x29\\x2a\\x2b\\x2c"]},{"op":"To Decimal","args":["Space",false]},{"op":"Comment","args":["Take three-number sequences and prepare multiplication by 1, 45, and 2025"]},{"op":"Find / Replace","args":[{"option":"Regex","string":"(\\d+) (\\d+) (\\d+){0,1}"},"$1\\n$2 45\\n$3 2025\\n",true,false,true,false]},{"op":"Fork","args":["\\n","\\n",false]},{"op":"Multiply","args":["Space"]},{"op":"Merge","args":[]},{"op":"Find / Replace","args":[{"option":"Regex","string":"NaN"},"",true,false,true,false]},{"op":"Find / Replace","args":[{"option":"Regex","string":"\\n"}," ",true,false,true,false]},{"op":"Comment","args":["Sum sequences of three numbers"]},{"op":"Find / Replace","args":[{"option":"Regex","string":"(\\d+) (\\d+) (\\d+)"},"$1 $2 $3\\n",true,false,true,false]},{"op":"Fork","args":["\\n","\\n",false]},{"op":"Sum","args":["Space"]},{"op":"Merge","args":[]},{"op":"Find / Replace","args":[{"option":"Regex","string":"NaN"},"",true,false,true,false]},{"op":"Fork","args":["\\n","\\n",false]},{"op":"To Base","args":[16]},{"op":"Find / Replace","args":[{"option":"Regex","string":"NaN"},"",true,false,true,false]},{"op":"Find / Replace","args":[{"option":"Regex","string":"^(\\w\\w\\w)$"},"0$1",true,false,true,false]},{"op":"Find / Replace","args":[{"option":"Regex","string":"^(\\w\\w)$"},"00$1",true,false,false,false]},{"op":"Comment","args":["Split a number to two bytes (effectively DIV256 and MOD256)"]},{"op":"Find / Replace","args":[{"option":"Regex","string":"(\\w\\w)(\\w\\w)"},"$1\\n$2",true,false,true,false]},{"op":"Comment","args":["Change hex to chars"]},{"op":"From Hex","args":["Line feed"]},{"op":"Merge","args":[]},{"op":"Fork","args":["\\n","",false]},{"op":"Merge","args":[]},{"op":"Label","args":["end"]}]
+```
 
 ![Recipe 51](/images/cyberchef/recipe_51.png)  
 
@@ -866,7 +958,9 @@ Here we can use the operation Pseudo-Random Number Generator to create a random 
 
 ### Recipe Details
 
-`[{"op":"Find / Replace","args":[{"option":"Regex","string":","},"\\n",true,false,true,false]},{"op":"Sort","args":["Line feed",false,"Alphabetical (case insensitive)"]},{"op":"Fork","args":["\\n","\\n",false]},{"op":"Register","args":["([\\s\\S]*)",true,false,false]},{"op":"Pseudo-Random Number Generator","args":[32,"Hex"]},{"op":"Find / Replace","args":[{"option":"Regex","string":"(.*)"},"$1 $R0",false,false,true,false]},{"op":"Merge","args":[]},{"op":"Sort","args":["Line feed",false,"Numeric (hexadecimal)"]},{"op":"Regular expression","args":["User defined","(?<=\\s)\\w+$",true,true,false,false,false,false,"List matches"]}]`  
+```json
+[{"op":"Find / Replace","args":[{"option":"Regex","string":","},"\\n",true,false,true,false]},{"op":"Sort","args":["Line feed",false,"Alphabetical (case insensitive)"]},{"op":"Fork","args":["\\n","\\n",false]},{"op":"Register","args":["([\\s\\S]*)",true,false,false]},{"op":"Pseudo-Random Number Generator","args":[32,"Hex"]},{"op":"Find / Replace","args":[{"option":"Regex","string":"(.*)"},"$1 $R0",false,false,true,false]},{"op":"Merge","args":[]},{"op":"Sort","args":["Line feed",false,"Numeric (hexadecimal)"]},{"op":"Regular expression","args":["User defined","(?<=\\s)\\w+$",true,true,false,false,false,false,"List matches"]}]
+```
 
 ![Recipe 52](/images/cyberchef/recipe_52.png)
 
@@ -878,7 +972,9 @@ Credit: <https://twitter.com/James_inthe_box>
 
 ### Recipe Details
 
-`[{"op":"Regular expression","args":["User defined","\\d\\d+\\)(,|\\n)",true,true,false,false,false,false,"List matches"]},{"op":"Find / Replace","args":[{"option":"Regex","string":"\\)|,"},"",true,false,true,false]},{"op":"From Charcode","args":["Line feed",10]},{"op":"Label","args":["base64loop"]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"Decode text","args":["UTF-16LE (1200)"]},{"op":"Jump","args":["base64loop",1]}]`  
+```json
+[{"op":"Regular expression","args":["User defined","\\d\\d+\\)(,|\\n)",true,true,false,false,false,false,"List matches"]},{"op":"Find / Replace","args":[{"option":"Regex","string":"\\)|,"},"",true,false,true,false]},{"op":"From Charcode","args":["Line feed",10]},{"op":"Label","args":["base64loop"]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"Decode text","args":["UTF-16LE (1200)"]},{"op":"Jump","args":["base64loop",1]}]
+```
 
 ![Recipe 53](/images/cyberchef/recipe_53.png)
 
@@ -890,7 +986,9 @@ Credit: <https://nullsec.us/windows-event-id-1029-hashes/>
 
 ### Recipe Details
 
-`[{"op":"Decode text","args":["UTF-8 (65001)"]},{"op":"Encode text","args":["UTF-16LE (1200)"]},{"op":"SHA2","args":["256",64,160]},{"op":"From Hex","args":["Space"]},{"op":"To Base64","args":["A-Za-z0-9+/="]}]`
+```json
+[{"op":"Decode text","args":["UTF-8 (65001)"]},{"op":"Encode text","args":["UTF-16LE (1200)"]},{"op":"SHA2","args":["256",64,160]},{"op":"From Hex","args":["Space"]},{"op":"To Base64","args":["A-Za-z0-9+/="]}]
+```
 
 ![Recipe 54](/images/cyberchef/recipe_54.png)
 
@@ -902,7 +1000,8 @@ Credit: [Kostas](https://twitter.com/Kostastsale/status/1426264806093254656)
 
 ### Recipe Details
 
-`[{"op":"Find / Replace","args":[{"option":"Simple string","string":"za67t"},"",true,false,true,false]},{"op":"Generic Code Beautify","args":[]},{"op":"Subsection","args":["[A-Za-z0-9+/=]{450,}",true,true,false]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"Merge","args":[]},{"op":"Subsection","args":["(?<=\\)e\\()(.*?)(?=\\n)",true,true,false]},{"op":"Reverse","args":["Character"]},{"op":"Merge","args":[]},{"op":"Extract URLs","args":[false]},{"op":"Defang URL","args":[true,true,true,"Valid domains and full URLs"]}]`
+```json
+[{"op":"Find / Replace","args":[{"option":"Simple string","string":"za67t"},"",true,false,true,false]},{"op":"Generic Code Beautify","args":[]},{"op":"Subsection","args":["[A-Za-z0-9+/=]{450,}",true,true,false]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"Merge","args":[]},{"op":"Subsection","args":["(?<=\\)e\\()(.*?)(?=\\n)",true,true,false]},{"op":"Reverse","args":["Character"]},{"op":"Merge","args":[]},{"op":"Extract URLs","args":[false]},{"op":"Defang URL","args":[true,true,true,"Valid domains and full URLs"]}]```
 
 ![Recipe 55a](/images/cyberchef/recipe_55a.png)
 ![Recipe 55b](/images/cyberchef/recipe_55b.png)
@@ -927,7 +1026,9 @@ Credit: [Ignis](https://twitter.com/ahakcil/status/1428333622466076679)
 
 ### Recipe Details
 
-`[{"op":"HTTP request","args":["GET","https://static.flag.farm/img/2ju3gf.jpg.b64","","Cross-Origin Resource Sharing",false]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"Render Image","args":["Raw"]},{"op":"Add Text To Image","args":["Making memes normally","Right","None",0,150,32,"Roboto",0,0,0,255]},{"op":"Add Text To Image","args":["Making Memes with","Right","None",0,450,32,"Roboto",0,0,0,255]},{"op":"Add Text To Image","args":["Cyberchef","None","None",550,490,32,"Roboto",0,0,0,255]}]`
+```json
+[{"op":"HTTP request","args":["GET","https://static.flag.farm/img/2ju3gf.jpg.b64","","Cross-Origin Resource Sharing",false]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"Render Image","args":["Raw"]},{"op":"Add Text To Image","args":["Making memes normally","Right","None",0,150,32,"Roboto",0,0,0,255]},{"op":"Add Text To Image","args":["Making Memes with","Right","None",0,450,32,"Roboto",0,0,0,255]},{"op":"Add Text To Image","args":["Cyberchef","None","None",550,490,32,"Roboto",0,0,0,255]}]
+```
 
 ![Recipe 57](/images/cyberchef/recipe_57.png)  
 
@@ -939,7 +1040,9 @@ Source: [Max_Malyutin](https://twitter.com/Max_Mal_/status/1433456034824302598)
 
 ### Recipe Details
 
-`[{"op":"Unzip","args":["",false]},{"op":"Regular expression","args":["User defined","(?<=Target\\=\\\")(.*)(?=\\\"\\sTargetMode\\=)",true,true,false,false,false,false,"List matches"]}]`  
+```json
+[{"op":"Unzip","args":["",false]},{"op":"Regular expression","args":["User defined","(?<=Target\\=\\\")(.*)(?=\\\"\\sTargetMode\\=)",true,true,false,false,false,false,"List matches"]}]
+```
 
 ![Recipe 58](/images/cyberchef/recipe_58.png)  
 
@@ -951,7 +1054,9 @@ Source: [Cobalt Strike beacon configuration parsing with CyberChef](https://medi
 
 ### Recipe Details
 
-`[{"op":"To Hex","args":["None",0]},{"op":"Register","args":["([\\s\\S]*)",true,false,false]},{"op":"Regular expression","args":["User defined","(^(?:.*?)ffffff)",true,true,false,false,false,false,"List matches"]},{"op":"Find / Replace","args":[{"option":"Regex","string":"(..)"},"$1\\n",true,false,true,false]},{"op":"Add line numbers","args":[]},{"op":"Tail","args":["Line feed",1]},{"op":"Find / Replace","args":[{"option":"Regex","string":"(\\d+)"},"$1 4",true,false,true,false]},{"op":"Divide","args":["Space"]},{"op":"Find / Replace","args":[{"option":"Regex","string":"([0–9\\.]+)"},"$1 2",true,false,true,false]},{"op":"Sum","args":["Space"]},{"op":"Find / Replace","args":[{"option":"Regex","string":"\\..*"},"",true,false,true,false]},{"op":"Register","args":["(\\d+)",true,false,false]},{"op":"Find / Replace","args":[{"option":"Regex","string":".*"},"CLEAR",true,false,true,true]},{"op":"Find / Replace","args":[{"option":"Simple string","string":"CLEARCLEAR"},"$R0",true,false,true,false]},{"op":"Register","args":["(?:[0–9a-f][0–9a-f]){$R1}(.*)",true,false,true]},{"op":"Find / Replace","args":[{"option":"Regex","string":".*"},"CLEAR",true,false,true,true]},{"op":"Find / Replace","args":[{"option":"Simple string","string":"CLEARCLEAR"},"$R2",true,false,true,false]},{"op":"From Hex","args":["Auto"]},{"op":"Drop bytes","args":[0,4,false]},{"op":"XOR","args":[{"option":"Hex","string":"$R2"},"Standard",false],"disabled":true},{"op":"XOR","args":[{"option":"Hex","string":"2e"},"Standard",false]},{"op":"To Hex","args":["Space",0]},{"op":"Find / Replace","args":[{"option":"Regex","string":"(.*)"},"$1 00 08 00 03 01 00 ZZ ZZ ZZ ZZ 00 09 00 03 00 80 ZZ ZZ ZZ ZZ 00 0a 00 03 00 40 ZZ ZZ ZZ ZZ 00 0c 00 03 01 00 ZZ ZZ ZZ ZZ 00 0d 00 03 01 00 ZZ ZZ ZZ ZZ 00 0e 00 03 00 40 ZZ ZZ ZZ ZZ 00 0f 00 03 00 80 ZZ ZZ ZZ ZZ 00 1a 00 03 00 10 ZZ ZZ ZZ ZZ 00 1b 00 03 00 10 ZZ ZZ ZZ ZZ 00 1d 00 03 00 40 ZZ ZZ ZZ ZZ 00 1e 00 03 00 40 ZZ ZZ ZZ ZZ 00 20 00 03 00 80 ZZ ZZ ZZ ZZ 00 21 00 03 00 40 ZZ ZZ ZZ ZZ 00 22 00 03 00 40 ZZ ZZ ZZ ZZ 00 23 00 01 00 02 ZZ ZZ ZZ ZZ 00 24 00 01 00 02 ZZ ZZ ZZ ZZ 00 02 00 01 00 02 ZZ ZZ ZZ ZZ 00 05 00 01 00 02 ZZ ZZ ZZ ZZ 00 06 00 01 00 02 ZZ ZZ ZZ ZZ 00 10 00 01 00 02 ZZ ZZ ZZ ZZ 00 11 00 01 00 02 ZZ ZZ ZZ ZZ 00 12 00 01 00 02 ZZ ZZ ZZ ZZ 00 14 00 02 00 04 ZZ ZZ ZZ ZZ 00 03 00 02 00 04 ZZ ZZ ZZ ZZ 00 13 00 02 00 04 ZZ ZZ ZZ ZZ",true,false,true,false]},{"op":"Register","args":["(?:00 08 00 03 01 00)((?:.*?)(?=00)|(?: ZZ ZZ ZZ ZZ))",true,false,true]},{"op":"Register","args":["(?:00 09 00 03 00 80)((?:.*?)(?=00)|(?: ZZ ZZ ZZ ZZ))",true,false,true]},{"op":"Register","args":["(?:00 0a 00 03 00 40)((?:.*?)(?=00)|(?: ZZ ZZ ZZ ZZ))",true,false,true]},{"op":"Register","args":["(?:00 0c 00 03 01 00)((?:.*?)(?=00)|(?: ZZ ZZ ZZ ZZ))",true,false,true]},{"op":"Register","args":["(?:00 0d 00 03 01 00)((?:.*?)(?=00)|(?: ZZ ZZ ZZ ZZ))",true,false,true]},{"op":"Register","args":["(?:00 0e 00 03 00 40)((?:.*?)(?=00)|(?: ZZ ZZ ZZ ZZ))",true,false,true]},{"op":"Register","args":["(?:00 0f 00 03 00 80)((?:.*?)(?=00)|(?: ZZ ZZ ZZ ZZ))",true,false,true]},{"op":"Register","args":["(?:00 1a 00 03 00 10)((?:.*?)(?=00)|(?: ZZ ZZ ZZ ZZ))",true,false,true]},{"op":"Register","args":["(?:00 1b 00 03 00 10)((?:.*?)(?=00)|(?: ZZ ZZ ZZ ZZ))",true,false,true]},{"op":"Register","args":["(?:00 1d 00 03 00 40)((?:.*?)(?=00)|(?: ZZ ZZ ZZ ZZ))",true,false,true]},{"op":"Register","args":["(?:00 1e 00 03 00 40)((?:.*?)(?=00)|(?: ZZ ZZ ZZ ZZ))",true,false,true]},{"op":"Register","args":["(?:00 20 00 03 00 80)((?:.*?)(?=00)|(?: ZZ ZZ ZZ ZZ))",true,false,true]},{"op":"Register","args":["(?:00 21 00 03 00 40)((?:.*?)(?=00)|(?: ZZ ZZ ZZ ZZ))",true,false,true]},{"op":"Register","args":["(?:00 22 00 03 00 40)((?:.*?)(?=00)|(?: ZZ ZZ ZZ ZZ))",true,false,true]},{"op":"Register","args":["(?:00 23 00 01 00 02)((?:.*?)(?=00)|(?: ZZ ZZ ZZ ZZ))",true,false,true]},{"op":"Register","args":["(?:00 24 00 01 00 02)((?:.*?)(?=00)|(?: ZZ ZZ ZZ ZZ))",true,false,true]},{"op":"Register","args":["(?:00 02 00 01 00 02 )((?:[0–9A-F]{2}\\s){2}|(?:ZZ ZZ ZZ ZZ))",true,false,false]},{"op":"Register","args":["(?:00 05 00 01 00 02 )((?:[0–9A-F]{2}\\s){2}|(?:ZZ ZZ ZZ ZZ))",true,false,false]},{"op":"Register","args":["(?:00 06 00 01 00 02 )((?:[0–9A-F]{2}\\s){2}|(?:ZZ ZZ ZZ ZZ))",true,false,false]},{"op":"Register","args":["(?:00 10 00 01 00 02 )((?:[0–9A-F]{2}\\s){2}|(?:ZZ ZZ ZZ ZZ))",true,false,false]},{"op":"Register","args":["(?:00 11 00 01 00 02 )((?:[0–9A-F]{2}\\s){2}|(?:ZZ ZZ ZZ ZZ))",true,false,false]},{"op":"Register","args":["(?:00 12 00 01 00 02 )((?:[0–9A-F]{2}\\s){2}|(?:ZZ ZZ ZZ ZZ))",true,false,false]},{"op":"Register","args":["(?:00 14 00 02 00 04 )((?:[0–9A-F]{2}\\s){2}|(?:ZZ ZZ ZZ ZZ))",true,false,false]},{"op":"Register","args":["(?:00 03 00 02 00 04 )((?:[0–9A-F]{2}\\s){2}|(?:ZZ ZZ ZZ ZZ))",true,false,false]},{"op":"Register","args":["(?:00 13 00 02 00 04 )((?:[0–9A-F]{2}\\s){4}|(?:ZZ ZZ ZZ ZZ))",true,false,false]},{"op":"Find / Replace","args":[{"option":"Regex","string":".*"},"CLEAR",true,false,true,true]},{"op":"Find / Replace","args":[{"option":"Simple string","string":"CLEARCLEAR"},"7b 0a 22 43 32 20 53 65 72 76 65 72 22 3a $R3 2c 0a 22 55 73 65 72 20 41 67 65 6e 74 22 3a $R4 2c 0a 22 48 54 54 50 20 4d 65 74 68 6f 64 20 50 61 74 68 20 32 22 3a $R5 2c 0a 22 48 65 61 64 65 72 20 31 22 3a $R6 2c 0a 22 48 65 61 64 65 72 20 32 22 3a $R7 2c 0a 22 49 6e 6a 65 63 74 69 6f 6e 20 50 72 6f 63 65 73 73 22 3a $R8 2c 0a 22 50 69 70 65 20 4e 61 6d 65 22 3a $R9 2c 0a 22 4d 65 74 68 6f 64 20 31 22 3a $R10 2c 0a 22 4d 65 74 68 6f 64 20 32 22 3a $R11 2c 0a 22 53 70 61 77 6e 20 54 6f 20 78 38 36 22 3a $R12 2c 0a 22 53 70 61 77 6e 20 54 6f 20 78 36 34 22 3a $R13 2c 0a 22 50 72 6f 78 79 20 48 6f 73 74 6e 61 6d 65 22 3a $R14 2c 0a 22 50 72 6f 78 79 20 55 73 65 72 6e 61 6d 65 22 3a $R15 2c 0a 22 50 72 6f 78 79 20 50 61 73 73 77 6f 72 64 22 3a $R16 2c 0a 22 50 72 6f 78 79 20 41 63 63 65 73 73 20 54 79 70 65 22 3a $R17 2c 0a 22 43 72 65 61 74 65 52 65 6d 6f 74 65 54 68 72 65 61 64 22 3a $R18 2c 0a 22 50 6f 72 74 22 3a $R19 2c 0a 22 4a 69 74 74 65 72 22 3a $R20 2c 0a 22 4d 61 78 20 44 4e 53 22 3a $R21 2c 0a 22 59 65 61 72 22 3a $R22 2c 0a 7d",true,false,true,false]},{"op":"Find / Replace","args":[{"option":"Simple string","string":"ZZ ZZ ZZ ZZ"},"4e 55 4c 4c",true,false,true,false]},{"op":"From Hex","args":["Auto"]}]`  
+```json
+[{"op":"To Hex","args":["None",0]},{"op":"Register","args":["([\\s\\S]*)",true,false,false]},{"op":"Regular expression","args":["User defined","(^(?:.*?)ffffff)",true,true,false,false,false,false,"List matches"]},{"op":"Find / Replace","args":[{"option":"Regex","string":"(..)"},"$1\\n",true,false,true,false]},{"op":"Add line numbers","args":[]},{"op":"Tail","args":["Line feed",1]},{"op":"Find / Replace","args":[{"option":"Regex","string":"(\\d+)"},"$1 4",true,false,true,false]},{"op":"Divide","args":["Space"]},{"op":"Find / Replace","args":[{"option":"Regex","string":"([0–9\\.]+)"},"$1 2",true,false,true,false]},{"op":"Sum","args":["Space"]},{"op":"Find / Replace","args":[{"option":"Regex","string":"\\..*"},"",true,false,true,false]},{"op":"Register","args":["(\\d+)",true,false,false]},{"op":"Find / Replace","args":[{"option":"Regex","string":".*"},"CLEAR",true,false,true,true]},{"op":"Find / Replace","args":[{"option":"Simple string","string":"CLEARCLEAR"},"$R0",true,false,true,false]},{"op":"Register","args":["(?:[0–9a-f][0–9a-f]){$R1}(.*)",true,false,true]},{"op":"Find / Replace","args":[{"option":"Regex","string":".*"},"CLEAR",true,false,true,true]},{"op":"Find / Replace","args":[{"option":"Simple string","string":"CLEARCLEAR"},"$R2",true,false,true,false]},{"op":"From Hex","args":["Auto"]},{"op":"Drop bytes","args":[0,4,false]},{"op":"XOR","args":[{"option":"Hex","string":"$R2"},"Standard",false],"disabled":true},{"op":"XOR","args":[{"option":"Hex","string":"2e"},"Standard",false]},{"op":"To Hex","args":["Space",0]},{"op":"Find / Replace","args":[{"option":"Regex","string":"(.*)"},"$1 00 08 00 03 01 00 ZZ ZZ ZZ ZZ 00 09 00 03 00 80 ZZ ZZ ZZ ZZ 00 0a 00 03 00 40 ZZ ZZ ZZ ZZ 00 0c 00 03 01 00 ZZ ZZ ZZ ZZ 00 0d 00 03 01 00 ZZ ZZ ZZ ZZ 00 0e 00 03 00 40 ZZ ZZ ZZ ZZ 00 0f 00 03 00 80 ZZ ZZ ZZ ZZ 00 1a 00 03 00 10 ZZ ZZ ZZ ZZ 00 1b 00 03 00 10 ZZ ZZ ZZ ZZ 00 1d 00 03 00 40 ZZ ZZ ZZ ZZ 00 1e 00 03 00 40 ZZ ZZ ZZ ZZ 00 20 00 03 00 80 ZZ ZZ ZZ ZZ 00 21 00 03 00 40 ZZ ZZ ZZ ZZ 00 22 00 03 00 40 ZZ ZZ ZZ ZZ 00 23 00 01 00 02 ZZ ZZ ZZ ZZ 00 24 00 01 00 02 ZZ ZZ ZZ ZZ 00 02 00 01 00 02 ZZ ZZ ZZ ZZ 00 05 00 01 00 02 ZZ ZZ ZZ ZZ 00 06 00 01 00 02 ZZ ZZ ZZ ZZ 00 10 00 01 00 02 ZZ ZZ ZZ ZZ 00 11 00 01 00 02 ZZ ZZ ZZ ZZ 00 12 00 01 00 02 ZZ ZZ ZZ ZZ 00 14 00 02 00 04 ZZ ZZ ZZ ZZ 00 03 00 02 00 04 ZZ ZZ ZZ ZZ 00 13 00 02 00 04 ZZ ZZ ZZ ZZ",true,false,true,false]},{"op":"Register","args":["(?:00 08 00 03 01 00)((?:.*?)(?=00)|(?: ZZ ZZ ZZ ZZ))",true,false,true]},{"op":"Register","args":["(?:00 09 00 03 00 80)((?:.*?)(?=00)|(?: ZZ ZZ ZZ ZZ))",true,false,true]},{"op":"Register","args":["(?:00 0a 00 03 00 40)((?:.*?)(?=00)|(?: ZZ ZZ ZZ ZZ))",true,false,true]},{"op":"Register","args":["(?:00 0c 00 03 01 00)((?:.*?)(?=00)|(?: ZZ ZZ ZZ ZZ))",true,false,true]},{"op":"Register","args":["(?:00 0d 00 03 01 00)((?:.*?)(?=00)|(?: ZZ ZZ ZZ ZZ))",true,false,true]},{"op":"Register","args":["(?:00 0e 00 03 00 40)((?:.*?)(?=00)|(?: ZZ ZZ ZZ ZZ))",true,false,true]},{"op":"Register","args":["(?:00 0f 00 03 00 80)((?:.*?)(?=00)|(?: ZZ ZZ ZZ ZZ))",true,false,true]},{"op":"Register","args":["(?:00 1a 00 03 00 10)((?:.*?)(?=00)|(?: ZZ ZZ ZZ ZZ))",true,false,true]},{"op":"Register","args":["(?:00 1b 00 03 00 10)((?:.*?)(?=00)|(?: ZZ ZZ ZZ ZZ))",true,false,true]},{"op":"Register","args":["(?:00 1d 00 03 00 40)((?:.*?)(?=00)|(?: ZZ ZZ ZZ ZZ))",true,false,true]},{"op":"Register","args":["(?:00 1e 00 03 00 40)((?:.*?)(?=00)|(?: ZZ ZZ ZZ ZZ))",true,false,true]},{"op":"Register","args":["(?:00 20 00 03 00 80)((?:.*?)(?=00)|(?: ZZ ZZ ZZ ZZ))",true,false,true]},{"op":"Register","args":["(?:00 21 00 03 00 40)((?:.*?)(?=00)|(?: ZZ ZZ ZZ ZZ))",true,false,true]},{"op":"Register","args":["(?:00 22 00 03 00 40)((?:.*?)(?=00)|(?: ZZ ZZ ZZ ZZ))",true,false,true]},{"op":"Register","args":["(?:00 23 00 01 00 02)((?:.*?)(?=00)|(?: ZZ ZZ ZZ ZZ))",true,false,true]},{"op":"Register","args":["(?:00 24 00 01 00 02)((?:.*?)(?=00)|(?: ZZ ZZ ZZ ZZ))",true,false,true]},{"op":"Register","args":["(?:00 02 00 01 00 02 )((?:[0–9A-F]{2}\\s){2}|(?:ZZ ZZ ZZ ZZ))",true,false,false]},{"op":"Register","args":["(?:00 05 00 01 00 02 )((?:[0–9A-F]{2}\\s){2}|(?:ZZ ZZ ZZ ZZ))",true,false,false]},{"op":"Register","args":["(?:00 06 00 01 00 02 )((?:[0–9A-F]{2}\\s){2}|(?:ZZ ZZ ZZ ZZ))",true,false,false]},{"op":"Register","args":["(?:00 10 00 01 00 02 )((?:[0–9A-F]{2}\\s){2}|(?:ZZ ZZ ZZ ZZ))",true,false,false]},{"op":"Register","args":["(?:00 11 00 01 00 02 )((?:[0–9A-F]{2}\\s){2}|(?:ZZ ZZ ZZ ZZ))",true,false,false]},{"op":"Register","args":["(?:00 12 00 01 00 02 )((?:[0–9A-F]{2}\\s){2}|(?:ZZ ZZ ZZ ZZ))",true,false,false]},{"op":"Register","args":["(?:00 14 00 02 00 04 )((?:[0–9A-F]{2}\\s){2}|(?:ZZ ZZ ZZ ZZ))",true,false,false]},{"op":"Register","args":["(?:00 03 00 02 00 04 )((?:[0–9A-F]{2}\\s){2}|(?:ZZ ZZ ZZ ZZ))",true,false,false]},{"op":"Register","args":["(?:00 13 00 02 00 04 )((?:[0–9A-F]{2}\\s){4}|(?:ZZ ZZ ZZ ZZ))",true,false,false]},{"op":"Find / Replace","args":[{"option":"Regex","string":".*"},"CLEAR",true,false,true,true]},{"op":"Find / Replace","args":[{"option":"Simple string","string":"CLEARCLEAR"},"7b 0a 22 43 32 20 53 65 72 76 65 72 22 3a $R3 2c 0a 22 55 73 65 72 20 41 67 65 6e 74 22 3a $R4 2c 0a 22 48 54 54 50 20 4d 65 74 68 6f 64 20 50 61 74 68 20 32 22 3a $R5 2c 0a 22 48 65 61 64 65 72 20 31 22 3a $R6 2c 0a 22 48 65 61 64 65 72 20 32 22 3a $R7 2c 0a 22 49 6e 6a 65 63 74 69 6f 6e 20 50 72 6f 63 65 73 73 22 3a $R8 2c 0a 22 50 69 70 65 20 4e 61 6d 65 22 3a $R9 2c 0a 22 4d 65 74 68 6f 64 20 31 22 3a $R10 2c 0a 22 4d 65 74 68 6f 64 20 32 22 3a $R11 2c 0a 22 53 70 61 77 6e 20 54 6f 20 78 38 36 22 3a $R12 2c 0a 22 53 70 61 77 6e 20 54 6f 20 78 36 34 22 3a $R13 2c 0a 22 50 72 6f 78 79 20 48 6f 73 74 6e 61 6d 65 22 3a $R14 2c 0a 22 50 72 6f 78 79 20 55 73 65 72 6e 61 6d 65 22 3a $R15 2c 0a 22 50 72 6f 78 79 20 50 61 73 73 77 6f 72 64 22 3a $R16 2c 0a 22 50 72 6f 78 79 20 41 63 63 65 73 73 20 54 79 70 65 22 3a $R17 2c 0a 22 43 72 65 61 74 65 52 65 6d 6f 74 65 54 68 72 65 61 64 22 3a $R18 2c 0a 22 50 6f 72 74 22 3a $R19 2c 0a 22 4a 69 74 74 65 72 22 3a $R20 2c 0a 22 4d 61 78 20 44 4e 53 22 3a $R21 2c 0a 22 59 65 61 72 22 3a $R22 2c 0a 7d",true,false,true,false]},{"op":"Find / Replace","args":[{"option":"Simple string","string":"ZZ ZZ ZZ ZZ"},"4e 55 4c 4c",true,false,true,false]},{"op":"From Hex","args":["Auto"]}]
+``` 
 
 ![Recipe 59](/images/cyberchef/recipe_59.png)  
 
@@ -962,7 +1067,9 @@ Safe Links is a feature in Defender for Office 365 that provides URL scanning an
 Source 1: [@WikiJM](https://twitter.com/wikijm)  
 Source 2: <https://docs.microsoft.com/en-us/microsoft-365/security/office-365-security/safe-links?view=o365-worldwide>
 
-`[{"op":"Split","args":["?","\\n"]},{"op":"Split","args":["&","\\n"]},{"op":"Split","args":["=","\\n"]},{"op":"Regular expression","args":["User defined","url\\s([^\\s]+)",true,true,false,false,false,false,"List capture groups"]},{"op":"URL Decode","args":[]}]`  
+```json
+[{"op":"Split","args":["?","\\n"]},{"op":"Split","args":["&","\\n"]},{"op":"Split","args":["=","\\n"]},{"op":"Regular expression","args":["User defined","url\\s([^\\s]+)",true,true,false,false,false,false,"List capture groups"]},{"op":"URL Decode","args":[]}]
+```
 
 ![Recipe 60](/images/cyberchef/recipe_60.png)
 
@@ -975,7 +1082,9 @@ Source: <https://twitter.com/cluster25_io/status/1468248610814971916>
 
 ### Recipe Details  
 
-`[{"op":"Unzip","args":["",false]},{"op":"Strings","args":["16-bit littleendian",10,"All printable chars (U)",false]},{"op":"Filter","args":["Line feed","^\\\"",false]},{"op":"Find / Replace","args":[{"option":"Extended (\\n, \\t, \\x...)","string":"\\x00"},"",true,false,true,false]},{"op":"Find / Replace","args":[{"option":"Regex","string":"[\"& ,]"},"",true,false,true,false]}]`  
+```json
+[{"op":"Unzip","args":["",false]},{"op":"Strings","args":["16-bit littleendian",10,"All printable chars (U)",false]},{"op":"Filter","args":["Line feed","^\\\"",false]},{"op":"Find / Replace","args":[{"option":"Extended (\\n, \\t, \\x...)","string":"\\x00"},"",true,false,true,false]},{"op":"Find / Replace","args":[{"option":"Regex","string":"[\"& ,]"},"",true,false,true,false]}]
+```  
 
 ![Recipe 61](/images/cyberchef/recipe_61.png)  
 
@@ -988,7 +1097,9 @@ Source: <https://twitter.com/guelfoweb/status/1468959342514749451>
 
 ### Recipe Details  
 
-`[{"op":"Unzip","args":["",false]},{"op":"XML Beautify","args":["\\t"]},{"op":"Filter","args":["Line feed","<w:t>.*?<\\/w:t>",false]},{"op":"Find / Replace","args":[{"option":"Regex","string":"3-"},"",true,false,true,false]},{"op":"From HTML Entity","args":[]},{"op":"Regular expression","args":["User defined","(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}==)",true,true,false,false,false,false,"List matches"]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"Reverse","args":["Character"]}]`
+```json
+[{"op":"Unzip","args":["",false]},{"op":"XML Beautify","args":["\\t"]},{"op":"Filter","args":["Line feed","<w:t>.*?<\\/w:t>",false]},{"op":"Find / Replace","args":[{"option":"Regex","string":"3-"},"",true,false,true,false]},{"op":"From HTML Entity","args":[]},{"op":"Regular expression","args":["User defined","(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}==)",true,true,false,false,false,false,"List matches"]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"Reverse","args":["Character"]}]
+```
 
 ![Recipe 62](/images/cyberchef/recipe_62.png)  
 
@@ -1001,7 +1112,8 @@ Source: <https://twitter.com/Kostastsale/status/1475375446430609411>
 
 ### Recipe Details  
 
-`[{"op":"Find / Replace","args":[{"option":"Simple string","string":"+1-1"},"",true,false,true,false]},{"op":"Subsection","args":["chr\\((\\d+)\\)",false,true,false]},{"op":"Fork","args":["\\n","\\n",false]},{"op":"From Charcode","args":["Space",10]},{"op":"Merge","args":[]},{"op":"Find / Replace","args":[{"option":"Simple string","string":"chr("},"",true,true,true,false]},{"op":"Find / Replace","args":[{"option":"Regex","string":"(\\)\\s&\\s|\\\"\\s&\\s\\\"|\\\"\\s&\\s|\\\")"},"",true,false,true,false]},{"op":"Extract URLs","args":[false]},{"op":"Defang URL","args":[true,true,true,"Valid domains and full URLs"]}]`  
+```json
+[{"op":"Find / Replace","args":[{"option":"Simple string","string":"+1-1"},"",true,false,true,false]},{"op":"Subsection","args":["chr\\((\\d+)\\)",false,true,false]},{"op":"Fork","args":["\\n","\\n",false]},{"op":"From Charcode","args":["Space",10]},{"op":"Merge","args":[]},{"op":"Find / Replace","args":[{"option":"Simple string","string":"chr("},"",true,true,true,false]},{"op":"Find / Replace","args":[{"option":"Regex","string":"(\\)\\s&\\s|\\\"\\s&\\s\\\"|\\\"\\s&\\s|\\\")"},"",true,false,true,false]},{"op":"Extract URLs","args":[false]},{"op":"Defang URL","args":[true,true,true,"Valid domains and full URLs"]}]```
 
 ![Recipe 63](/images/cyberchef/recipe_63.png)  
 
@@ -1014,7 +1126,9 @@ Source: <https://twitter.com/th3_protoCOL/status/1505288686560186369>
 
 ### Recipe Details  
 
-`[{"op":"To Hex","args":["Space",0]},{"op":"Find / Replace","args":[{"option":"Regex","string":"^"},"content:{",true,false,true,false]},{"op":"Find / Replace","args":[{"option":"Regex","string":"$"},"}",true,false,true,false]}]`
+```json
+[{"op":"To Hex","args":["Space",0]},{"op":"Find / Replace","args":[{"option":"Regex","string":"^"},"content:{",true,false,true,false]},{"op":"Find / Replace","args":[{"option":"Regex","string":"$"},"}",true,false,true,false]}]
+```
 
 ![Recipe 64](/images/cyberchef/recipe_64.png)  
 
@@ -1026,7 +1140,9 @@ Credit: [@thebluetoob](https://twitter.com/thebluetoob)
 
 ### Recipe Details  
 
-`[{"op":"Regular expression","args":["User defined","[a-zA-Z0-9=/+]{30,}",true,true,false,false,false,false,"List matches"]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"Decode text","args":["UTF-16LE (1200)"]},{"op":"Register","args":["\\'\\'\\)\\-f\\'\\'([a-zA-Z0-9+=\\/])\\'\\'[\\,\\'\\)]{3}([a-zA-Z0-9+=\\/])?[\\'\\)\\,]{1,5}([a-zA-Z0-9+=\\/])?.*?\\[",true,false,false]},{"op":"Find / Replace","args":[{"option":"Regex","string":"\\{[\\'\\+0]*?}"},"$R0",true,false,true,false]},{"op":"Find / Replace","args":[{"option":"Regex","string":"\\{[\\'\\+1]*?}"},"$R1",true,false,true,false]},{"op":"Find / Replace","args":[{"option":"Regex","string":"\\{[\\'\\+2]*?}"},"$R2",true,false,true,false]},{"op":"Find / Replace","args":[{"option":"Simple string","string":"''+''"},"",true,false,true,false]},{"op":"Regular expression","args":["User defined","[a-zA-Z0-9=/+]{30,}",true,true,false,false,false,false,"List matches"]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"Gunzip","args":[]},{"op":"Regular expression","args":["User defined","[a-zA-Z0-9=/+]{30,}",true,true,false,false,false,false,"List matches"]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"To Hex","args":["None",0]}]`
+```json
+[{"op":"Regular expression","args":["User defined","[a-zA-Z0-9=/+]{30,}",true,true,false,false,false,false,"List matches"]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"Decode text","args":["UTF-16LE (1200)"]},{"op":"Register","args":["\\'\\'\\)\\-f\\'\\'([a-zA-Z0-9+=\\/])\\'\\'[\\,\\'\\)]{3}([a-zA-Z0-9+=\\/])?[\\'\\)\\,]{1,5}([a-zA-Z0-9+=\\/])?.*?\\[",true,false,false]},{"op":"Find / Replace","args":[{"option":"Regex","string":"\\{[\\'\\+0]*?}"},"$R0",true,false,true,false]},{"op":"Find / Replace","args":[{"option":"Regex","string":"\\{[\\'\\+1]*?}"},"$R1",true,false,true,false]},{"op":"Find / Replace","args":[{"option":"Regex","string":"\\{[\\'\\+2]*?}"},"$R2",true,false,true,false]},{"op":"Find / Replace","args":[{"option":"Simple string","string":"''+''"},"",true,false,true,false]},{"op":"Regular expression","args":["User defined","[a-zA-Z0-9=/+]{30,}",true,true,false,false,false,false,"List matches"]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"Gunzip","args":[]},{"op":"Regular expression","args":["User defined","[a-zA-Z0-9=/+]{30,}",true,true,false,false,false,false,"List matches"]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"To Hex","args":["None",0]}]
+```
 
 ![Recipe 65](/images/cyberchef/recipe_65.png)  
 
@@ -1037,11 +1153,15 @@ Nested subsections is a feature available in versions >= 9.46.0. If you have a l
 
 ### Recipe Details with nested subsection
 
-`[{"op":"Subsection","args":["[a-zA-Z0-9+/=]{100,}",true,true,false]},{"op":"From Base64","args":["A-Za-z0-9+/=",true,false]},{"op":"Subsection","args":["\\\".*\\\"",true,true,false]},{"op":"Find / Replace","args":[{"option":"Regex","string":"\\\""},"",true,false,true,false]},{"op":"From Base64","args":["A-Za-z0-9+/=",true,false]},{"op":"Merge","args":[false]},{"op":"From Hex","args":["Auto"]}]`
+```json
+[{"op":"Subsection","args":["[a-zA-Z0-9+/=]{100,}",true,true,false]},{"op":"From Base64","args":["A-Za-z0-9+/=",true,false]},{"op":"Subsection","args":["\\\".*\\\"",true,true,false]},{"op":"Find / Replace","args":[{"option":"Regex","string":"\\\""},"",true,false,true,false]},{"op":"From Base64","args":["A-Za-z0-9+/=",true,false]},{"op":"Merge","args":[false]},{"op":"From Hex","args":["Auto"]}]
+```
 
 ### Recipe details on older versions
 
-`[{"op":"Subsection","args":["[a-zA-Z0-9+/=]{100,}",true,true,false]},{"op":"From Base64","args":["A-Za-z0-9+/=",true,false]},{"op":"Subsection","args":["\\\".*\\\"",true,true,false]},{"op":"Find / Replace","args":[{"option":"Regex","string":"\\\""},"",true,false,true,false]},{"op":"From Base64","args":["A-Za-z0-9+/=",true,false]},{"op":"Merge","args":[]},{"op":"Subsection","args":["[a-fA-F0-9]{100,}",true,true,false]},{"op":"From Hex","args":["Auto"]}]`
+```json
+[{"op":"Subsection","args":["[a-zA-Z0-9+/=]{100,}",true,true,false]},{"op":"From Base64","args":["A-Za-z0-9+/=",true,false]},{"op":"Subsection","args":["\\\".*\\\"",true,true,false]},{"op":"Find / Replace","args":[{"option":"Regex","string":"\\\""},"",true,false,true,false]},{"op":"From Base64","args":["A-Za-z0-9+/=",true,false]},{"op":"Merge","args":[]},{"op":"Subsection","args":["[a-fA-F0-9]{100,}",true,true,false]},{"op":"From Hex","args":["Auto"]}]
+```
 
 ![Recipe 66](/images/cyberchef/recipe_66.png)  
 
@@ -1053,7 +1173,9 @@ Source: <https://www.advancedinstaller.com/msi-registration-productid.html>
 
 ### Recipe Details  
 
-`[{"op":"Find / Replace","args":[{"option":"Regex","string":"\\}|\\{|-"},"",true,false,true,false]},{"op":"Subsection","args":["^(\\w{8})",true,true,false]},{"op":"Reverse","args":["Character"]},{"op":"Merge","args":[true]},{"op":"Subsection","args":["^\\w{8}(\\w{4})",true,true,false]},{"op":"Reverse","args":["Character"]},{"op":"Merge","args":[true]},{"op":"Subsection","args":["^\\w{8}\\w{4}(\\w{4})",true,true,false]},{"op":"Reverse","args":["Character"]},{"op":"Merge","args":[true]},{"op":"Subsection","args":["(\\w{16})$",true,true,false]},{"op":"Reverse","args":["Character"]},{"op":"Swap endianness","args":["Hex",8,false]},{"op":"Merge","args":[true]},{"op":"Remove whitespace","args":[true,true,true,true,true,false]},{"op":"To Upper case","args":["All"]},{"op":"Find / Replace","args":[{"option":"Regex","string":"^"},"HKEY_LOCAL_MACHINE\\SOFTWARE\\Classes\\Installer\\Products\\",true,false,true,false]}]`
+```json
+[{"op":"Find / Replace","args":[{"option":"Regex","string":"\\}|\\{|-"},"",true,false,true,false]},{"op":"Subsection","args":["^(\\w{8})",true,true,false]},{"op":"Reverse","args":["Character"]},{"op":"Merge","args":[true]},{"op":"Subsection","args":["^\\w{8}(\\w{4})",true,true,false]},{"op":"Reverse","args":["Character"]},{"op":"Merge","args":[true]},{"op":"Subsection","args":["^\\w{8}\\w{4}(\\w{4})",true,true,false]},{"op":"Reverse","args":["Character"]},{"op":"Merge","args":[true]},{"op":"Subsection","args":["(\\w{16})$",true,true,false]},{"op":"Reverse","args":["Character"]},{"op":"Swap endianness","args":["Hex",8,false]},{"op":"Merge","args":[true]},{"op":"Remove whitespace","args":[true,true,true,true,true,false]},{"op":"To Upper case","args":["All"]},{"op":"Find / Replace","args":[{"option":"Regex","string":"^"},"HKEY_LOCAL_MACHINE\\SOFTWARE\\Classes\\Installer\\Products\\",true,false,true,false]}]
+```
 
 ![Recipe 67](/images/cyberchef/recipe_67.png)  
 
@@ -1065,7 +1187,9 @@ Source: <https://github.com/L-codes/Neo-reGeorg>
 
 ### Recipe Details  
 
-`[{"op":"Regular expression","args":["User defined","(?<=\\{)([\\-\\d,]+)(?=\\})",true,true,false,false,false,false,"List matches"]},{"op":"Find / Replace","args":[{"option":"Regex","string":"(-\\d+)"},"$1 256",true,false,true,false]},{"op":"Find / Replace","args":[{"option":"Regex","string":","},"\\n",true,false,true,false]},{"op":"Fork","args":["\\n","\\n",false]},{"op":"Sum","args":["Space"]},{"op":"Merge","args":[true]},{"op":"From Charcode","args":["Line feed",10]}]`
+```json
+[{"op":"Regular expression","args":["User defined","(?<=\\{)([\\-\\d,]+)(?=\\})",true,true,false,false,false,false,"List matches"]},{"op":"Find / Replace","args":[{"option":"Regex","string":"(-\\d+)"},"$1 256",true,false,true,false]},{"op":"Find / Replace","args":[{"option":"Regex","string":","},"\\n",true,false,true,false]},{"op":"Fork","args":["\\n","\\n",false]},{"op":"Sum","args":["Space"]},{"op":"Merge","args":[true]},{"op":"From Charcode","args":["Line feed",10]}]
+```
 
 ![Recipe 68](/images/cyberchef/recipe_68.png)  
 
@@ -1073,7 +1197,9 @@ Source: <https://github.com/L-codes/Neo-reGeorg>
 
 Bumblebee, the apparent successor to Bazarloader, comes in swinging with a large PowerShell payload containing 113 Base64 blobs. Convert, decompress, substitute, regex-fu, substitute. All in a days work to extra the DLL payload with CyberChef.  
 
-`[{"op":"Decode text","args":["UTF-16LE (1200)"]},{"op":"Regular expression","args":["User defined","[a-zA-Z0-9+/=]{30,}",true,true,false,false,false,false,"List matches"]},{"op":"Fork","args":["\\n","\\n",false]},{"op":"Find / Replace","args":[{"option":"Regex","string":"^."},"H",true,false,true,false]},{"op":"From Base64","args":["A-Za-z0-9+/=",true,false]},{"op":"Gunzip","args":[]},{"op":"Merge","args":[true]},{"op":"Regular expression","args":["User defined","(?<=0\\n*x)([a-f0-9]{2})(?=,|\\))",true,true,false,false,false,false,"List matches"]},{"op":"From Hex","args":["Auto"]},{"op":"Find / Replace","args":[{"option":"Regex","string":"^."},"M",true,false,false,false]}]`  
+```json
+[{"op":"Decode text","args":["UTF-16LE (1200)"]},{"op":"Regular expression","args":["User defined","[a-zA-Z0-9+/=]{30,}",true,true,false,false,false,false,"List matches"]},{"op":"Fork","args":["\\n","\\n",false]},{"op":"Find / Replace","args":[{"option":"Regex","string":"^."},"H",true,false,true,false]},{"op":"From Base64","args":["A-Za-z0-9+/=",true,false]},{"op":"Gunzip","args":[]},{"op":"Merge","args":[true]},{"op":"Regular expression","args":["User defined","(?<=0\\n*x)([a-f0-9]{2})(?=,|\\))",true,true,false,false,false,false,"List matches"]},{"op":"From Hex","args":["Auto"]},{"op":"Find / Replace","args":[{"option":"Regex","string":"^."},"M",true,false,false,false]}]
+``` 
 
 ![Recipe 69](/images/cyberchef/recipe_69.png)  
 
