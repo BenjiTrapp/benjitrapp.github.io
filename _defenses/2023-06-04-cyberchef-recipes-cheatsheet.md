@@ -3,6 +3,7 @@ layout: defense
 title: CyberChef Recipes CheatSheet
 ---
 
+<img height="200" align="left" src="/images/cyberchef_logo.png" >
 CyberChef is the 'Cyber Swiss-Army Knife' for Security Analysts created by [GCHQ](https://de.wikipedia.org/wiki/Government_Communications_Headquarters). The tool pretty much helps for tasks like data transformation, extraction, and manipulation all in your web-browser.
 
 The tool itself used [online](https://gchq.github.io/CyberChef/) or if you prefer to not to share your data with James Bond use my dockerized version: [BenjiTrapp/boxed-cyberchef](https://github.com/BenjiTrapp/boxed-cyberchef)
