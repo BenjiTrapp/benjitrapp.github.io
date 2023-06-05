@@ -194,6 +194,7 @@ Some example CyberChef recipes:
 [Recipe 70: Extracting endpoints from Android network security config](#recipe-70---extracting-endpoints-from-android-network-security-config)
 
 ## Recipe 1 - Extract base64, raw inflate and code beautify
+[<sup>[Back]</sup>](#cyberchef-recipes)
 
 A very common scenario: extract Base64, inflate, beautify the code. You may need to then do further processing or dynamic analysis depending on the next stage.
 
@@ -214,6 +215,7 @@ Sample: SHA256 cc9c6c38840af8573b8175f34e5c54078c1f3fb7c686a6dc49264a0812d56b54
 ![Recipe_1](/images/cyberchef/recipe_1.PNG)
 
 ## Recipe 2 - Invoke-Obfuscation
+[<sup>[Back]</sup>](#cyberchef-recipes)
 
 CyberChef won't be able to handle all types of Invoke-Obfuscation, but here is one that can be decoded.
 
@@ -234,6 +236,7 @@ Sample: SHA256 1240695523bbfe3ed450b64b80ed018bd890bfa81259118ca2ac534c2895c835
 ![Recipe_2](/images/cyberchef/recipe_2.PNG)
 
 ## Recipe 3 - From CharCode
+[<sup>[Back]</sup>](#cyberchef-recipes)
 
 Malware and scripts often use Charcode to represent characters in order to evade from AV and EDR solutions. CyberChef eats this up.
 
@@ -250,6 +253,7 @@ Source: <https://gist.github.com/jonmarkgo/3431818>
 ![Recipe_3](/images/cyberchef/recipe_3.PNG)
 
 ## Recipe 4 - Group Policy Preference passwords
+[<sup>[Back]</sup>](#cyberchef-recipes)
 
 When a new GPP is created, there’s an associated XML file created in SYSVOL with the relevant configuration data and if there is a password provided, it is AES-256 bit encrypted. Microsoft published the AES Key, which can be used to decrypt passwords store in:  \\<DOMAIN>\SYSVOL\<DOMAIN>\Policies\
 
@@ -268,7 +272,8 @@ Source 2: <https://adsecurity.org/?p=2288>
 ![Recipe_4](/images/cyberchef/recipe_4.PNG)
 
 ## Recipe 5 - Using loops & labels
-
+[<sup>[Back]</sup>](#cyberchef-recipes)
+  
 CyberChef can use labels to identify parts of the recipe and then loop back to perform operations multiple times. In this example, there are 29 rounds of Base64 encoding which are extracted and decoded.
 
 Credit: @pmelson
@@ -290,7 +295,8 @@ Also see more example of loops over Base64: <https://twitter.com/QW5kcmV3/status
 ![Recipe_5](/images/cyberchef/recipe_5.PNG)
 
 ## Recipe 6 - Google ei timestamp
-
+[<sup>[Back]</sup>](#cyberchef-recipes)
+  
 Google uses its own timestamp, I call ei time, which it embeds in the URL.
 
 Source: <https://bitofhex.com/2018/05/29/cyberchef/>
@@ -304,7 +310,8 @@ Source: <https://bitofhex.com/2018/05/29/cyberchef/>
 ![Recipe_6](/images/cyberchef/recipe_6.PNG)
 
 ## Recipe 7 - COM scriptlet to disassembled x86 assembly
-
+[<sup>[Back]</sup>](#cyberchef-recipes)
+  
 This is an eleven-stage decoded COM scriptlet that uses Base64, Gunzip, RegEx, and Disassemble x86 instructions.
 
 Credit: @JohnLaTwC
@@ -324,7 +331,8 @@ Source 2: <https://twitter.com/JohnLaTwC/status/1062419803304976385>
 ![Recipe_7](/images/cyberchef/recipe_7.png)
 
 ## Recipe 8 - Extract hexadecimal, convert to hexdump for embedded PE file
-
+[<sup>[Back]</sup>](#cyberchef-recipes)
+  
 This file has an embedded PE file (SHA 256: 26fac1d4ea12cdceac0d64ab9694d0582104b3c84d7940a4796c1df797d0fdc2, R5Sez8PH.exe, VT: 54/70). Using CyberChef, we can regex hexadecimal and the convert to a more easily viewable hexdump.
 
 Source 1: <https://pastebin.com/R5Sez8PH> (sorry: no longer available!)
@@ -340,7 +348,8 @@ Source 2: <https://twitter.com/ScumBots/status/1081949877272276992>
 ![Recipe_8](/images/cyberchef/recipe_8.png)
 
 ## Recipe 9 - Reverse strings, character substitution, from base64
-
+[<sup>[Back]</sup>](#cyberchef-recipes)
+  
 A blob of base64 with some minor bytes to be substituted. Original decoding done by @pmelson in Python and converted to CyberChef.
 
 Credit: @pmelson
@@ -358,7 +367,8 @@ Source 2: <https://twitter.com/pmelson/status/1076893022758100998>
 ![Recipe_9](/images/cyberchef/recipe_9.png)
 
 ## Recipe 10 - Extract object from Squid proxy cache
-
+[<sup>[Back]</sup>](#cyberchef-recipes)
+  
 Don't manually carve out your Squid cache objects. Simply upload the file to CyberChef. This recipe will search for the magic bytes 0x0D0A0D0A, extract everything after. It then gzip decompresses the object for download.
 
 Source: 00000915 (output should be TrueCrypt_Setup_7.1a.exe with SHA256 e95eca399dfe95500c4de569efc4cc77b75e2b66a864d467df37733ec06a0ff2)
@@ -372,7 +382,8 @@ Source: 00000915 (output should be TrueCrypt_Setup_7.1a.exe with SHA256 e95eca39
 ![Recipe_10](/images/cyberchef/recipe_10.png)
 
 ## Recipe 11 - Extract GPS Coordinates to Google Maps URLs
-
+[<sup>[Back]</sup>](#cyberchef-recipes)
+  
 If you need to quickly triage where a photo was taken and you're lucky enought to have embedded GPS latitude and longitudes then use this recipe to quickly make a usable Google Maps URL to identify the location.
 
 ### Recipe Details
@@ -384,7 +395,8 @@ If you need to quickly triage where a photo was taken and you're lucky enought t
 ![Recipe_11](/images/cyberchef/recipe_11.png)
 
 ## Recipe 12 - Big Number Processing
-
+[<sup>[Back]</sup>](#cyberchef-recipes)
+  
 CyberChef can handle massive numbers. Here we can use a simple recipe to change a 38-digit X509SerialNumber to its hexadecimal equivalent X.509 certificate serial number. Then we can regex the hexadecimal and insert a colon to transform it to the correct format.
 
 Credit: @QW5kcmV3
@@ -400,7 +412,8 @@ Source: <https://twitter.com/QW5kcmV3/status/949437437473968128>
 ![Recipe_12](/images/cyberchef/recipe_12.png)
 
 ## Recipe 13 - Parsing DNS PTR records with Registers
-
+[<sup>[Back]</sup>](#cyberchef-recipes)
+  
 IP addresses in DNS PTR records are stored as least significant octet first. For example: 167.139.44.10.in-addr.arpa would relate to IP address of 10.44.139.167. Using CyberChef's registers we can allocate each octet to a memory register (or variable if it's easier to think of it that way). These can then be reversed to re-order the IP address. A find/replace tidies up the rest of the record. This could be reversed it you wanted to translate 'regular' IP addresses to search in DNS PTR records.
 
 ![Recipe_13](/images/cyberchef/recipe_13.png)
@@ -412,7 +425,8 @@ IP addresses in DNS PTR records are stored as least significant octet first. For
 ```
 
 ## Recipe 14 - Decoding POSHC2 executables
-
+[<sup>[Back]</sup>](#cyberchef-recipes)
+  
 PoshC2 is a proxy aware C2 framework that utilises Powershell to aid penetration testers with red teaming, post-exploitation and lateral movement. The dropper is based on PowerShell and consists of a PowerShell script which is double Base64 encoded and compressed. Extracting the strings can be done with CyberChef as detailed below. Depending on the settings and customisation of the executable you may need to adjust your recipe.
 
 Credit: @a_tweeter_user
@@ -430,7 +444,8 @@ Source: posh.zip
 ```
 
 ## Recipe 15 - Parsing $MFT $SI Timestamps
-
+[<sup>[Back]</sup>](#cyberchef-recipes)
+  
 CyberChef can do just about anything with data. Here are raw hex bytes from a $MFT entry. By selecting certain bytes, and using various functions of CyberChef I can parse any part of the data as needed. This recipe will extract and parse the $SI timestamps. Encase no more!
 
 ![Recipe 15](/images/cyberchef/recipe_15.PNG)
@@ -442,7 +457,8 @@ CyberChef can do just about anything with data. Here are raw hex bytes from a $M
 ```
 
 ## Recipe 16 - Decoding PHP gzinflate and base64 webshells
-
+[<sup>[Back]</sup>](#cyberchef-recipes)
+  
 Webshells come in all shapes and sizes. For PHP webshells the combination of gzinflate and base64 can be used to obfuscate the eval data. In this example, there are 21 rounds of compression and base64 that we can quickly parse out using labels and loops.
 
 Source: <https://github.com/LordWolfer/webshells/blob/b7eefaff64049e3ff61e90c850686135c0ba74c4/from_the_wild1.php>
@@ -456,7 +472,8 @@ Source: <https://github.com/LordWolfer/webshells/blob/b7eefaff64049e3ff61e90c850
 ```
 
 ## Recipe 17 - Extracting shellcode from a Powershell Meterpreter Reverse TCP script
-
+[<sup>[Back]</sup>](#cyberchef-recipes)
+  
 Often seen in @pmelson's Pastbin bot @scumbots, this peels away multiple layers of an encoded Powershell script to display the shellcode. From here you *could* extract PUSH statements to try and identify the IP address & port, but you'll get too many false positives. So you're better off using a tool like scdbg (see: <http://sandsprite.com/blogs/index.php?uid=7&pid=152>)
 
 Source: <https://twitter.com/ScumBots/status/1121854255898472453>
@@ -472,7 +489,8 @@ Source: <https://pastebin.com/9DnD6t6W> / 9DnD6t6W.txt
 ```
 
 ## Recipe 18 - Recycle Bin Parser with Subsections and Merges
-
+[<sup>[Back]</sup>](#cyberchef-recipes)
+  
 Subsections and Merges are powerful tools in CyberChef that allow the application of ingredients to a selection of data rather than the whole input file. This section can then be merged together to continue on the whole input. In an awesome piece of work @GlassSec has created a Windows Recycle Bin parser using CyberChef indicating the possibilities of these functions is endless.
 
 Source: <https://gist.github.com/glassdfir/f30957b314ec39a8aa319420a29ffc76>
@@ -854,13 +872,17 @@ Source: <https://twitter.com/malwarelab_eu/status/1383732397510828033>
 
 ### Recipe 1 Details
 
-`[{"op":"Comment","args":["JobCrypter Ransomware Decryptor\n\nExtracts encryption key (96 digits) from captured email traffic\n\nDerive 3DES key as K1+K2+K1 (Keyring Option 2, see https://en.wikipedia.org/wiki/Triple_DES#Keying_options)"]},{"op":"Regular expression","args":["User defined","[0-9]{96}",true,true,false,false,false,false,"List matches"]},{"op":"MD5","args":[]},{"op":"Register","args":["([a-f0-9]{16})([a-f0-9]{16})",true,false,false]},{"op":"Find / Replace","args":[{"option":"Regex","string":"$R0$R1"},"$R0$R1$R0",true,false,true,false]}]`  
+```json
+[{"op":"Comment","args":["JobCrypter Ransomware Decryptor\n\nExtracts encryption key (96 digits) from captured email traffic\n\nDerive 3DES key as K1+K2+K1 (Keyring Option 2, see https://en.wikipedia.org/wiki/Triple_DES#Keying_options)"]},{"op":"Regular expression","args":["User defined","[0-9]{96}",true,true,false,false,false,false,"List matches"]},{"op":"MD5","args":[]},{"op":"Register","args":["([a-f0-9]{16})([a-f0-9]{16})",true,false,false]},{"op":"Find / Replace","args":[{"option":"Regex","string":"$R0$R1"},"$R0$R1$R0",true,false,true,false]}]
+```  
 
 ![Recipe 44a](/images/cyberchef/recipe_44a.png)  
 
 ### Recipe 2 Details
 
-`[{"op":"Comment","args":["JobCrypter Ransomware Decryptor\n\nExtracts Base64-encoded 3DES-encrypted data from encrypted .txt files and decrypts the original data"]},{"op":"Regular expression","args":["User defined","[A-Za-z0-9+/=]{32,}",false,true,false,false,false,false,"List matches"]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"Triple DES Decrypt","args":[{"option":"Hex","string":"ebd3ff58ec8ebf688e6c918a95622b9febd3ff58ec8ebf68"},{"option":"Hex","string":""},"ECB","Raw","Raw"]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"Render Image","args":["Raw"],"disabled":true}]`  
+```json
+[{"op":"Comment","args":["JobCrypter Ransomware Decryptor\n\nExtracts Base64-encoded 3DES-encrypted data from encrypted .txt files and decrypts the original data"]},{"op":"Regular expression","args":["User defined","[A-Za-z0-9+/=]{32,}",false,true,false,false,false,false,"List matches"]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"Triple DES Decrypt","args":[{"option":"Hex","string":"ebd3ff58ec8ebf688e6c918a95622b9febd3ff58ec8ebf68"},{"option":"Hex","string":""},"ECB","Raw","Raw"]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"Render Image","args":["Raw"],"disabled":true}]
+```  
 
 ![Recipe 44b](/images/cyberchef/recipe_44b.png)  
 
