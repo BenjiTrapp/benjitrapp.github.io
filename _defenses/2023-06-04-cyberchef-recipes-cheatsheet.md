@@ -11,8 +11,9 @@ The tool itself used [online](https://gchq.github.io/CyberChef/) or if you prefe
 If you're brave and want to test all recipes with real malware you could do the following:
 
 1. Run my [boxed-kali](https://github.com/BenjiTrapp/boxed-kali) or a Kali/REMnuX instance on [Kasm](https://www.kasmweb.com/) or your favorite sandbox solution
-2. Clone [this folder](/assets/defense/cyberchef/)
-3. Pick the recipe you're interested in from below in the folder and copy it into your sandbox (for my boxed-kali docker cp will do the trick)
+2. Clone [this folder](https://github.com/BenjiTrapp/benjitrapp.github.io/tree/master/assets/defense/cyberchef)
+3. Pick the recipe you're interested in from below in the folder and copy it into your sandbox (for my boxed-kali docker cp will do the trick `docker cp ./recipe_X.zip $(docker ps | grep cyberchef | awk '{print $1}'):/tm
+p/infected_cyberchef_recipe.zip`)
 4. Extract the malware sample. In tradition of using files like this the password is `infected` (you might find also inside another .zip which got probably the same password)
 
 # Useful Regular Expressions
@@ -934,7 +935,9 @@ If there is one thing that is definately 'All Greek to me' it's Security Descrip
 
 Source: <https://twitter.com/cnotin/status/1387002797175021569>  
 
-`[{"op":"Comment","args":["subsection for the content before the ACE strings"]},{"op":"Subsection","args":["(.*?)\\(.*",false,true,false]},{"op":"Comment","args":["Each \"G:\" and \"D:\" on its own line"]},{"op":"Find / Replace","args":[{"option":"Regex","string":"([GD]):"},"\\n$1:",true,false,true,false]},{"op":"Comment","args":["add separator"]},{"op":"Find / Replace","args":[{"option":"Regex","string":"$"},"\\n######\\n",true,false,false,false]},{"op":"Merge","args":[]},{"op":"Comment","args":["subsection for the ACE strings"]},{"op":"Subsection","args":["######\\n(.*)",false,true,false]},{"op":"Find / Replace","args":[{"option":"Simple string","string":")("},"\\n",true,false,true,false]},{"op":"Find / Replace","args":[{"option":"Regex","string":"\\)$"},"",true,false,true,false]},{"op":"Find / Replace","args":[{"option":"Regex","string":"^\\("},"",true,false,true,false]},{"op":"Comment","args":["Add space between each permission or flag bigram"]},{"op":"Find / Replace","args":[{"option":"Regex","string":"([A-Z]{2})"},"$1 ",true,false,true,false]},{"op":"Comment","args":["Insert table header"]},{"op":"Find / Replace","args":[{"option":"Regex","string":"^"},"Type;Flags;Permissions;ObjectType;Inherited ObjectType;Trustee\\n",false,false,true,false]},{"op":"To Table","args":[";","\\n",true,"ASCII"]},{"op":"Merge","args":[]}]`  
+```json
+[{"op":"Comment","args":["subsection for the content before the ACE strings"]},{"op":"Subsection","args":["(.*?)\\(.*",false,true,false]},{"op":"Comment","args":["Each \"G:\" and \"D:\" on its own line"]},{"op":"Find / Replace","args":[{"option":"Regex","string":"([GD]):"},"\\n$1:",true,false,true,false]},{"op":"Comment","args":["add separator"]},{"op":"Find / Replace","args":[{"option":"Regex","string":"$"},"\\n######\\n",true,false,false,false]},{"op":"Merge","args":[]},{"op":"Comment","args":["subsection for the ACE strings"]},{"op":"Subsection","args":["######\\n(.*)",false,true,false]},{"op":"Find / Replace","args":[{"option":"Simple string","string":")("},"\\n",true,false,true,false]},{"op":"Find / Replace","args":[{"option":"Regex","string":"\\)$"},"",true,false,true,false]},{"op":"Find / Replace","args":[{"option":"Regex","string":"^\\("},"",true,false,true,false]},{"op":"Comment","args":["Add space between each permission or flag bigram"]},{"op":"Find / Replace","args":[{"option":"Regex","string":"([A-Z]{2})"},"$1 ",true,false,true,false]},{"op":"Comment","args":["Insert table header"]},{"op":"Find / Replace","args":[{"option":"Regex","string":"^"},"Type;Flags;Permissions;ObjectType;Inherited ObjectType;Trustee\\n",false,false,true,false]},{"op":"To Table","args":[";","\\n",true,"ASCII"]},{"op":"Merge","args":[]}]
+```  
 
 ![Recipe 50](/images/cyberchef/recipe_50.png)  
 
@@ -1002,7 +1005,8 @@ Credit: [Kostas](https://twitter.com/Kostastsale/status/1426264806093254656)
 ### Recipe Details
 
 ```json
-[{"op":"Find / Replace","args":[{"option":"Simple string","string":"za67t"},"",true,false,true,false]},{"op":"Generic Code Beautify","args":[]},{"op":"Subsection","args":["[A-Za-z0-9+/=]{450,}",true,true,false]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"Merge","args":[]},{"op":"Subsection","args":["(?<=\\)e\\()(.*?)(?=\\n)",true,true,false]},{"op":"Reverse","args":["Character"]},{"op":"Merge","args":[]},{"op":"Extract URLs","args":[false]},{"op":"Defang URL","args":[true,true,true,"Valid domains and full URLs"]}]```
+[{"op":"Find / Replace","args":[{"option":"Simple string","string":"za67t"},"",true,false,true,false]},{"op":"Generic Code Beautify","args":[]},{"op":"Subsection","args":["[A-Za-z0-9+/=]{450,}",true,true,false]},{"op":"From Base64","args":["A-Za-z0-9+/=",true]},{"op":"Merge","args":[]},{"op":"Subsection","args":["(?<=\\)e\\()(.*?)(?=\\n)",true,true,false]},{"op":"Reverse","args":["Character"]},{"op":"Merge","args":[]},{"op":"Extract URLs","args":[false]},{"op":"Defang URL","args":[true,true,true,"Valid domains and full URLs"]}]
+```
 
 ![Recipe 55a](/images/cyberchef/recipe_55a.png)
 ![Recipe 55b](/images/cyberchef/recipe_55b.png)
@@ -1014,7 +1018,9 @@ Available in v9.30+ a modern update to Recipe 22. Filter a PCAP for the Client/S
 
 ### Recipe Details
 
-`[{"op":"Regular expression","args":["User defined","16030[13].+",true,true,false,false,false,false,"List matches"]},{"op":"JA3 Fingerprint","args":["Hex","Hash digest"]},{"op":"Register","args":["(.*)",true,false,false]},{"op":"HTTP request","args":["GET","https://ja3er.com/search/$R0","","Cross-Origin Resource Sharing",false]},{"op":"JSON Beautify","args":["    ",false]}]`
+```json
+[{"op":"Regular expression","args":["User defined","16030[13].+",true,true,false,false,false,false,"List matches"]},{"op":"JA3 Fingerprint","args":["Hex","Hash digest"]},{"op":"Register","args":["(.*)",true,false,false]},{"op":"HTTP request","args":["GET","https://ja3er.com/search/$R0","","Cross-Origin Resource Sharing",false]},{"op":"JSON Beautify","args":["    ",false]}]
+```
 
 ![Recipe 56a](/images/cyberchef/recipe_56a.png)
 ![Recipe 56b](/images/cyberchef/recipe_56b.png)  
@@ -1114,7 +1120,8 @@ Source: <https://twitter.com/Kostastsale/status/1475375446430609411>
 ### Recipe Details  
 
 ```json
-[{"op":"Find / Replace","args":[{"option":"Simple string","string":"+1-1"},"",true,false,true,false]},{"op":"Subsection","args":["chr\\((\\d+)\\)",false,true,false]},{"op":"Fork","args":["\\n","\\n",false]},{"op":"From Charcode","args":["Space",10]},{"op":"Merge","args":[]},{"op":"Find / Replace","args":[{"option":"Simple string","string":"chr("},"",true,true,true,false]},{"op":"Find / Replace","args":[{"option":"Regex","string":"(\\)\\s&\\s|\\\"\\s&\\s\\\"|\\\"\\s&\\s|\\\")"},"",true,false,true,false]},{"op":"Extract URLs","args":[false]},{"op":"Defang URL","args":[true,true,true,"Valid domains and full URLs"]}]```
+[{"op":"Find / Replace","args":[{"option":"Simple string","string":"+1-1"},"",true,false,true,false]},{"op":"Subsection","args":["chr\\((\\d+)\\)",false,true,false]},{"op":"Fork","args":["\\n","\\n",false]},{"op":"From Charcode","args":["Space",10]},{"op":"Merge","args":[]},{"op":"Find / Replace","args":[{"option":"Simple string","string":"chr("},"",true,true,true,false]},{"op":"Find / Replace","args":[{"option":"Regex","string":"(\\)\\s&\\s|\\\"\\s&\\s\\\"|\\\"\\s&\\s|\\\")"},"",true,false,true,false]},{"op":"Extract URLs","args":[false]},{"op":"Defang URL","args":[true,true,true,"Valid domains and full URLs"]}]
+```
 
 ![Recipe 63](/images/cyberchef/recipe_63.png)  
 
