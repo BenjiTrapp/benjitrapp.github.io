@@ -89,6 +89,41 @@ Nmap to avoid the firewall
     DirBuster
     Patator- password guessing attacks
 
+#### GoBuster
+
+    # dir Mode
+    $ gobuster -e -u http://192.168.0.155/ -w /usr/share/wordlists/dirb/common.txt
+    
+    # dir Mode with content length
+    $ gobuster dir -u https://example.com -w ~/wordlists/shortlist.txt -l
+    
+    # DNS mode
+    $ gobuster dns -d example.com -t 50 -w common-names.txt
+    $ gobuster dns -d example.com-w ~/wordlists/subdomains.txt
+    
+    # With show IP
+    gobuster dns -d example.com-w ~/wordlists/subdomains.txt
+
+    # Base domain validation warning when the base domain fails to resolve
+    $ gobuster dns -d example.com -w ~/wordlists/subdomains.txt -i
+
+    # Wildcard DNS is also detected properly
+    $ gobuster dns -d 0.0.1.xip.io -w ~/wordlists/subdomains.txt
+
+    # vhost Mode
+    $ gobuster vhost -u https://example.com -w common-vhosts.txt
+
+    # S3 Mode
+    gobuster s3 -w bucket-names.txt
+
+    # Available Modes
+    | Switch | Semantics                                                       |
+    | ------ | --------------------------------------------------------------- |
+    | dir    | Classic directory brute-forcing                                 |
+    | dns    | DNS subdomain brute-forcing                                     |
+    | s3     | Enum open S3 buckets and look for existence and bucket listings |
+    | vhost  | virtual host brute-forcing (!= as DNS!) |
+
 #### Brute force with Patatpr
 
     git clone https://github.com/lanjelot/patator.git /usr/share/patator
