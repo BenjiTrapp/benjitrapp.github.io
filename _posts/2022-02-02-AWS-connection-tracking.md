@@ -24,11 +24,12 @@ TCP traffic on port 22 (SSH) to and from the instance is tracked, because the in
 The main takeaway is: **If the traffic is being tacked and is flowing then removing an allow rule will not stop the traffic.** 
 
 Let’s assume the attacker dropped a reverse shell and got detected. A defender would now join the party and try to stop all activities made by an adversary. Well trained with info from the official AWS [SIRT Whitepaper](https://d1.awsstatic.com/whitepapers/aws_security_incident_response.pdf) the defender will start to mitigate. 
-In the „isolate“ step the defender tries to achieve the goa to isolate the affected EC2 instance with either a restrictive Security Group or an explicit Deny NACL. But there is a big issues related with this: The NACLs affect the entire subnet and causes an outage for all EC2 instances related to this subnet. So the next recommended procedure is swapping the Security Groups. Sadly this wont interrupt already established connections like the reverse shell and will persist.
+
+In the „isolate“ step the defender tries to achieve the goal to isolate the affected EC2 instance with either a restrictive Security Group or an explicit Deny NACL. But there is a big issues related with this: `The NACLs affect the entire subnet and causes an outage for all EC2 instances related to this subnet`. So the next recommended procedure is swapping the Security Groups. Sadly this wont interrupt already established connections like the reverse shell and will persist.
 
 ### Mitigating the beast
 To stop the traffic, there are still a few ways to achieve this :
 
 1. Create a NACL (Network Access Control List) inbound rule
-2. On the instance, disable the communication type or block the used port. Personally I use these scripts to perform and semi-automate this task [hquick-manual-isolation](https://github.com/BenjiTrapp/inspector-awsome/tree/main/quick-manual-isolation)
+2. On the instance, disable the communication type or block the used port. Personally I use these scripts to perform and semi-automate this task [quick-manual-isolation](https://github.com/BenjiTrapp/inspector-awsome/tree/main/quick-manual-isolation)
 3. Delete the entire Security Group. Switching to an isolated SG (that doesn’t allow anything in- or outbound) isn’t enough to stop this alone. For automation you can additional send a document over SSM to stop all current running sessions to make sure connection tracking is disabled for the attacker's remote shell.
