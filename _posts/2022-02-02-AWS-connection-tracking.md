@@ -30,5 +30,5 @@ In the „isolate“ step the defender tries to achieve the goa to isolate the a
 To stop the traffic, there are still a few ways to achieve this :
 
 1. Create a NACL (Network Access Control List) inbound rule
-2. On the instance, disable the communication type or block the used port
-3. Delete the entire Security Group. Switching to an isolated SG (that doesn’t allow anything in- or outbound) isn’t enough to stop this
+2. On the instance, disable the communication type or block the used port. Personally I use these scripts to perform and semi-automate this task [hquick-manual-isolation](https://github.com/BenjiTrapp/inspector-awsome/tree/main/quick-manual-isolation)
+3. Delete the entire Security Group. Switching to an isolated SG (that doesn’t allow anything in- or outbound) isn’t enough to stop this alone. For automation you can additional send a document over SSM to stop all current running sessions to make sure connection tracking is disabled for the attacker's remote shell.
