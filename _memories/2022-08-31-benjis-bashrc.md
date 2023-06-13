@@ -178,6 +178,40 @@ function urlDecode() {
     echo "$1" | python -c "import sys; from urllib.parse import unquote; print(unquote(sys.stdin.read()));"
 }
 
+function urlEncode() {
+    echo "$1" | python -c "import sys; from urllib.parse import quote; print(quote(sys.stdin.read()));"
+}
+
+function excelizeCSV() {
+  file="$1"
+  backup_file="${file}.bak"
+  temp_file="${file}.tmp"
+
+  cp "$file" "$backup_file"
+  echo "sep=," > "$temp_file"
+
+  tail -n +2 "$file" >> "$temp_file"
+  mv "$temp_file" "$file"
+}
+
+function checkTCPTrafficOnPort() {
+    if [ -z "$1" ]; then
+        logError "Provide exactly one port to check e.g. 443"
+        return 1
+    fi
+
+    sudo tcpdump port $1 and '(tcp-syn|tcp-ack)!=0'
+}
+
+function checkANYTrafficOnPort() {
+    if [ -z "$1" ]; then
+        logError "Provide exactly one port to check e.g. 443"
+        return 1
+    fi
+
+    sudo tcpdump -i any port $1
+}
+
 function countLocs() {
     if [ -z "$1" ]; then
         logError "Missing argument call this function like 'count_locs py' to count all LoCs of all present python files"
