@@ -62,7 +62,7 @@ In order to decode the command, we’ll need to tell CyberChef to decode the Bas
 <img width="600" src="/images/cyberchef_b64.png">
 </p>
 
-The Output looks now a little better, but is still not human-readable. We can recognize fragments of words, which is heavly scrambles by red "nul" fragments resp. null bytes. 
+The Output looks now a little better, but is still not human-readable. We can recognize fragments of words, which is heavily scrambles by red "nul" fragments resp. null bytes. 
 
 Copy the text now from the Output section and paste it into the Input section again.
 
