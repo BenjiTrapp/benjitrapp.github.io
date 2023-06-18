@@ -1,4 +1,6 @@
 ---
+
+---
 layout: defense
 title: Kickstart into CyberChef        
 ---
