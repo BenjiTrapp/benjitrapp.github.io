@@ -70,7 +70,7 @@ To remove the null bytes we must search for a fitting Operations to enhance our 
 Time for round two:
 
 <p align="center">
-<img width="600" src="../images/cyberchef_nullbytes.png">
+<img width="600" src="/images/cyberchef_nullbytes.png">
 </p>
 
 Finally we got a result that is human readable:
