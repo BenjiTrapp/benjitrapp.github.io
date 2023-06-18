@@ -1,10 +1,9 @@
 ---
 layout: defense
-title: CyberChef Introduction       
+title: Kickstart into CyberChef        
 ---
-Below you'll find a quick introduction onto CyberChef, it's UI, and a example.
 
-CyberChef can be used to: Encode, Decode, Format data, Parse data, Encrypt, Decrypt, Compress data, Extract data, perform arithmetic functions against data, defang data, and many other functions.
+Below you'll find a quick introduction into CyberChef, it's UI, and a example. CyberChef can be used to: Encode, Decode, Format data, Parse data, Encrypt, Decrypt, Compress data, Extract data, perform arithmetic functions against data, defang data, and many other functions.
 
 ### Short intro into the UI
 
