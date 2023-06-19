@@ -1,8 +1,3 @@
----
-layout: defense
-title: CyberChef introduction
----
-
 ## Summary
 
 To come back to our initial questions related to IOCs we can now dig deeper and summarize the following results:
