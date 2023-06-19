@@ -3,10 +3,6 @@ layout: defense
 title: CyberChef introduction
 ---
 
-Below you'll find a quick introduction into CyberChef, it's UI, and a example. CyberChef can be used to: Encode, Decode, Format data, Parse data, Encrypt, Decrypt, Compress data, Extract data, perform arithmetic functions against data, defang data, and many other functions.
-
-This article is mainly dedicated for folks, that are new into the subject "CyberChef". For experts, feel free to skip this article and directly jump into more advanced topics [here](https://benjitrapp.github.io/defenses/2023-06-18-cyberchef-recipes-cheatsheet/).
-
 ## Summary
 
 To come back to our initial questions related to IOCs we can now dig deeper and summarize the following results:
