@@ -104,7 +104,6 @@ alias gb='git branch'
 alias gbd='git branch --delete '
 alias gc='git commit'
 alias gcl='git clone --recursive'
-alias gcm='git checkout master'
 alias gcf='git commit --fixup'
 alias gco='git checkout'
 alias gcob='git checkout -b'
@@ -130,6 +129,17 @@ alias gstd='git stash drop'
 alias gstl='git stash list'
 alias gstp='git stash pop'
 alias gsts='git stash save'
+alias gcm='checkout_master_or_main'
+
+checkout_master_or_main() {
+  if git rev-parse --verify main >/dev/null 2>&1; then
+    git checkout main
+  elif git rev-parse --verify master >/dev/null 2>&1; then
+    git checkout master
+  else
+    echo "Neither 'main' nor 'master' branch exists."
+  fi
+}
 
 # ----------------------
 #  Network aliases
