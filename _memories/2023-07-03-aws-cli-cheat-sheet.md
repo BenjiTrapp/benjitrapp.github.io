@@ -5,6 +5,7 @@ title: AWS Cheat Sheet
 
 ## Amazon Web Services (AWS) CLI Tool Cheatsheet
 
+<!-- cSpell:disable -->
 #### Authentication
 
 Set AWS programmatic keys for authentication (use --profile=<name> for a new profile)
@@ -343,3 +344,4 @@ Check for privilege escalation
 ```bash
 run iam__privesc_scan
 ```
+<!-- cSpell:enable -->

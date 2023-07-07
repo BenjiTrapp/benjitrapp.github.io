@@ -3,6 +3,7 @@ layout: memory
 title: Cloud Tools and Techniques Cheatsheet
 ---
 
+<!-- cSpell:disable -->
 ## Other Useful Cloud Tools and Techniques Cheatsheet
 ### ScoutSuite
 
@@ -253,3 +254,5 @@ SadCloud - https://github.com/nccgroup/sadcloud
 Flaws Cloud - http://flaws.cloud
 
 Thunder CTF - http://thunder-ctf.cloud 
+
+<!-- cSpell:enable -->

@@ -5,6 +5,7 @@ title: Azure Cheat Sheet
 
 ## Microsoft Azure & O365 CLI Tool Cheatsheet
 
+<!-- cSpell:disable -->
 ### Recon
 
 Get Federation info for target domain
@@ -592,3 +593,4 @@ Run AzureHound with a refresh token:
 ```bash
 ./azurehound -r "0.ARwA6Wg..." list --tenant "tenant ID" -v 2 -o output.json
 ```
+<!-- cSpell:enable -->

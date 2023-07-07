@@ -3,6 +3,7 @@ layout: memory
 title: GCP CLI Tool Cheatsheet
 ---
 
+<!-- cSpell:disable -->
 ## Google Cloud Platform CLI Tool Cheatsheet
 
 #### Authentication
@@ -252,3 +253,4 @@ gcloud auth list
 ```bash
 curl "http://metadata.google.internal/computeMetadata/v1/?recursive=true&alt=text" -H "Metadata-Flavor: Google"
 ```
+<!-- cSpell:enable -->
