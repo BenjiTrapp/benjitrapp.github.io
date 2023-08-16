@@ -5,6 +5,8 @@ title: sqlmap Cheatsheet
 
 Quick writeup and cheat sheet for [sqlmap](https://github.com/sqlmapproject/sqlmap) the automated SQLi and database takeover tool to speed up HTB/CTFs
 
+<!-- cSpell:disable -->
+
 ### Simple usage
 ```bash
 sqlmap -u "$URL"
@@ -95,3 +97,4 @@ sqlmap -u "$URL" --sql-shell
 ```bash
 sqlmap -u "$URL" --os-shell
 ```
+<!-- cSpell:enable -->
