@@ -3,7 +3,7 @@ layout: memory
 title: Cloud Provider Cheatsheet
 ---
 
-This guide is only representative from my point of view and it may not be accurate and you should go on the official [AWS](http://aws.amazon.com/) & [GCP](https://cloud.google.com/) websites for accurate and detailed information. It's initially inspired by [AWS in simple English](http://expeditedssl.com/aws-in-plain-english) and [GCP for AWS professionals](https://cloud.google.com/docs/google-cloud-platform-for-aws-professionals). The idea is to compare both services, give simple one-line explanation and examples with other software that might have similiar capabilities. Comment below for suggestions.*
+This guide is only representative from my point of view and it may not be accurate and you should go on the official [AWS](http://aws.amazon.com/) & [GCP](https://cloud.google.com/) websites for accurate and detailed information. It's initially inspired by [AWS in simple English](http://expeditedssl.com/aws-in-plain-english) and [GCP for AWS professionals](https://cloud.google.com/docs/google-cloud-platform-for-aws-professionals). The idea is to compare both services, give simple one-line explanation and examples with other software that might have similar capabilities.
 
 
 Category | Service | AWS | GCP | Description | It's like

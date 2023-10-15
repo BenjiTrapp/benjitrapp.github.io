@@ -3,6 +3,10 @@ layout: memory
 title: Bug Bounty Cheat Sheet
 ---
 
+<p align="center">
+<img width="600" src="/images/bugbounty.png">
+</p>
+
 A cheat sheet for quick testing related to some of my Bug Bounty activities
 
 
