@@ -184,6 +184,10 @@ function extract () {
     fi
 }
 
+function getMyIp() {
+    dig @resolver4.opendns.com myip.opendns.com +short
+}
+
 function urlDecode() {
     echo "$1" | python -c "import sys; from urllib.parse import unquote; print(unquote(sys.stdin.read()));"
 }
