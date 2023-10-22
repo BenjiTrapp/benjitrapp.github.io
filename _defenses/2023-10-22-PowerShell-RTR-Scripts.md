@@ -3,13 +3,13 @@ layout: defense
 title: PowerShell RTR Snippets
 ---
 
-<img height="110" align="left" src="/images/powershell-rtr.png" >
-"Unleash PowerShell's Power: Real-Time Response (RTR) Snippets for Windows and Azure AD that I used during Incident Response in the past. Maybe this helps you to defend your IT landscape as well.
+<img height="120" align="left" src="/images/powershell-rtr.png" >
+Empower Your Defense with PowerShell: Real-Time Response (RTR) Snippets for Windows and Azure AD. Enhance the incident response capabilities with these practical PowerShell snippets for Windows and Azure AD. Leverage these time-tested tools to effectively defend your IT infrastructure which helped me already in the past.
 
+<!-- cSpell:disable -->
 
 ## Table of Content
-- [Table of Content](#table-of-content)
-- [(PowerShell - Helpful things](#powershell---helpful-things)
+- [PowerShell - Helpful things](#powershell---helpful-things)
   - [PowerShell “Grep”](#powershell-grep)
   - [Export results to .csv](#export-results-to-csv)
   - [Export results to .txt](#export-results-to-txt)
@@ -42,11 +42,7 @@ title: PowerShell RTR Snippets
 - [Danger Zone](#danger-zone)
   - [Remove Host](#remove-host)
 
-
-
-
-<!-- cSpell:disable -->
-## (PowerShell - Helpful things
+## PowerShell - Helpful things
 
 ### PowerShell “Grep”
 Official documentation [Select-String](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/select-string?view=powershell-7.3&viewFallbackFrom=powershell-7)
