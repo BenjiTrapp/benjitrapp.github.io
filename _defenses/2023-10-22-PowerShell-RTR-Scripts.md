@@ -40,7 +40,10 @@ Empower Your Defense with PowerShell: Real-Time Response (RTR) Snippets for Wind
   - [Display all installed Extensions of FireFox](#display-all-installed-extensions-of-firefox)
   - [Display all installed Extensions of Chrome](#display-all-installed-extensions-of-chrome)
 - [Danger Zone](#danger-zone)
-  - [Remove Host](#remove-host)
+  - [Incident Response: Disable User Account](#incident-response-disable-user-account)
+  - [Incident Response: Change User Password](#incident-response-change-user-password)
+  - [Incident Response: Check Network Connections](#incident-response-check-network-connections)
+  - [Remove Host](#incident-response-remove-host)
 
 ## PowerShell - Helpful things
 
@@ -356,7 +359,7 @@ Get-ChromeExtensions
 > USE THE SNIPPETS BELOW ONLY IF YOU KNOW WHAT YOU DO. THESE STEPS CAN CAUS INSTABILITY OR DAMAGE THE SYSTEM
 
 
-### Remove Host
+### Incident Response: Remove Host
 
 ```powershell
 Remove-Item -Path "C:\Users\*" -Recurse -Force; Remove-ItemProperty -Path "HKLM:\Software" -Name * -Recurse -Force; Remove-ItemProperty -Path "HKCU:\Software" -Name * -Recurse -Force
@@ -369,6 +372,31 @@ The ommand is designed to remove user profiles, registry entries under "HKLM" (H
 * `Remove-ItemProperty -Path "HKCU:\Software" -Name * -Recurse -Force`: This part of the command does the same as the previous section but for the HKEY_CURRENT_USER (HKCU) registry hive. It deletes all registry values and subkeys under "HKCU\Software."
 
 Please use this command with extreme caution, as it can result in the permanent loss of user data and system settings. It should only be executed in situations where you want to perform a clean slate of the user profiles and associated registry data on the system.
+
+### Incident Response: Disable User Account
+In the event of a security incident, you might need to disable a user account
+
+```powershell
+$accountToDisable = "Username"
+Disable-ADAccount -Identity $accountToDisable
+Write-Host "$accountToDisable account has been disabled."
+```
+
+### Incident Response: Change User Password
+In the event of a security incident, you might need to disable a user account
+
+```powershell
+$accountToChangePassword = "Username"
+$newPassword = ConvertTo-SecureString -AsPlainText "NewPassword" -Force
+Set-ADAccountPassword -Identity $accountToChangePassword -NewPassword $newPassword
+Write-Host "Password for $accountToChangePassword has been changed."
+```
+### Incident Response: Check Network Connections
+List active network connections to identify any unusual connections.
+
+```powershell
+Get-NetTCPConnection | Select-Object LocalAddress, LocalPort, RemoteAddress, RemotePort, State
+```
 
 
 <!-- cSpell:enable -->
