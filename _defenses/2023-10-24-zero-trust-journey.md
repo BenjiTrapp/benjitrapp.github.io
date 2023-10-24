@@ -3,7 +3,6 @@ layout: defense
 title: Zero Trust Journey
 ---
 
-
 This blog post provides an overview of Zero Trust principles and their implementation in a security-conscious organization. It's crucial to continually align your security practices with evolving threats and challenges in today's digital landscape.
 
 ## Objective
