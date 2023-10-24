@@ -2,9 +2,12 @@
 layout: defense
 title: Zero Trust Journey
 ---
-> Never trust, always verify
 
+
+<img height="120" align="left" src="/images/zero-trust-logo.png" >
 This blog post provides an overview of Zero Trust principles and their implementation in a security-conscious organization. It's crucial to continually align your security practices with evolving threats and challenges in today's digital landscape.
+
+> Never trust, always verify
 
 ## Objective
 
