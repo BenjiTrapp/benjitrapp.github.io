@@ -2,6 +2,7 @@
 layout: defense
 title: Zero Trust Journey
 ---
+> Never trust, always verify
 
 This blog post provides an overview of Zero Trust principles and their implementation in a security-conscious organization. It's crucial to continually align your security practices with evolving threats and challenges in today's digital landscape.
 
@@ -18,6 +19,12 @@ Zero Trust is a cybersecurity approach that assumes a breach is possible or alre
 ## Tenets of Zero Trust
 
 NIST SP 800-207 outlines several key principles, or tenets, that should guide your Zero Trust implementation:
+
+### Micro-segmentation
+
+Broad perimeters need to be broken down into smaller networks, each having its own network access. This micro-segmentation approach reduces the threat surface area significantly.gs
+
+A set of microservices can be easily segmented out this way for limiting access on the network.
 
 ### Secure Communication Regardless of Location
 
@@ -77,11 +84,11 @@ When considering the types of resources in your environment, Zero Trust principl
 
 CISA's Zero Trust model describes them as follows and can affect one or multiple of these areas:
 
-![](images/pillars_zta.png)
+![](/images/pillars_zta.png)
 
 Based on the pillars the maturity can be assessed, like described by CISA. The maturity can be  seen in general on three levels: traditional, advanced, and optimal as shown in the model below:
 
-![](images/zta-maturity.png)
+![](/images/zta-maturity.png)
 
 
 ... TO BE CONTINUED ...
@@ -96,6 +103,6 @@ Based on the pillars the maturity can be assessed, like described by CISA. The m
 
 - [Rose, S. et al. (2020) Zero trust architecture, CSRC. National Institute of Standards and Technology.](https://csrc.nist.gov/publications/detail/sp/800-207/final) (Accessed: October 12, 2023).
 
-- [Koilpilla, J. (2021) Towards a zero trust architecture: CSA, Towards a Zero Trust Architecture | CSA. Cloud Security Alliance.](https://cloudsecurityalliance.org/artifacts/towards-a-zero-trust-architecture/) (Accessed: October 12, 2023).
+- [Koilpilla, J. (2021) Towards a zero trust architecture: CSA, Towards a Zero Trust Architecture](https://cloudsecurityalliance.org/artifacts/towards-a-zero-trust-architecture/) (Accessed: October 12, 2023).
 
 - [What is a Zero trust architecture (no date). Palo Alto Networks.](https://www.paloaltonetworks.com/cyberpedia/what-is-a-zero-trust-architecture) (Accessed: October 12, 2023).
