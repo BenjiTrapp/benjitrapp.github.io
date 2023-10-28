@@ -43,7 +43,7 @@ Access to resources is determined by dynamic policies that consider client ident
 
 ### Monitoring Asset Security
 
-The enterprise continuously monitors and measures the security posture of owned and associated assets. Changes in security posture trigger appropriate remediations, such as applying patches or adjusting access levels.
+The enterprise continuously monitors and measures the security posture of owned and associated assets. Changes in security posture trigger appropriate remediation, such as applying patches or adjusting access levels.
 
 ### Dynamic Authentication and Authorization
 
