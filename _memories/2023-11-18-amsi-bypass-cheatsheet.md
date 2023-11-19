@@ -3,7 +3,7 @@ layout: memory
 title: AMSI Bypass Cheat Sheet
 ---
 
-This Cheat Sheet contains some Antimalware Scan Interface (AMSI) bypass / avoidance methods, gathered from different Blog Posts and sources.
+This Cheat Sheet contains some [Antimalware Scan Interface (AMSI)](https://learn.microsoft.com/en-us/windows/win32/api/_amsi/) bypass / avoidance methods, gathered from different Blog Posts and sources.
 
 Most of the scripts are detected by AMSI itself. So you have to find the [trigger](https://github.com/RythmStick/AMSITrigger) and change the signature at the part via variable/function renaming, string replacement or encoding and decoding at runtime. Alternatively obfuscate them via [ISESteroids](https://www.powershellgallery.com/packages/ISESteroids/2.7.1.7) and or [Invoke-Obfuscation](https://github.com/danielbohannon/Invoke-Obfuscation) to get them working. 
 
