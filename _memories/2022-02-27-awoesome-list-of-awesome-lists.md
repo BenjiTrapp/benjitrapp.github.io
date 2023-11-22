@@ -138,4 +138,8 @@ Still work in progress and probably this list will never end to be updated. Now 
 * [attackercan/regexp-security-cheatsheet](https://github.com/attackercan/regexp-security-cheatsheet)
 * [kleiton0x00/Advanced-SQL-Injection-Cheatsheet](https://github.com/kleiton0x00/Advanced-SQL-Injection-Cheatsheet)
 
+## EDR/AV 
+
+* [tkmru/awesome-edr-bypass](https://github.com/tkmru/awesome-edr-bypass)
+
 If you have an awesome list that ia missing here - send me a Pull Request or open an issue. Thank you :)
