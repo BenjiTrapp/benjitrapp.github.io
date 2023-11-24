@@ -171,7 +171,7 @@ Get-ADUser -Identity <User ID> -Properties *
 ### Get AD User by Email + Specific Property
 
 ```powershell
-Get-ADUser -Filter 'UserPrincipalName -eq "firstname.surname@covestro.com"' -Properties *
+Get-ADUser -Filter 'UserPrincipalName -eq "firstname.surname@example.com"' -Properties *
 | Select PasswordLastSet
 ```
 
