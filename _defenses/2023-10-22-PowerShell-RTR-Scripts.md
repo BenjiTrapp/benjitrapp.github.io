@@ -166,7 +166,7 @@ Get-ADComputer -Filter 'operatingsystem -like "*" -and enabled -eq "true"' -Prop
 ### Get AD User All Properties
 
 ```powershell
-Get-ADUser -Identity <CWID> -Properties *
+Get-ADUser -Identity <User ID> -Properties *
 ```
 ### Get AD User by Email + Specific Property
 
