@@ -4,7 +4,6 @@ title: IP to CloudProvider
 ---
 
 <img height="200" align="left" src="https://github.com/BenjiTrapp/ip-to-cloudprovider/raw/main/static/logo.png">
-
 This command-line tool helps to manage and check IP ranges for various service providers. It allows you to update IP ranges for specific providers, check if an IP belongs to any provider's range, and even verify a list of IPs from a file. Some GitHub Actions are helping to create a nice workflow around the CLI-Tool.
 
 ## Features
