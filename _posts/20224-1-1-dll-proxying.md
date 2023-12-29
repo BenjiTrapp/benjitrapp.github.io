@@ -1,6 +1,6 @@
 ---
 layout: post
-title:DLL Hijacking/Proxying
+title: DLL Hijacking/Proxying
 ---
 
 <img height="200" align="left" src="https://github.com/BenjiTrapp/ip-to-cloudprovider/raw/main/static/logo.png">
