@@ -2,7 +2,7 @@
 layout: memory
 title: Burp Cheat Sheet
 ---
-<img height="200" align="left" src="https://github.com/BenjiTrapp/boxed-kali/raw/main/static/burp_logo.png" > 
+<img height="200" align="left" src="/images/burp_logo.png" > 
 A cheat sheet for PortSwigger Burp Suite application security testing framework. Starting from Hot keys over global till editor
 
 
