@@ -140,7 +140,7 @@ The resulted `target.dll` proxies all the function calls based on the exported f
 On this way, the application which depends on the original methods of `target.dll` is working normally. Additional it also executes the
 `Payload()` function at initialization to run the malicious code.
 
-Overall this technique is not new, but the approach still a neat way to gain persistance. For example you can use [windows-dll-hijacking/dll_hijacking_candidates.csv at master · wietze/windows-dll-hijacking (github.com)](https://github.com/wietze/windows-dll-hijacking/blob/master/dll_hijacking_candidates.csv) as a baseline and casual tools like Microsoft Teams, VS Code, KeePass etc. to gain persistance even after a reboot of the victim's machine.
+Overall this technique is not new, but the approach still a neat way to gain persistance. For example you can use [windows-dll-hijacking](https://github.com/wietze/windows-dll-hijacking/blob/master/dll_hijacking_candidates.csv) as a baseline and casual tools like Microsoft Teams, VS Code, KeePass etc. to gain persistance even after a reboot of the victim's machine.
 
 ## Enough talking - Time for tackling an Example
 
@@ -167,7 +167,7 @@ If you ask yourself now: Why "NAME NOT FOUND"? Then it is a good idea now to che
 
 For more insights check out the  [official Microsoft Docs](https://learn.microsoft.com/en-us/windows/win32/dlls/dynamic-link-library-search-order). Based on this filter we now see that the Application's directory is checked before the Windows directories are accessed.
 
-With those filters set we can now gain an overview that we now match with  [dll_hijacking_candidates.csv](https://github.com/wietze/windows-dll-hijacking/blob/master/dll_hijacking_candidates.csv  to find a potential DLL which is fitting for our attack:
+With those filters set we can now gain an overview that we now match with  [dll_hijacking_candidates.csv](https://github.com/wietze/windows-dll-hijacking/blob/master/dll_hijacking_candidates.csv)  to find a potential DLL which is fitting for our attack:
 
 ![](/images/proc_mon_result.png)
 
