@@ -3,7 +3,7 @@ layout: post
 title: DLL Proxying for Persistence - A Stealthy Technique
 ---
 
-<img height="200" align="left" src="/images/dll_proxy_logo.jpeg">
+<img height="200" align="left" src="/images/dll_proxy_logo.png">
 Unlocking a loophole in Windows' DLL search order by using DLL Proxying to stealthily intercepts and redirects calls to forge persistence without raising suspicion. Exploiting this you as an attacker can nest malicious content within seemingly innocent DLLs. This tutorial shows you in depth how things are working out.
 
 # Persistance by DLL Proxying
@@ -19,7 +19,7 @@ pre-requisites:
 
 Windows has a search order of predefined paths, for every application to look for required DLLs. This can be exploited by putting a malicious
 DLL with the same name in the search path that contains malicious content and "proxying" the calls forward to the original DLL like shown below:
-![/images/dll_proxying.png]
+![](/images/dll_proxying.png)
 
 This technique can be used by attackers to gain persistence or pivot this even to privilege escalation. Additional defensive evasion is possible and with some luck even bypass EDR tools.
 
@@ -150,7 +150,7 @@ To make something different we use as the password manager KeePassXC as a baseli
 ### Finding a suitable DLL 
 
 As initial step we require a suitable DLL, to detect one in KeePass we can use [Process Monitor](https://docs.microsoft.com/en-us/sysinternals/downloads/procmon) from [Sysinternals](https://docs.microsoft.com/en-us/sysinternals/). With the proper settings like shown below:
-![/images/proc_mon_filter.png]
+![](/images/proc_mon_filter.png)
 
 Set the filter like this:
 * Column: `Path` "ends with" value `dll`
@@ -159,18 +159,18 @@ Set the filter like this:
 
 If you ask yourself now: Why "NAME NOT FOUND"? Then it is a good idea now to check out the loading order of DLLs:
 
-![/images/dll_loading_order.png]
+![](/images/dll_loading_order.png)
 
 For more insights check out the  [official Microsoft Docs](https://learn.microsoft.com/en-us/windows/win32/dlls/dynamic-link-library-search-order. Based on this filter we now see that the Application's directory is checked before the Windows directories are accessed.
 
 With those filters set we can now gain an overview that we now match with  [dll_hijacking_candidates.csv](https://github.com/wietze/windows-dll-hijacking/blob/master/dll_hijacking_candidates.csv  to find a potential DLL which is fitting for our attack:
 
-![/images/proc_mon_result.png]
+![](/images/proc_mon_result.png)
 
 Here the `KeePassXC.exe` app tries to load the library `userenv.dll`. Additional also `version.dll` is a good fit. To show that everything which is shown here is generic, you find a prepared `.dll` for both in the previous linked zipped archive.
 
 Since KeePass can'f find both `.dll` in the current working directory we now need to check the original source. The easies way to find it is by simply searching for it `dir /s userenv.dll:
-![/images/cmd_search_userenv.png]
+![](/images/cmd_search_userenv.png)
 
 So we can simply copy the `userenv.dll` from the 
  `C:\Windows\SysWOW64` folder into the KeePass folder and save if as an example as `userenv_orig.dll`.
@@ -291,7 +291,7 @@ to the home folder of KeePassXC.
 
 Now launch `KeePassXC.exe` and the application behave normally and also execute the Payload by starting `calc.exe`
 
-![/images/payload_detonation.gif]
+![](/images/payload_detonation.gif)
 Still here? Alright lights try something different to create the payload. Since Nim has an awesome option called [Foreign Function Interface (FFI)](https://nim-lang.org/docs/manual.html#foreign-function-interface) we could also make use of it. Let's switch from C to Nim:
 
 
