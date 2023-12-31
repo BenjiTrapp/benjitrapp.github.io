@@ -295,6 +295,7 @@ to the home folder of KeePassXC.
 Now launch `KeePassXC.exe` and the application behave normally and also execute the Payload by starting `calc.exe`
 
 ![](/images/payload_detonation.gif)
+
 Still here? Alright lights try something different to create the payload. Since Nim has an awesome option called [Foreign Function Interface (FFI)](https://nim-lang.org/docs/manual.html#foreign-function-interface) we could also make use of it. Let's switch from C to Nim:
 
 
