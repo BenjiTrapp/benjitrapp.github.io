@@ -173,7 +173,7 @@ With those filters set we can now gain an overview that we now match with  [dll_
 
 Here the `KeePassXC.exe` app tries to load the library `userenv.dll`. Additional also `version.dll` is a good fit. To show that everything which is shown here is generic, you find a prepared `.dll` for both in the previous linked zipped archive.
 
-Since KeePass can'f find both `.dll` in the current working directory we now need to check the original source. The easies way to find it is by simply searching for it `dir /s userenv.dll:
+Since KeePass can'f find both `.dll` in the current working directory we now need to check the original source. The easies way to find it is by simply searching for it using this command`dir /s userenv.dll`:
 ![](/images/cmd_search_userenv.png)
 
 So we can simply copy the `userenv.dll` from the 
