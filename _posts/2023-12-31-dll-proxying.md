@@ -149,7 +149,7 @@ Since there are dozens of example starting from casual Windows dlls, over tools 
 To make something different we use as the password manager KeePassXC as a baseline to show this technique (at point of testing, 30.12.2023, Microsoft Defender and EDR Tools were not reacting )
 
 * **Get the binary here**: [KeePassXC 2.6.6 Portable (32-bit)](https://github.com/keepassxreboot/keepassxc/releases/download/2.6.0/KeePassXC-2.6.6-Win32-Portable.zip) 
-* **Archived Code and dlls**: [HERE](/assets/posts/keepass.zip))
+* **Archived Code and dlls**: [HERE](/assets/posts/keepass.zip)
 
 ### Finding a suitable DLL 
 
