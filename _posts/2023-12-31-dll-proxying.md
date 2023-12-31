@@ -3,7 +3,7 @@ layout: post
 title: DLL Proxying for Persistence - A Stealthy Technique
 ---
 
-<img height="200" align="left" src="/images/dll_proxying_logo.jpeg">
+<img height="150" align="left" src="/images/dll_proxying_logo.jpeg">
 Unlocking a loophole in Windows' DLL search order by using DLL Proxying to stealthily intercepts and redirects calls to forge persistence without raising suspicion. Exploiting this you as an attacker can nest malicious content within seemingly innocent DLLs. This tutorial shows you in depth how things are working out.
 
 <br>
