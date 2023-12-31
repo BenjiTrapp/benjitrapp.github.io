@@ -167,6 +167,8 @@ If you ask yourself now: Why "NAME NOT FOUND"? Then it is a good idea now to che
 
 For more insights check out the  [official Microsoft Docs](https://learn.microsoft.com/en-us/windows/win32/dlls/dynamic-link-library-search-order). Based on this filter we now see that the Application's directory is checked before the Windows directories are accessed.
 
+When as an example the Application Directory is read only (due to hardening as an example), placing it under a different directory that is present in the %PATH% variable can do the trick as well.
+
 With those filters set we can now gain an overview that we now match with  [dll_hijacking_candidates.csv](https://github.com/wietze/windows-dll-hijacking/blob/master/dll_hijacking_candidates.csv)  to find a potential DLL which is fitting for our attack:
 
 ![](/images/proc_mon_result.png)
