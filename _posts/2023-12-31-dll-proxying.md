@@ -53,16 +53,7 @@ With these assumptions it is possible to use a basic template for `payload.c`:
 
 void Payload()
 {
-  STARTUPINFO si;
-  PROCESS_INFORMATION pi;
-  
-  char cmd[] = "calc.exe";
-  
-  ZeroMemory(&si, sizeof(si));
-  si.cb = sizeof(si);
-  ZeroMemory(&pi, sizeof(pi));
-
-  CreateProcess(NULL, cmd, NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi);
+  // Place your malicious code here
 }
 
 BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpReserved)
