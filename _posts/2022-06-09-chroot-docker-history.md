@@ -3,6 +3,7 @@ layout: post
 title: chroot a short history of containerization
 ---
 
+<img height="120" align="left" src="/images/chroot.png">
 A short review on the history of Containers at a glance. If you take one step back from docker you'll probably read about `chroot` spelled as change root.
 It's a Linux command that allows you to set the root directory of a new process. This is the very heart of the containerization approach and how the isolation works. In this way, we can just set the root directory to be where-ever the new container's new root directory should be. After that isolation the new container group of processes can't see anything outside of it. This isolation is eliminating common security issues, because the new process has no visibility outside of its new root.
 
