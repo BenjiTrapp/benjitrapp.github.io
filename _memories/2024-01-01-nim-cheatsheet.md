@@ -82,7 +82,7 @@ type
 #### Sets ####
 
 ```nim
-{} # emtpy set
+{} # empty set
 {'a'..'z', '0'..'9'} # This constructs a set that contains the
                      # letters from 'a' to 'z' and the digits
                      # from '0' to '9'
@@ -139,7 +139,7 @@ proc `$` (x: int): string =
 ### Control flow ###
 
 ```nim
-if name == "Andreas":
+if name == "Benji":
   echo("What a nice name!")
 elif name == "":
   echo("Don't you have a name?")
