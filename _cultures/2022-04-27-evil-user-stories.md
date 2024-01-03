@@ -3,7 +3,7 @@ layout: culture
 title: Evil User Stories
 ---
 
-<img height="200" align="left" src="/images/evil_user_stories.png" >
+<img height="120" align="left" src="/images/evil_user_stories.png" >
 User Stories are an awesome part of XP (eXtreme Programming) and a really big achievement in leverage user centric thinking.
 If you think of regular user story template you surely have found one like this:
 
