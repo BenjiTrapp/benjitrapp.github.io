@@ -5,6 +5,7 @@ title: PowerShell Cheatsheet
 
 <img height="200" align="left" src="/images/powershell_logo.png" > PowerShell is a powerful tool for managing and automating tasks in the Windows environment. This cheat sheet provides an array of commands, tips, and best practices to enhance workflows and skills for RTR (Real Time Response). 
 
+## PowerShell CheatSheet
 <!-- cSpell:disable -->
 ```powershell
 Get-Command                                               # Retrieves a list of all the commands available to PowerShell
