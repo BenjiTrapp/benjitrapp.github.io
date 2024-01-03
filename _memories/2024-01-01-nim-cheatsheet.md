@@ -3,7 +3,7 @@ layout: memory
 title: Nim Cheatsheet
 ---
 
-<img height="200" align="left" src="/images/nim_logo.png" > Nim is a powerful, efficient, and expressive programming language known for its speed and flexibility. In our Nim cheatsheet, you'll find a concise reference guide covering essential syntax, data types, control structures, and commonly used commands. Whether you're a beginner getting started with Nim or an experienced developer looking for quick references, this cheatsheet will serve as a handy tool to streamline your coding journey and boost your productivity
+<img height="200" align="left" src="/images/nim_logo.png" > Nim is a powerful, efficient, and expressive programming language known for its speed and flexibility. In this Nim cheatsheet, you'll find a concise reference guide covering essential syntax, data types, control structures, and commonly used commands.
 
 Helpful links:
 * [Official learn Nim](https://nim-lang.org/learn.html)
@@ -82,7 +82,7 @@ type
 #### Sets ####
 
 ```nim
-{} # emtpy set
+{} # empty set
 {'a'..'z', '0'..'9'} # This constructs a set that contains the
                      # letters from 'a' to 'z' and the digits
                      # from '0' to '9'
@@ -139,7 +139,7 @@ proc `$` (x: int): string =
 ### Control flow ###
 
 ```nim
-if name == "Andreas":
+if name == "Benji":
   echo("What a nice name!")
 elif name == "":
   echo("Don't you have a name?")
