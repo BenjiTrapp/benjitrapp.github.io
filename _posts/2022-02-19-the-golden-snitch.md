@@ -3,12 +3,10 @@ layout: post
 title: OpenShift - Golden Snitch
 ---
 
+<img height="200" align="left" src="/images/snitch-logo2.png" >
 Ever wondered who is eating your headers, requests or responses, or even thought about snitching an application? With this tiny tool you can simply achieve this. 
 
 --> [Catch the golden snitch](https://github.com/BenjiTrapp/golden-snitch)
-<p align="center">
-<img width="150" src="/images/snitch-logo2.png">
-</p>
 
 
 ### How does this work?
