@@ -3,7 +3,7 @@ layout: memory
 title: PowerShell Cheatsheet
 ---
 
-<img height="80" align="left" src="/images/powershell_logo.png" > PowerShell is a powerful tool for managing and automating tasks in the Windows environment. This cheat sheet provides an array of commands, tips, and best practices to enhance workflows and skills for RTR (Real Time Response). 
+<img height="80" align="left" src="/images/powershell_logo.png" > PowerShell is a powerful tool for managing and automating tasks in the Windows environment. This cheat sheet provides an array of commands, tips, and best practices to enhance workflows and skills for RTR (Real Time Response). To learn more about RTR check out my [Powershell RTR Scripts](https://benjitrapp.github.io/defenses/2023-10-22-PowerShell-RTR-Scripts/)
 
 <br><br><br>
 ## PowerShell CheatSheet
