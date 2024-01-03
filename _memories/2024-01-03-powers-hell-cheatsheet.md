@@ -7,6 +7,7 @@ title: PowerShell Cheatsheet
 
 <br><br><br>
 ## PowerShell CheatSheet
+Below you find a cheat sheet showing a quick walk through PowerShell:
 
 <!-- cSpell:disable -->
 ```powershell
