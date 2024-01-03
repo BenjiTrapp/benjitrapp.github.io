@@ -183,3 +183,27 @@ qwe.php\u5620.png
 qwe.php%C0%80.png
 qwe.php\u0020.png
 ```
+
+
+## Autorecon for a domain
+
+Make sure that this stuff is present:
+* [amass](https://github.com/owasp-amass/amass)
+* [assetfinder](https://github.com/tomnomnom/assetfinder)
+* [CHAOS](https://github.com/tiagorlampert/CHAOS)
+* [subfinder](https://github.com/projectdiscovery/subfinder)
+* [dnsx](https://github.com/projectdiscovery/dnsx)
+* [httpx](https://github.com/projectdiscovery/httpx)
+
+```bash
+ function autorecon {
+	export d=$1
+	amass enum - passive -norecursive -noalts -d $d -o domains-$d
+	amass enum -passive -norecursive -noalts -df domains-$d -o domains-all-$d
+	assetfinder -subs-only $d | anew domains-all-$d
+	chaos -silent -d $d anew domains-all-$d
+	subfinder -silent -d $d anew domains-all-$d
+	cat domains-all-$d❘ dnsx -json -o dnsx-$d.json
+	cat dnsx-$d.json | ja -r '.host' ❘ httpx -favicon -jarm -include-chain -p http:80, 8080, 8888, https:443,8443,8088 -json -o httpx-$d.json
+}
+```
