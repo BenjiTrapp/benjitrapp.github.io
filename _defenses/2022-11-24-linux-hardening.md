@@ -2,13 +2,11 @@
 layout: defense
 title: Linux Hardening - etckeeper
 ---
+
 <!-- cSpell:disable -->
-
-## etckeeper
-
+<img height="200" align="left" src="/images/etc_keeper_logo.png" >
 A versioning of configuration directories is meaningful from documentation and backup view. Thus all changes to configuration files are logged and versioned, in addition earlier versions can be restored in the case of error. Completely without caution these features are not to be enjoyed, since protectable information is in the etc directory. Encryption and restrictive file permissions when transferring or backing up the repo in which the etc directory is versioned should therefore be taken into account. This article shows the versioning with the software etckeeper with git.
 Table of Contents
-
 
 ### Install etckeeper
 
@@ -28,11 +26,14 @@ sudo vi /etc/etckeeper/etckeeper.conf
 ```
 
 # The VCS to use.
+
+```
 #VCS="hg"
 VCS="git"
 #VCS="bzr"
 #VCS="darcs"
 [...]
+```
 
 Other important options are AVOID_DAILY_AUTOCOMMITS and AVOID_COMMIT_BEFORE_INSTALL. These are both disabled by default. If you are more involved with etckeeper and want to create meaningful commits for all changes, you should enable them.
 
