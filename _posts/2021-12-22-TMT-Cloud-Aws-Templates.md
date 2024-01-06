@@ -3,6 +3,7 @@ layout: post
 title: Threat Modeling Tool - AWS Cloud Templates
 ---
 
+<img height="200" align="left" src="/images/tm-tool-logo.png" >
 These are some first steps to create Templates for cloud based Threat Models. The AWS Templates include the best practices from the [AWS Well Architected Framework](https://docs.aws.amazon.com/wellarchitected/latest/framework/wellarchitected-framework.pdf), [Trendmicro Cloud Conformity Knowledge-Base](https://www.trendmicro.com/cloudoneconformity/knowledge-base/aws/) and parts of my own experience. The included threats/risks are still in progress - also some more AWS Services and dedicated Docker Templates will soon be implemented. Stay tuned :) 
 
 -> [TMT Cloud Templates](https://github.com/BenjiTrapp/tmt-cloud-templates)
