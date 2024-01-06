@@ -2,7 +2,7 @@
 layout: post
 title: Proxy madness - Defeat SQLi and more
 ---
-<img height="200" align="left" src="/images/nginx_proxy_madness.png" >
+<img height="150" align="left" src="/images/nginx_proxy_madness.png" >
 After reading the cheatsheet about [weird proxies](https://github.com/GrrrDog/weird_proxies) I had the epiphany to mess around with some default proxy setups in my Kubernetes cluster. 
 
 <p align="center">
