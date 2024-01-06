@@ -5,11 +5,11 @@ title: Proxy madness - Defeat SQLi and more
 <img height="150" align="left" src="/images/nginx_proxy_madness.png" >
 After reading the cheatsheet about [weird proxies](https://github.com/GrrrDog/weird_proxies) I had the epiphany to mess around with some default proxy setups in my Kubernetes cluster. 
 
+The things I'll show here in this post aren't meant to run in production or have the intention to give 100% protection. Based on the proxy stuff we could create a poor man's k8s WAF and iterate to a more k8s native solution. As a baseline we try to do something against SQL injection (SQLi) - but the list of patterns could be enhanced by other stuff like XSS, XXE and more.
+
 <p align="center">
 <img width=300 src="/images/seven_proxies.jpg">
 </p>
-
-The things I'll show here in this post aren't meant to run in production or have the intention to give 100% protection. Based on the proxy stuff we could create a poor man's k8s WAF and iterate to a more k8s native solution. As a baseline we try to do something against SQL injection (SQLi) - but the list of patterns could be enhanced by other stuff like XSS, XXE and more.
 
 In the first iteration we start with building a NGINX-proxy as a [sidecar container](https://learnk8s.io/sidecar-containers-patterns) and will look like this:
 
