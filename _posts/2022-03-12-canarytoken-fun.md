@@ -3,10 +3,11 @@ layout: post
 title: Canarytokens fun
 ---
 
+<img height="200" align="left" src="/images/smurf.png" >
 While crafting a new lab to learn more about sniffing through docker images, I had the idea to make things more realistic. Therefore the usage of [canarytokens](https://canarytokens.org/generate) might be nice to spice it a little up. Since these tokens can't cause no real harm - but look and behave realistic, they went straight into the public GitHub repository. In less then 5min, the first token was scanned and automatically tried to validate. This was somehow mind blowing (but also really expected - since I build a similar token scan service years ago for my ex-employer to protect secrets from unintended leakage). Well now let me show some of the things I learned and discuss it a little.
 
 ## Tokens meet incidents
-<img height="200" align="left" src="/images/smurf.png" >
+
 The AWS credentials gone wild - the k8s config, WireGuardVPN, M$ SQL Database and MySQL dump were ignored completely so far. In total the AWS Token got triggered 20 times in less then 24 hours by some scripts.
 
 To increase the fun - lets post the credentials again:
