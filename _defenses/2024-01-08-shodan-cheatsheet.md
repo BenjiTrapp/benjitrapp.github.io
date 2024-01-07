@@ -6,6 +6,7 @@ title: Shodan for Defenders
 <img height="200" align="left" src="/images/shodan_defender_logo.png" >
 Shodan, a search engine for finding internet-connected devices. This post covers basic search commands, the Shodan Command Line tool, and incident response tactics for detecting Cobalt Strike Servers, Metasploit, Empire, and Responder. It includes valuable resources and cheat sheets for further exploration.
 
+<br><br><br><br><br><br>
 ## Attack Surface 
 
 Based on your company domain you could do the following to see your infrastructure with the eyes of an attacker:
