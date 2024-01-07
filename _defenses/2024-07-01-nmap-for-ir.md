@@ -62,7 +62,7 @@ Port Selection:
 - `-p-`: all ports except zero  
 - `-p http*`: wildcard port names  
 - `-p 80-100`: range of ports  
--`-F`: Fast scan. Top 100 ports  
+- `-F`: Fast scan. Top 100 ports  
 
 ### Version Detection
 
