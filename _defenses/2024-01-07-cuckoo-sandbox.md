@@ -1,9 +1,9 @@
 ---
 layout: defense
-title: SBOM - Software Bill Of Material
+title: Cuckoo Sandbox 
 ---
 
-<img height="200" align="left" src="/images/cuckoo-sb-logo.png" >
+<img height="200" align="center" src="/images/cuckoo-sb-logo.png" >
 Guide for setting up a Cuckoo Sandbox for malware analysis on Ubuntu & Windows VMs. It covers VM setup, network configurations, software installations, and troubleshooting tips. The content includes detailed steps, links to references, and helpful resources for an effective setup.
 
 # Some words of warning first
