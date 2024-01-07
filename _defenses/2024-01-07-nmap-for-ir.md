@@ -6,28 +6,31 @@ title: NMAP for Incident Response
 <img height="150" align="left" src="/images/nmap_ir_logo.png" >
 This post covers the versatile uses of NMAP, exploring target enumeration, host discovery, port scanning techniques, version and OS detection, traceroute, script scanning, varied output formats, and NMAP port states. It's a comprehensive guide to leveraging NMAP effectively in incident response scenarios, citing insights from "NMAP Network Scanning by Gordon 'Fyodor' Lyon
 
-### Target Enumeration
+## Target Enumeration
 
-`nmap 192.168.0.0/8`  
-`nmap 192.168.0-255.1-254`  
-`nmap 100.0.0.1/24 --exclude 100.0.0.5`  
+```
+nmap 192.168.0.0/8
+nmap 192.168.0-255.1-254
+nmap 100.0.0.1/24 --exclude 100.0.0.5
+```
+ 
 
 `-iL <filename>`: Input from list. Separated by tabs, spaces or newlines.  
 `--exclude <filename>`: Exclude from list.  
 `cat list.txt | nmap -iL -`: input from standard input  
 
-### Host Discovery
+## Host Discovery
 
 `-sL`: List scan. DNS resolution and print hosts.  
 `-sP`: Ping scan. Only perform ping scan. ICMP echo request and TCP ACK packet to port 80.  
 `-PN`: No ping scan. All other scans will be performed on all targets.  
 
-### Reverse-DNS resolution
+## Reverse-DNS resolution
 
 `-n`: No DNS Resolution  
 `-R`: DNS resolution for all targets  
 
-### Port Scanning
+## Port Scanning
   
 `-sS`: TCP SYN Scan  
 Probe response:  
@@ -68,17 +71,17 @@ Port Selection:
 
 `-sV`: Version detection.  
 
-### OS Detection
+## OS Detection
 
 `-O`: Perform OS detection. Good to include with `-v` for verbosity.  
 `--osscan-guess`: provides a best guess of OS where unknown.  
 
-### Traceroute
+## Traceroute
 
 `--traceroute`: Performed post-scan using information from the scan results to determine the port and protocol most likely to reach its target.  
 
 
-### Script Scanning
+## Script Scanning
 
 `-sC` or `--script=default`: Enable most common scripts. Those in `default` category.   
 `--script <name>`: Enable script.  
@@ -90,7 +93,7 @@ Examples:
 `nmap --script vuln,malware,version 100.100.110.1`  
 
 
-### Output
+## Output
 
 `-oN`: Normal output.  
 `-oX`: XML output.  
@@ -103,18 +106,20 @@ Arguments: uses `strftime`:
 - `%D = %m%d%y`  
 
 Examples:  
-`nmap -oX scan-%T-%D.xml 100.110.100.1`  
-`nmap -oG - -p80 10.1.1.1/24 | awk '/open/{print $2 " " $3}'`: Grep output to stdout then awk to show IP / Domain. 
+```
+nmap -oX scan-%T-%D.xml 100.110.100.1
+nmap -oG - -p80 10.1.1.1/24 | awk '/open/{print $2 " " $3}' # Grep output to stdout then awk to show IP / Domain. 
+```
 
 
-### Other
+## Other
 
 `-T1, -T2, -T3, -T4, -T5`: Higher number results in increase speed of scanning.  
 `--reason`: provide more detailed reason for port status.  
 `--open`: show only open ports.  
 `-A`: Aggressive scanning: Same as `-O -sV -sC --traceroute`.  
 
-### NMAP Port States:
+## NMAP Port States:
 
 `open`: Application is actively accepting TCP/UDP connections.  
 `closed`: Port is accessible but no application listening on it.  
