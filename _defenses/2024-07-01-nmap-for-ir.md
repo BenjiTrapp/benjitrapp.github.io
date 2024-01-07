@@ -75,7 +75,7 @@ Port Selection:
 
 ### Traceroute
 
-`--traceroute`: Performed post-scan using information from the scan results to determine the port and protocl most likely to reach its target.  
+`--traceroute`: Performed post-scan using information from the scan results to determine the port and protocol most likely to reach its target.  
 
 
 ### Script Scanning
@@ -123,4 +123,4 @@ Examples:
 `open|filtered`: Unable to determine if port is open or filtered. Open port gives no response.  
 `closed|filtered`: Unable to determine if port is closed or filtered. On for IP ID scan (`-sI`).  
 
-Source: NAMP Network Scanning by Gordon 'Fyodor' Lyon.
+Source: NMAP Network Scanning by Gordon 'Fyodor' Lyon.
