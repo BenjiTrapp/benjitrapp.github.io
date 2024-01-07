@@ -174,3 +174,4 @@ Nmap is a robust and powerful tool and nearly always step one for most of the CT
 | nmap 192.168.1.1-1/24 -PR -sn -vv               | Arp discovery only on local network, no port scan   |
 | nmap -iR 10 -sn -traceroute                     | Traceroute to random targets, no port scan          |
 | nmap 192.168.1.1-50 -sL –dns-server 192.168.1.1 | Query the Internal DNS for hosts, list targets only |
+
