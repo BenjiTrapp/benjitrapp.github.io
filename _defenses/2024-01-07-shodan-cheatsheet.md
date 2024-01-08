@@ -88,7 +88,6 @@ server2003.smb.local
 "HTTP/1.1 401 Unauthorized" "Date: Wed, 12 Sep 2012 13:06:55 GMT"
 ```
 
-
 #### Sources     
 * [https://thor-sec.com/cheatsheet/shodan/shodan_cheat_sheet/](https://thor-sec.com/cheatsheet/shodan/shodan_cheat_sheet/)
 * [https://developer.shodan.io/api/banner-specification](https://developer.shodan.io/api/banner-specification)  
