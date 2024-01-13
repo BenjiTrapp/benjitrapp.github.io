@@ -106,6 +106,15 @@ article.defense {
   overflow: auto;
 }
 
+article.attack {
+  background-color: #500d0d;
+  padding: 5px 5px 5px 20px;
+  -moz-box-shadow: 1px 3px rgba(0, 0, 0, 0.1);
+  -webkit-box-shadow: 3px 3px rgba(0, 0, 0, 0.1);
+  margin: 10px 0px 40px 0px;
+  overflow: auto;
+}
+
 p {
   margin: 15px 0;
 }
@@ -341,6 +350,7 @@ nav {
   }
 }
 
+
 // Styling for defense
 
 .defenses > .defense {
@@ -353,6 +363,38 @@ nav {
 }
 
 .defense {
+  blockquote {
+    margin: 1.8em .8em;
+    border-left: 2px solid $light-lime;
+    padding: 0.1em 1em;
+    color: $lightGray;
+    font-size: 22px;
+    font-style: italic;
+  }
+
+  .comments {
+    margin-top: 10px;
+  }
+
+  .read-more {
+    text-transform: uppercase;
+    font-size: 15px;
+  }
+}
+
+
+// Styling for attacks
+
+.attacks > .attack {
+  padding-bottom: 2em;
+}
+
+.attacks > .attack:last-child {
+  padding-bottom: 1em;
+  border-bottom: none;
+}
+
+.attack {
   blockquote {
     margin: 1.8em .8em;
     border-left: 2px solid $light-lime;

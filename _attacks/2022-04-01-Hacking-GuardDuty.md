@@ -1,7 +1,8 @@
 ---
-layout: post
+layout: attack
 title: AWS Guard-OffDuty
 ---
+
 <img height="200" align="left" src="/images/guard_offduty.png" >
 Let's assume that we have found and  successfully validated some AWS credentials during an engagement. Then it might be a good idea to modify the threat detection services like GuardDuty to reduce the likelihood of triggering an alert. Therefore we need to modify the GuardDuty configuration to stay cloaked. Deleting or modifying key attributes of GuardDuty might have a less likely chance to raise alerts. The actions we can do depend on the compromised permissions available. The GuardDuty architecture and the presence of higher level controls like [Service Control Policies](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_scps.html) can give us options.
 

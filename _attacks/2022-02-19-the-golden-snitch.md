@@ -1,5 +1,5 @@
 ---
-layout: post
+layout: attack
 title: OpenShift - Golden Snitch
 ---
 

@@ -1,5 +1,5 @@
 ---
-layout: post
+layout: attack
 title: DLL Proxying for Persistence - A Stealthy Technique
 ---
 
