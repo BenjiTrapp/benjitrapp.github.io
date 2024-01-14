@@ -1,9 +1,7 @@
 ---
 layout: post
-title: Enumerate AWS AccountIDs 
+title: Enumerate AWS AccountIDs - An approach to achieve an AWS whois
 ---
-
-### An approach to achieve an AWS whois
 
 Ever found some AWS credentials and wondered how to find out what they are used for, or if they are even valid?
 
