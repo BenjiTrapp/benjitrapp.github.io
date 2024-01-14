@@ -1,6 +1,5 @@
 ---
-
-layout: post
+layout: attack
 title: Pennywise EDR evasion
 ---
 
