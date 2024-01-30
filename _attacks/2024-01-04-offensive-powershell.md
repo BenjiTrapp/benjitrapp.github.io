@@ -1,5 +1,5 @@
 ---
-layout: memory
+layout: attack
 title: Offensive PowerShell
 ---
 
