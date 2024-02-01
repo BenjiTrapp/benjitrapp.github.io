@@ -12,7 +12,7 @@ Unlocking a loophole in Windows' DLL search order by using DLL Proxying to steal
 # Persistance by DLL Proxying
 
 pre-requisites:
-- [mingw-w64](http://mingw-w64.org/downloads)
+- [mingw-w64](http://mingw-w64.org/downloads) (brew install mingw-w64)
 - Python3
 - Editor/IDE like Vim, VSCode, ...
 - Optional: Nim if you like to try out new things
@@ -43,7 +43,7 @@ Forging the DLL on this way ensures, that the application behaves normally witho
 
 ## Creating the Proxy DLL
 
-Let's assume that the target DLL whish should be proxied is called `target_original.dll` and the proxy DLL `target.dll`. 
+Let's assume that the target DLL whish should be proxied is called `target_original.dll` and the proxy DLL `target.dll`. Next we require the entrypoint for a DLL which is described by Microsoft [here](https://learn.microsoft.com/de-de/windows/win32/dlls/dllmain) and forms the baseline the payload.
 
 With these assumptions it is possible to use a basic template for `payload.c`:
 
