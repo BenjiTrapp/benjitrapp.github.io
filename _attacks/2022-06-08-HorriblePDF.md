@@ -3,7 +3,7 @@ layout: attack
 title: Crafting a HorriblePDF
 ---
 
-<img height="150" align="left" src="/images/horriblepdf.png">
+<img height="120" align="left" src="/images/horriblepdf.png">
 Transform a normal PDF file into malicious and steal Net-NTLM Hashes from crappy windows machines.
 This vulnerability should be fixed but it's still nice to remember it.
 
