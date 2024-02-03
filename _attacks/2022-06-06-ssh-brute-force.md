@@ -1,8 +1,8 @@
 ---
-layout: memory
+layout: attack
 title: SSHBruteForcer
 ---
-
+<img height="120" align="left" src="/images/ssh-bruteforcer.png">
 Tiny and simple SSH brute force tool written in Python3 that can return a meterpreter reverse shell. Edit the source code below for your hostname, username, password, and MSF reverse shell details. There is also functionality to automatically download `/etc/passwd` and `/etc/shadow` from the host. This as you might have already figured out is only working if the host has enough access.
 
 ```python

@@ -1,10 +1,10 @@
 ---
-layout: memory
+layout: attack
 title: Benji's reverse shell cheat sheet
 ---
 
 <p align="center">
-<img width="600" src="/images/reverse-shell.png">
+<img width="500" src="/images/reverse-shell.png">
 </p>
 
 ## Listener for a Reverse Shell
