@@ -1,4 +1,3 @@
-
 ---
 layout: attack
 title: Keylogger with sneaky features
