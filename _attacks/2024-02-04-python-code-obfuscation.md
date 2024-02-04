@@ -3,7 +3,7 @@ layout: attack
 title: Code Obfuscation in Python to cloak scripts
 ---
  
-
+<img height="150" align="left" src="/images/python-code-obfuscation.png" >
 There are a number of code obfuscation tools for Python that you can use to protect your code from being reverse-engineered by a defender or accessed by EDR/AV.
 
 One popular code obfuscation tool for Python is PyArmor, which provides a range of features and tools for obfuscating, encrypting, and signing your Python code. PyArmor uses a combination of techniques, such as renaming, string encryption, and bytecode manipulation, to make it difficult for users to understand or modify your code. PyArmor also provides a range of features for managing and controlling access to your obfuscated code, such as licensing, activation, and expiration.
