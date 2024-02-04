@@ -3,7 +3,7 @@ layout: memory
 title: Metasploit Cheat Sheet
 ---
 
-<img height="200" align="left" src="/images/metasploit.png" > 
+<img height="150" align="left" src="/images/metasploit.png" > 
 The Metasploit Project is a computer security project built by rapid7, that provides information on vulnerabilities, exploits, and helping in the development and execution of penetration tests and IDS signatures.
 
 

@@ -5,6 +5,20 @@ title: Security by Design Principles
 
 Quick collection of useful Security by design principles.
 
+- [Least Privilege](#least-privilege)
+- [Defense in Depth](#defense-in-depth)
+- [Fail Securely](#fail-securely)
+- [No Security by Obscurity](#no-security-by-obscurity)
+- [Detect and Record](#detect-and-record)
+- [Don't Trust](#dont-trust)
+- [Keep It Simple](#keep-it-simple)
+- [Secure the Weakest Link](#secure-the-weakest-link)
+- [Decomposition](#decomposition)
+- [Separation of Privilege](#separation-of-privilege)
+- [Use Secure Defaults](#use-secure-defaults)
+- [Don't Reinvent the Wheel](#dont-reinvent-the-wheel)
+
+
 ## Least Privilege
 
 The principle *least privilege* assigns only the minimum necessary rights to software components and individuals. They should only be able to perform their required functions. Its purpose is to minimize the risk by restricting the number of entities and individuals with access to critical systems.

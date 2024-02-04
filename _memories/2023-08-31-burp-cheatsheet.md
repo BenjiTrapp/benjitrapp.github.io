@@ -5,6 +5,10 @@ title: Burp Cheat Sheet
 <img height="140" align="left" src="/images/burp_logo.png" > 
 A cheat sheet for PortSwigger Burp Suite application security testing framework. Starting from Hot keys over global till editor
 
+- [Hot Keys](#hot-keys)
+  - [Global](#global)
+  - [Editor](#editor)
+
 
 ## Hot Keys
 

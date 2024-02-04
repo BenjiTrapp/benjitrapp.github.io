@@ -6,6 +6,19 @@ title: RegEx Cheat Sheet
 
 RegEx is one of the "beautiful" things that I learn from zero every time I have to use it. To speed things up I use this quick reference guide for regular expressions (regex), including symbols, ranges, grouping, assertions and some sample patterns.
 
+- [Basic Syntax](#basic-syntax)
+- [Position Matching](#position-matching)
+- [Character Classes](#character-classes)
+- [Special Characters](#special-characters)
+- [Groups and Ranges](#groups-and-ranges)
+- [Quantifiers](#quantifiers)
+- [Escape Sequences](#escape-sequences)
+- [String Replacement](#string-replacement)
+- [Assertions](#assertions)
+- [POSIX](#posix)
+- [Pattern Modifiers](#pattern-modifiers)
+
+
 <!-- cSpell:disable -->
 ## Basic Syntax
 

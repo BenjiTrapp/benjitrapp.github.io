@@ -5,6 +5,19 @@ title: Google Dorks Cheatsheet
 
 Based on the Google Dorks List it's time to gather all info at a glance in a cheatsheet. Here we go :)
 
+- [Search filters](#search-filters)
+- [Examples](#examples)
+- [Operators](#operators)
+  - [Search Term](#search-term)
+    - [OR](#or)
+    - [AND](#and)
+    - [Operators combination](#operators-combination)
+    - [Include results](#include-results)
+    - [Exclude results](#exclude-results)
+    - [Synonyms](#synonyms)
+    - [Glob pattern (\*)](#glob-pattern-)
+
+
 ## Search filters
 
 | Filter          | Description                                        | Example                              |

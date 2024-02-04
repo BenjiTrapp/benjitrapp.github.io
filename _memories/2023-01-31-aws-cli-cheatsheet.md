@@ -8,9 +8,32 @@ title: AWS - CLI CheatSheet
 http://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html
 https://www.youtube.com/watch?v=_wiGpBQGCjU
 
-
-
-
+- [AWS CLI Cheatsheet](#aws-cli-cheatsheet)
+  - [Setup](#setup)
+    - [Overview](#overview)
+    - [install Virtualbox Guest Additions, passwordless sudo](#install-virtualbox-guest-additions-passwordless-sudo)
+    - [install AWS CLI](#install-aws-cli)
+    - [Bash one-liners](#bash-one-liners)
+  - [Cloudtrail - Logging and Auditing](#cloudtrail---logging-and-auditing)
+  - [IAM](#iam)
+    - [Users](#users)
+    - [Password policy](#password-policy)
+    - [Access Keys](#access-keys)
+    - [Groups, Policies, Managed Policies](#groups-policies-managed-policies)
+  - [S3](#s3)
+  - [EC2](#ec2)
+    - [keypair](#keypair)
+    - [Security Groups](#security-groups)
+  - [Images](#images)
+  - [Instances](#instances)
+    - [Tags](#tags)
+  - [Cloudwatch](#cloudwatch)
+    - [Log Groups](#log-groups)
+        - [create a group](#create-a-group)
+        - [list all log groups](#list-all-log-groups)
+        - [delete a group](#delete-a-group)
+    - [Log Streams](#log-streams)
+  - [Cloudwatch - Monitoring](#cloudwatch---monitoring)
 
 ## Setup
 

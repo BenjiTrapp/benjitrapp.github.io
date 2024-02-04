@@ -9,6 +9,23 @@ title: NMAP Cheat Sheet
 
 Nmap is a robust and powerful tool and nearly always step one for most of the CTFs or challenges from HTB. If you suck at remembering so many commands like me, this cheat sheet is for you
 
+
+- [Target Specification](#target-specification)
+- [Host Discovery](#host-discovery)
+- [Nmap Scan Techniques](#nmap-scan-techniques)
+- [Port Specification](#port-specification)
+- [Service and Version Detection](#service-and-version-detection)
+- [OS Detection](#os-detection)
+- [Timing and performance](#timing-and-performance)
+- [Timing and Performance Switches](#timing-and-performance-switches)
+- [NSE Scripts](#nse-scripts)
+- [Useful NSE Script Examples](#useful-nse-script-examples)
+- [Firewall / IDS Evasion and Spoofing](#firewall--ids-evasion-and-spoofing)
+- [Output](#output)
+- [Miscellaneous Nmap Flags](#miscellaneous-nmap-flags)
+- [Other Useful Nmap Commands](#other-useful-nmap-commands)
+
+
 ## Target Specification
 
 | Switch   | Example                      | Description              |

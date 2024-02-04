@@ -8,6 +8,19 @@ kind was primarily designed for testing Kubernetes itself, but may be used for l
 
 Source: [https://kind.sigs.k8s.io/](https://kind.sigs.k8s.io/)
 
+- [Autocompletion](#autocompletion)
+  - [Bash](#bash)
+  - [ZSH](#zsh)
+- [Basic](#basic)
+- [Advanced Configuration](#advanced-configuration)
+  - [Ports](#ports)
+  - [Add Local Registry](#add-local-registry)
+      - [Step 1: Create local registry](#step-1-create-local-registry)
+    - [Step 2: Create cluster](#step-2-create-cluster)
+      - [Step 3: Connect registry with created network](#step-3-connect-registry-with-created-network)
+  - [Multiple Workers](#multiple-workers)
+
+
 ## Autocompletion
 
 ### Bash

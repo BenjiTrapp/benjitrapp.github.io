@@ -7,6 +7,25 @@ title: Benji's reverse shell cheat sheet
 <img width="500" src="/images/reverse-shell.png">
 </p>
 
+
+- [Listener for a Reverse Shell](#listener-for-a-reverse-shell)
+- [Dropping a Reverse Shell](#dropping-a-reverse-shell)
+  - [Bash](#bash)
+  - [PERL](#perl)
+  - [Python](#python)
+  - [PHP](#php)
+  - [Ruby](#ruby)
+  - [Netcat](#netcat)
+  - [Java](#java)
+  - [xterm](#xterm)
+    - [Further Reading](#further-reading)
+- [Windows Reverse (Power) Shell Generator](#windows-reverse-power-shell-generator)
+- [Windows Listener](#windows-listener)
+- [Upgrading your Reverse Shell](#upgrading-your-reverse-shell)
+- [Send file from machine to listener](#send-file-from-machine-to-listener)
+
+
+
 ## Listener for a Reverse Shell
 
 First at all start a listener on your machine
@@ -221,23 +240,21 @@ $stream.Dispose()
 
 Background Session with `ctrl + z`
 
-`stty raw -echo`
+```
+stty raw -echo
+stty -a
+```
 
-`stty -a`
+get row & col: `stty rows X columns Y`
 
-get row & col
+Set rows and cols and Foreground Session again
 
-`stty rows X columns Y`
+```
+fg #jobnumber
+export XTERM=xterm-color
+```
 
-Set rows and cols
 
-Foreground Session again
-
-`fg #jobnumber`
-
-`export XTERM=xterm-color`
-
-enable clear
 
 ## Send file from machine to listener
 

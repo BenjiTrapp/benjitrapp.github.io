@@ -5,6 +5,16 @@ title: GitHub search syntax fpr API Keys/Secrets/Tokens
 
 Cheatsheet that enhances the [GitHub dork list](https://benjitrapp.github.io/memories/2022-09-04-github-dorks/) to hunt with the GitHub search syntax for leaked API keys, secrets, and tokens. This list isn't complete but a good starting point.
 
+- [GitHub Search Syntax for Finding API Keys/Secrets/Tokens](#github-search-syntax-for-finding-api-keyssecretstokens)
+  - [Search Syntax:](#search-syntax)
+  - [Examples:](#examples)
+  - [Screenshot:](#screenshot)
+  - [Parameters Used](#parameters-used)
+    - [File Extensions](#file-extensions)
+    - [Keynames](#keynames)
+  - [Other Useful Tools:](#other-useful-tools)
+
+
 # GitHub Search Syntax for Finding API Keys/Secrets/Tokens
 e created a comprehensive search list using powerful search syntax that enables the search of thousands of leaked keys and secrets in a single search.
 

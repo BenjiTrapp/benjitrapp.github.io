@@ -8,6 +8,15 @@ title: Bug Bounty Cheat Sheet
 </p>
 A cheat sheet for quick testing related to some of my Bug Bounty activities
 
+- [Test for XSS or SQLi as a oneliner](#test-for-xss-or-sqli-as-a-oneliner)
+- [A full-width version of symbols related to XSS, CRLF, WAF bypass](#a-full-width-version-of-symbols-related-to-xss-crlf-waf-bypass)
+- [Line terminators for XSS / CRLF injection](#line-terminators-for-xss--crlf-injection)
+- [Bypass WAF](#bypass-waf)
+- [Injecting HTML character entities in different places of the URL](#injecting-html-character-entities-in-different-places-of-the-url)
+- [Encodings for Common Symbols used for testing](#encodings-for-common-symbols-used-for-testing)
+- [File upload extension splitting](#file-upload-extension-splitting)
+- [Autorecon for a domain](#autorecon-for-a-domain)
+
 
 ## Test for XSS or SQLi as a oneliner
 

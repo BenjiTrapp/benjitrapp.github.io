@@ -8,6 +8,31 @@ k9s is a lightweight tool that provides a powerful and user-friendly interface f
 
 ![](/images/k9s_example.png)
 
+- [Start k9s](#start-k9s)
+- [Using k9s](#using-k9s)
+  - [List Resources](#list-resources)
+  - [Filter](#filter)
+  - [Choose namespace](#choose-namespace)
+- [Choose context](#choose-context)
+  - [Show Decrypted Secrets](#show-decrypted-secrets)
+- [Key mapping](#key-mapping)
+  - [Sort by Column](#sort-by-column)
+  - [Helm](#helm)
+  - [XRay View](#xray-view)
+  - [Pulse View](#pulse-view)
+  - [Popeye View](#popeye-view)
+  - [Show Disk Files](#show-disk-files)
+  - [Quit](#quit)
+  - [Tips](#tips)
+  - [k9s Warnings](#k9s-warnings)
+  - [Benchmark](#benchmark)
+  - [Configure k9s](#configure-k9s)
+  - [Check Resources with the Same Name in Different API Groups](#check-resources-with-the-same-name-in-different-api-groups)
+  - [Change log setting](#change-log-setting)
+  - [Plugins](#plugins)
+  - [Install](#install)
+
+
 ## Start k9s
 
 ```bash
