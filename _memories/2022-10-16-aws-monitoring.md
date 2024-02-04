@@ -5,19 +5,29 @@ title: AWS native Monitoring
 
 Short writeup about native and common AWS monitoring solutions: CloudWatch, X-Ray, and CloudTrail
 
-## Overview of AWS native monitoring services
+- [AWS CloudWatch](#aws-cloudwatch)
+  - [AWS CloudWatch Metrics](#aws-cloudwatch-metrics)
+    - [AWS CloudWatch EC2 Detailed monitoring](#aws-cloudwatch-ec2-detailed-monitoring)
+    - [AWS CloudWatch Custom Metrics](#aws-cloudwatch-custom-metrics)
+  - [AWS CloudWatch Alarms](#aws-cloudwatch-alarms)
+  - [AWS CloudWatch Logs](#aws-cloudwatch-logs)
+    - [CloudWatch Logs for EC2](#cloudwatch-logs-for-ec2)
+    - [CloudWatch Logs Agent \& Unified Agent](#cloudwatch-logs-agent--unified-agent)
+    - [CloudWatch Logs Metric Filter](#cloudwatch-logs-metric-filter)
+  - [AWS CloudWatch Events](#aws-cloudwatch-events)
+  - [Amazon EventBridge](#amazon-eventbridge)
+    - [Amazon EventBridge Schema Registry](#amazon-eventbridge-schema-registry)
+    - [Amazon EventBridge vs CloudWatch Events](#amazon-eventbridge-vs-cloudwatch-events)
+- [AWS X-Ray](#aws-x-ray)
+  - [AWS X-Ray advantages](#aws-x-ray-advantages)
+  - [AWS X-Ray leverages "Tracing"](#aws-x-ray-leverages-tracing)
+  - [How to enable AWS X-Ray?](#how-to-enable-aws-x-ray)
+  - [AWS X-Ray Troubleshooting](#aws-x-ray-troubleshooting)
+  - [X-Ray Instrumentation in your code](#x-ray-instrumentation-in-your-code)
+  - [X-Ray Concepts](#x-ray-concepts)
+  - [X-Ray Sampling Rules](#x-ray-sampling-rules)
+- [AWS CloudTrail](#aws-cloudtrail)
 
-- AWS CloudWatch
-  - Metrics: Collect and track key metrics
-  - Logs: Collect, monitor, analyze and store log files
-  - Events: Send notifications when certain events happen in your AWS
-  - Alarms: React in real-time to metrics / events
-- AWS X-Ray
-  - Troubleshooting application performance and errors
-  - Distributed tracing of microservice
-- AWS CloudTrail
-  - Internal monitoring of API calls being made towards AWS Management API
-  - Audit changes regarding AWS resources done (IAM) users
 
 ## AWS CloudWatch
 

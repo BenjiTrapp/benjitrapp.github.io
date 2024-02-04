@@ -5,8 +5,27 @@ title: sqlmap Cheatsheet
 
 Quick writeup and cheat sheet for [sqlmap](https://github.com/sqlmapproject/sqlmap) the automated SQLi and database takeover tool to speed up HTB/CTFs
 
-<!-- cSpell:disable -->
+- [Simple usage](#simple-usage)
+- [Specify target DBMS to MySQL](#specify-target-dbms-to-mysql)
+- [Using a proxy](#using-a-proxy)
+- [Specify param1 to exploit](#specify-param1-to-exploit)
+- [Use POST requests](#use-post-requests)
+- [Access with authenticated session](#access-with-authenticated-session)
+- [Basic authentication](#basic-authentication)
+- [Specify parameter to exploit](#specify-parameter-to-exploit)
+- [Specify parameter to exploit in 'nice' URIs](#specify-parameter-to-exploit-in-nice-uris)
+- [Evaluating response strings](#evaluating-response-strings)
+- [List databases](#list-databases)
+- [List databases](#list-databases-1)
+- [List tables of database target\_DB](#list-tables-of-database-target_db)
+- [Dump table target\_Table of database target\_DB](#dump-table-target_table-of-database-target_db)
+- [List columns of table target\_Table of database target\_DB](#list-columns-of-table-target_table-of-database-target_db)
+- [Scan through TOR](#scan-through-tor)
+- [Get SQL Shell](#get-sql-shell)
+- [Get OS Shell](#get-os-shell)
 
+
+<!-- cSpell:disable -->
 ### Simple usage
 ```bash
 sqlmap -u "$URL"

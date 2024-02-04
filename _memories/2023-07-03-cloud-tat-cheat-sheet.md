@@ -3,6 +3,21 @@ layout: memory
 title: Cloud Tools and Techniques Cheatsheet
 ---
 
+- [Other Useful Cloud Tools and Techniques Cheatsheet](#other-useful-cloud-tools-and-techniques-cheatsheet)
+  - [ScoutSuite](#scoutsuite)
+  - [jq queries to help with parsing many ScoutSuite reports](#jq-queries-to-help-with-parsing-many-scoutsuite-reports)
+    - [AWS](#aws)
+    - [Azure](#azure)
+  - [Custom jq Parsing Help](#custom-jq-parsing-help)
+  - [Cloud\_Enum](#cloud_enum)
+  - [GitLeaks](#gitleaks)
+  - [Mimikatz](#mimikatz)
+  - [Check Command History](#check-command-history)
+  - [PowerView](#powerview)
+  - [FireProx](#fireprox)
+  - [ip2Provider](#ip2provider)
+  - [Vulnerable Infrastructure Creation](#vulnerable-infrastructure-creation)
+
 <!-- cSpell:disable -->
 ## Other Useful Cloud Tools and Techniques Cheatsheet
 ### ScoutSuite

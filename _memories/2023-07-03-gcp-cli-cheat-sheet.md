@@ -4,7 +4,6 @@ title: GCP CLI Tool Cheatsheet
 ---
 
 <!-- cSpell:disable -->
-## Google Cloud Platform CLI Tool Cheatsheet
 
 #### Authentication
 

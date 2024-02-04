@@ -3,12 +3,40 @@ layout: memory
 title: Splunk Cheatsheet
 ---
 
-<!-- cSpell:disable -->
-
-## Splunk Queries
-
 I **really** don't like Splunk documentation. Why is it so hard to find out how to do a certain action? So this is a cheatsheet that I constructed to help me quickly gain knowledge that I need.
 
+- [Analysis](#analysis)
+  - [Events over time](#events-over-time)
+- [Arrays](#arrays)
+  - [Does an array contain a specific value?](#does-an-array-contain-a-specific-value)
+  - [Extracting values from an array](#extracting-values-from-an-array)
+- [Strings](#strings)
+  - [String Matching (with whitespace suppression)](#string-matching-with-whitespace-suppression)
+  - [String Replacement](#string-replacement)
+  - [String Concatenation](#string-concatenation)
+  - [Substrings](#substrings)
+- [eval](#eval)
+- [Working with Multiple Queries](#working-with-multiple-queries)
+  - [Subsearch](#subsearch)
+  - [Joins](#joins)
+- [Filtering](#filtering)
+  - [NOT v !=](#not-v-)
+- [Formatting](#formatting)
+- [Miscellaneous Gotchas](#miscellaneous-gotchas)
+  - [Using rename](#using-rename)
+  - [Splunk Query Magic](#splunk-query-magic)
+    - [AND ,OR operator in splunk search](#and-or-operator-in-splunk-search)
+    - [Splunk Top command](#splunk-top-command)
+    - [wildcards in splunk search](#wildcards-in-splunk-search)
+    - [dedup command](#dedup-command)
+    - [head and tail](#head-and-tail)
+    - [stats](#stats)
+    - [eval](#eval-1)
+- [References](#references)
+    - [Splunk Search book](#splunk-search-book)
+
+
+<!-- cSpell:disable -->
 ## Analysis
 
 ### Events over time
