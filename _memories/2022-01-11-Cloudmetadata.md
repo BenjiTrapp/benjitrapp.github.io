@@ -3,31 +3,57 @@ layout: memory
 title: List of various Cloud Metadata Service Addresses
 ---
 
+<img height="150" align="left" src="/images/metadata-logo.png" > 
+Below you find various addresses and info to different cloud provider, and how to access it. IMDSv1 is the most famous one, known for instance in correlation with SSRF and the CapitalOne bank. The list below helped me in the past to keep track on the things.
+
+- [IPv6 Tests](#ipv6-tests)
+- [AWS](#aws)
+- [ECS Task](#ecs-task)
+- [Google Cloud (Header Sometimes Required)](#google-cloud-header-sometimes-required)
+- [kube-env; thanks to JackMc for the heads up on this (https://hackerone.com/reports/341876)](#kube-env-thanks-to-jackmc-for-the-heads-up-on-this-httpshackeronecomreports341876)
+- [Google allows recursive pulls](#google-allows-recursive-pulls)
+- [returns root password for Google](#returns-root-password-for-google)
+- [Digital Ocean (No Header Required)](#digital-ocean-no-header-required)
+- [Packetcloud](#packetcloud)
+- [Azure (Header Required)](#azure-header-required)
+- [Oracle Cloud (No Header Required)](#oracle-cloud-no-header-required)
+- [Alibaba Cloud](#alibaba-cloud)
+- [OpenStack/RackSpace](#openstackrackspace)
+- [Oracle Cloud](#oracle-cloud)
+- [Kubernetes](#kubernetes)
+
+
 ### IPv6 Tests
 
-    http://[::ffff:169.254.169.254]
-    http://[0:0:0:0:0:ffff:169.254.169.254]
+```
+http://[::ffff:169.254.169.254]
+http://[0:0:0:0:0:ffff:169.254.169.254]
+```
 
 ### AWS
 
 > Amazon Web Services (No Header Required) [Source](http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metadata.html#instancedata-data-categories)
 
-    http://169.254.169.254/latest/meta-data/iam/security-credentials/dummy
-    http://169.254.169.254/latest/user-data
-    http://169.254.169.254/latest/user-data/iam/security-credentials/[ROLE NAME]
-    http://169.254.169.254/latest/meta-data/iam/security-credentials/[ROLE NAME]
-    http://169.254.169.254/latest/meta-data/ami-id
-    http://169.254.169.254/latest/meta-data/reservation-id
-    http://169.254.169.254/latest/meta-data/hostname
-    http://169.254.169.254/latest/meta-data/public-keys/0/openssh-key
-    http://169.254.169.254/latest/meta-data/public-keys/[ID]/openssh-key
+```
+http://169.254.169.254/latest/meta-data/iam/security-credentials/dummy
+http://169.254.169.254/latest/user-data
+http://169.254.169.254/latest/user-data/iam/security-credentials/[ROLE NAME]
+http://169.254.169.254/latest/meta-data/iam/security-credentials/[ROLE NAME]
+http://169.254.169.254/latest/meta-data/ami-id
+http://169.254.169.254/latest/meta-data/reservation-id
+http://169.254.169.254/latest/meta-data/hostname
+http://169.254.169.254/latest/meta-data/public-keys/0/openssh-key
+http://169.254.169.254/latest/meta-data/public-keys/[ID]/openssh-key
+```
 
 ### ECS Task
 
 > <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-metadata-endpoint-v2.html>
 
-    http://169.254.170.2/v2/credentials/
-
+```
+http://169.254.170.2/v2/credentials/
+```
+   
 ### Google Cloud (Header Sometimes Required)
 
 > Source:  <https://cloud.google.com/compute/docs/metadata>
@@ -35,38 +61,47 @@ title: List of various Cloud Metadata Service Addresses
 > - Requires the header "Metadata-Flavor: Google" or "X-Google-Metadata-Request: True" on API v1
 > - Most endpoints can be accessed via the v1beta API without a header
 
-    ```  
-    http://169.254.169.254/computeMetadata/v1/
-    http://metadata.google.internal/computeMetadata/v1/
-    http://metadata/computeMetadata/v1/
-    http://metadata.google.internal/computeMetadata/v1/instance/hostname
-    http://metadata.google.internal/computeMetadata/v1/instance/id
-    http://metadata.google.internal/computeMetadata/v1/project/project-id
-    ```
+```  
+http://169.254.169.254/computeMetadata/v1/
+http://metadata.google.internal/computeMetadata/v1/
+http://metadata/computeMetadata/v1/
+http://metadata.google.internal/computeMetadata/v1/instance/hostname
+http://metadata.google.internal/computeMetadata/v1/instance/id
+http://metadata.google.internal/computeMetadata/v1/project/project-id
+```
 
 ### kube-env; thanks to JackMc for the heads up on this (<https://hackerone.com/reports/341876>)
 
-    http://metadata.google.internal/computeMetadata/v1/instance/attributes/kube-env
+```
+http://metadata.google.internal/computeMetadata/v1/instance/attributes/kube-env
+```
 
 ### Google allows recursive pulls
 
-    http://metadata.google.internal/computeMetadata/v1/instance/disks/?recursive=true
+```
+http://metadata.google.internal/computeMetadata/v1/instance/disks/?recursive=true
+```
 
 ### returns root password for Google
 
-    http://metadata.google.internal/computeMetadata/v1beta1/instance/attributes/?recursive=true&alt=json
+```
+http://metadata.google.internal/computeMetadata/v1beta1/instance/attributes/?recursive=true&alt=json
+
+```
 
 ### Digital Ocean (No Header Required)
 
 > [Source](https://developers.digitalocean.com/documentation/metadata/)
 
-    http://169.254.169.254/metadata/v1.json
-    http://169.254.169.254/metadata/v1/ 
-    http://169.254.169.254/metadata/v1/id   
-    http://169.254.169.254/metadata/v1/user-data
-    http://169.254.169.254/metadata/v1/hostname
-    http://169.254.169.254/metadata/v1/region   
-    http://169.254.169.254/metadata/v1/interfaces/public/0/ipv6/address
+```
+http://169.254.169.254/metadata/v1.json
+http://169.254.169.254/metadata/v1/ 
+http://169.254.169.254/metadata/v1/id   
+http://169.254.169.254/metadata/v1/user-data
+http://169.254.169.254/metadata/v1/hostname
+http://169.254.169.254/metadata/v1/region   
+http://169.254.169.254/metadata/v1/interfaces/public/0/ipv6/address
+```
 
 ### Packetcloud
 

@@ -6,6 +6,34 @@ title: Metasploit Cheat Sheet
 <img height="150" align="left" src="/images/metasploit.png" > 
 The Metasploit Project is a computer security project built by rapid7, that provides information on vulnerabilities, exploits, and helping in the development and execution of penetration tests and IDS signatures.
 
+- [Metasploit :](#metasploit-)
+  - [Search for module:](#search-for-module)
+  - [Specify and exploit to use:](#specify-and-exploit-to-use)
+  - [Specify a Payload to use:](#specify-a-payload-to-use)
+  - [Show options for the current modules:](#show-options-for-the-current-modules)
+  - [Set options:](#set-options)
+  - [Start exploit:](#start-exploit)
+  - [Useful Auxiliary Modules](#useful-auxiliary-modules)
+  - [Port Scanner:](#port-scanner)
+  - [DNS Enumeration:](#dns-enumeration)
+  - [FTP Server:](#ftp-server)
+  - [Proxy Server:](#proxy-server)
+- [msfvenom :](#msfvenom-)
+  - [Metasploit Meterpreter](#metasploit-meterpreter)
+  - [Base Commands:](#base-commands)
+  - [Network Commands:](#network-commands)
+  - [Misc Commands:](#misc-commands)
+  - [Additional Modules:](#additional-modules)
+  - [Managing Sessions](#managing-sessions)
+  - [Multiple Exploitation:](#multiple-exploitation)
+  - [List all current jobs (usually exploit listeners):](#list-all-current-jobs-usually-exploit-listeners)
+  - [Kill a job:](#kill-a-job)
+  - [Multiple Sessions:](#multiple-sessions)
+  - [List all backgrounded sessions:](#list-all-backgrounded-sessions)
+  - [Interact with a backgrounded session:](#interact-with-a-backgrounded-session)
+  - [Background the current interactive session:](#background-the-current-interactive-session)
+  - [Routing Through Sessions:](#routing-through-sessions)
+
 
 ## Metasploit :
 
