@@ -101,5 +101,5 @@ try:
    client.close()
 except Exception as err:
    print(str(err))
-   
+
 ```
