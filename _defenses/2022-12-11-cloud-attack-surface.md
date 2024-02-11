@@ -3,6 +3,7 @@ layout: defense
 title: Internet-Facing Attack Surface
 ---
 
+<img height="200" align="left" src="/images/attack_surface_logo.png" >
 Based on the internet-facing applications of your corporate, you can derive the attack surface and look through the eyes of an attacker. With this post I'll try to do some definitions, explain why, and give some best practices how you could adopt it to the cloud.
 
 ## What are internet-facing applications? 
