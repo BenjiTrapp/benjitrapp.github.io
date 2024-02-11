@@ -6,16 +6,17 @@ title: Breaking ETW (Event Tracing for Windows) and EDR
 <img height="150" align="left" src="/images/etw_attacker_logo.png" >
 As described in my Blog post for defenders: [Windows ETW (Event Tracing for Windows)](https://benjitrapp.github.io/defenses/2024-02-11-etw/) - ETW is a crucial system component for EDR/XDR to identify malicious behavior on Windows. Since the post is going into the depth, I recommend to read this post first before you go down the rabbit hole in this post. 
 
+<br><br>
 - [Useful links](#useful-links)
 - [Main targets for an attacker](#main-targets-for-an-attacker)
 - [Short summary about the Terminology](#short-summary-about-the-terminology)
 - [Logman.exe](#logmanexe)
-    - [Create a Tracing Session](#create-a-tracing-session)
+		- [Create a Tracing Session](#create-a-tracing-session)
 - [Add Microsoft-Windows-Kernel-Process to spotless-tracing session](#add-microsoft-windows-kernel-process-to-spotless-tracing-session)
-  - [Checking the .etl Log](#checking-the-etl-log)
-  - [Removing Providers from a Tracing Session](#removing-providers-from-a-tracing-session)
-  - [Killing Tracing Sessions](#killing-tracing-sessions)
-  - [Consuming Events via C#](#consuming-events-via-c)
+	- [Checking the .etl Log](#checking-the-etl-log)
+	- [Removing Providers from a Tracing Session](#removing-providers-from-a-tracing-session)
+	- [Killing Tracing Sessions](#killing-tracing-sessions)
+	- [Consuming Events via C#](#consuming-events-via-c)
 
 ## Useful links
 A great source to understand what's going on with ETW and EDR on a Red Teamer perspective:
