@@ -1,6 +1,6 @@
 ---
 layout: attack
-title: Breaking ETW (Event Tracing for Windows)
+title: Breaking ETW (Event Tracing for Windows) and EDR
 ---
 
 <img height="150" align="left" src="/images/etw_attacker_logo.png" >
