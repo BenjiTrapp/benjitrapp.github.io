@@ -87,7 +87,7 @@ Within the spotless-tracing session, we'll subscribe to events related to PROCES
 
 To subscribe to these events, we must reference the available keywords of Microsoft-Windows-Kernel-Process and combine 0x10 (WINEVENT_KEYWORD_PROCESS) with 0x40 (WINEVENT_KEYWORD_IMAGE), resulting in a total of 0x50:
 
-![](/images/etw_spotless_tracing3.webp)
+![](/images/etw_spotlesstracing3.webp)
 
 We can now register a provider to the tracing session and ask it to emit events that map back to events WINEVENT_KEYWORD_PROCESS and WINEVENT_KEYWORD_IMAGE:
 
@@ -101,7 +101,7 @@ If we query the tracing session again, we see it now has Microsoft-Windows-Kerne
 logman query spotless-tracing -ets
 ```
 
-![](/images/etw_spotless_tracing4.webp)
+![](/images/etw_spotlesstracing4.webp)
 
 
 ### Checking the .etl Log
@@ -109,13 +109,13 @@ logman query spotless-tracing -ets
 After the tracing session has run for some time, we can check the log file  by opening it with the Windows Event Viewer.
 We can see process creation events (event ID 1):
 
-![](/images/etw_spotless_tracing5.png)
+![](/images/etw_spotlesstracing5.png)
 
 Image load events (event ID 5):
-![](/images/etw_spotless_tracing6.webp)
+![](/images/etw_spotlesstracing6.webp)
 
 Image unload events (event ID 6):
-![](/images/etw_spotless_tracing7.webp)
+![](/images/etw_spotlesstracing7.webp)
 
 
 ### Removing Providers from a Tracing Session
