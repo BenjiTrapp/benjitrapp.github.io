@@ -1,6 +1,6 @@
 ---
 layout: attack
-title: Breaking ETW (Event Tracing for Windows) and EDR
+title: Short journey and exploitation of RTLO
 ---
 
 <img height="150" align="left" src="/images/rtlo-attack-logo.png" >
