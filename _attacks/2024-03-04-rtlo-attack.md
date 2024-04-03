@@ -34,11 +34,11 @@ The reversal of letters following the Unicode character underscores this operati
 ## Time for an additional example with some Code
 This is a really simple example on how to create a file with a unicode right to left override character, used to disguise the real extension of the file.
 
-In this example the .sh file get's disguised as a .jpg file. To weaponize this, not that much effort is required.
+In this example the .sh file get's disguised as a .jpg file. To weaponize and obfuscate this, not that much effort is required.
 
 ```python
 #!/usr/bin/python3
-filename = 'legit-img_sjvl\u202Egpj.sh'
+filename = 'benign-img_sblol\u202Egjz.sh'
 with open(filename, 'w') as f:
     f.write('#!/usr/bin/bash\necho "THIS COULD BE A MALICIOUS FUNCTION CALL"')
 ```
