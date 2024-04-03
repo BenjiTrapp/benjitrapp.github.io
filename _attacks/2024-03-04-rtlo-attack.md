@@ -63,14 +63,14 @@ The RTLO character is usually represented as its Unicode character code, U+202E,
 
 |Encodings                          | Representation                  |
 | ----------------------------------| ------------------------------- |
-| HTML Entity (decimal)             | &#8238;                         |
-| HTML Entity (hex)                 | &#x202e;                        | 
-| How to type in Microsoft Windows  | Alt +202E                       | 
-| UTF-8 (hex)                       | 0xE2 0x80 0xAE (e280ae)         | 
-| UTF-8 (binary)                    | 11100010:10000000:10101110      | 
-| UTF-16 (hex)	                    | 0x202E (202e)                   | 
-| UTF-16 (decimal)                  | 8.238                           | 
-| UTF-32 (hex)	                    | 0x0000202E (202e)               | 
-| UTF-32 (decimal)	                | 8.238                           | 
-| C/C++/Java source code	        | "\u202E"                        | 
-| Python source code                | u"\u202E"                       | 
+| HTML Entity (decimal)             | `&#8238;`                       |
+| HTML Entity (hex)                 | `&#x202e;`                      | 
+| How to type in Microsoft Windows  | `Alt +202E`                     | 
+| UTF-8 (hex)                       | `0xE2 0x80 0xAE (e280ae)`       | 
+| UTF-8 (binary)                    | `11100010:10000000:10101110`    | 
+| UTF-16 (hex)	                    | `0x202E (202e)`                 | 
+| UTF-16 (decimal)                  | `8.238`                         | 
+| UTF-32 (hex)	                    | `0x0000202E (202e)`             | 
+| UTF-32 (decimal)	                | `8.238`                         | 
+| C/C++/Java source code	        | `"\u202E"`                      | 
+| Python source code                | `u"\u202E"`                     | 
