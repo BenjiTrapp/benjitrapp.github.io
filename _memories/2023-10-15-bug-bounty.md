@@ -199,7 +199,7 @@ qwe.php\u0020.png
 Make sure that this stuff is present:
 * [amass](https://github.com/owasp-amass/amass)
 * [assetfinder](https://github.com/tomnomnom/assetfinder)
-* [CHAOS](https://github.com/tiagorlampert/CHAOS)
+* [chaos-client](https://github.com/projectdiscovery/chaos-client)
 * [subfinder](https://github.com/projectdiscovery/subfinder)
 * [dnsx](https://github.com/projectdiscovery/dnsx)
 * [httpx](https://github.com/projectdiscovery/httpx)
