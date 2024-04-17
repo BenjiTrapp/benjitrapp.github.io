@@ -9,7 +9,7 @@ Unlocking a loophole in Windows' DLL search order by using DLL Proxying to steal
 <br>
 <br>
 
-# Persistance by DLL Proxying
+# persistence by DLL Proxying
 
 pre-requisites:
 - [mingw-w64](http://mingw-w64.org/downloads) (brew install mingw-w64)
@@ -131,7 +131,7 @@ The resulted `target.dll` proxies all the function calls based on the exported f
 On this way, the application which depends on the original methods of `target.dll` is working normally. Additional it also executes the
 `Payload()` function at initialization to run the malicious code.
 
-Overall this technique is not new, but the approach still a neat way to gain persistance. For example you can use [windows-dll-hijacking](https://github.com/wietze/windows-dll-hijacking/blob/master/dll_hijacking_candidates.csv) as a baseline and casual tools like Microsoft Teams, VS Code, KeePass etc. to gain persistance even after a reboot of the victim's machine.
+Overall this technique is not new, but the approach still a neat way to gain persistence. For example you can use [windows-dll-hijacking](https://github.com/wietze/windows-dll-hijacking/blob/master/dll_hijacking_candidates.csv) as a baseline and casual tools like Microsoft Teams, VS Code, KeePass etc. to gain persistence even after a reboot of the victim's machine.
 
 ## Enough talking - Time for tackling an Example
 

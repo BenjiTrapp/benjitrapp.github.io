@@ -51,7 +51,7 @@ def lambda_handler(event, context):
         ### Attempts to messing around in the tomb and head to the exit
         'echo "TEST" >> /var/task/lambda_function.py'
         'cat /var/task/lambda_function.py',
-        'echo "Yay, we got persistance" > /tmp/persistance.test',
+        'echo "Yay, we got persistence" > /tmp/persistence.test',
 
         ##################################################
         ### ADDITIONAL THINGS (Optional)               ###
@@ -86,7 +86,7 @@ def lambda_handler(event, context):
     ### => Don't forget to create a bucket named s3_backpack :)
     res_s3 = boto3.resource('s3')
     res_s3.meta.client.upload_file('/var/runtime/bootstrap.py', 's3_backpack', 'bootstrap.py')
-    res_s3.meta.client.upload_file('/tmp/persistance.test', 's3_backpack', 'persistance.test.txt')
+    res_s3.meta.client.upload_file('/tmp/persistence.test', 's3_backpack', 'persistence.test.txt')
     res_s3.meta.client.upload_file('/tmp/cpu_info.txt', 's3_backpack', 'cpu_info.txt')
     res_s3.meta.client.upload_file('/tmp/env.txt', 's3_backpack', 'env.txt')
     res_s3.meta.client.upload_file('/var/task/lambda_function.py', 's3_backpack', 'lambda_function.py')
@@ -96,7 +96,7 @@ def lambda_handler(event, context):
 After running the code and using some of the known facts regarding AWS Lambda, we can wrap it up to the following list:
 * Runs on an Amazon Linux (RHEL derivative).
 * According to environment variables, it runs in an EC2 instance - but must be some kind of a container system
-* Read-only file system - this tackles persistance but there are options we will research later
+* Read-only file system - this tackles persistence but there are options we will research later
 * NON-root user 
 * Single AWS IAM role required for access to the sandbox
 * Dropping a reverse shell is not possible, since the Lambda Function runs air gapped
@@ -123,7 +123,7 @@ Let’s check our options and strategies:
 * Keep the initial Payload as small as possible (don't try to push an elephant through a keyhole, a fly might fit better)
 * Use Command Injection, XXE, SSRF or trick the API Gateway to find a way in (the thermal exhaust port)
 * Since a Sandbox gets recycled after each execution and have a limited execution time (often only a few milliseconds to seconds). Therefore we have to move fast
-* Persistence is possible in `/tmp` => To avoid the cold start penalty, people tend to keep their Lambda function warm (for the sake of performance). This can be used to get some sort of persistance
+* Persistence is possible in `/tmp` => To avoid the cold start penalty, people tend to keep their Lambda function warm (for the sake of performance). This can be used to get some sort of persistence
 Identify
 * Perform„lateral movement“ options as soon as possible
 * Exfiltrate results via other ways/services (push to S3, SQS, SNS Topic etc.)
