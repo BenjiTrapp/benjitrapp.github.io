@@ -1,4 +1,3 @@
-
 ---
 layout: memory
 title: Tunneling/Port Forwarding Cheat Sheet
@@ -16,7 +15,6 @@ It is inspired by the following:
 
 ## Summary
 
-- [title: Tunneling/Port Forwarding Cheat Sheet](#title-tunnelingport-forwarding-cheat-sheet)
 - [Summary](#summary)
 - [SSH Local Port Forwarding](#ssh-local-port-forwarding)
 - [SSH Remote Port Forwarding](#ssh-remote-port-forwarding)
