@@ -88,9 +88,8 @@ function main_menu() {
     ____ _ ____ ____ _ _ _ ____ _    _       _  _ ____ _  _ ____ ____ ____ ____ 
     |___ | |__/ |___ | | | |__| |    |       |\/| |__| |\ | |__| | __ |___ |__/ 
     |    | |  \ |___ |_|_| |  | |___ |___    |  | |  | | \| |  | |__] |___ |  \ 
-        
     """
-    echo -e "${GREEN  ${SPLASH} ${NC}"
+    echo -e "${GREEN}${SPLASH}${NC}"
     options=("List current rules" "Add a new rule" "Delete a rule" "Exit")
     select opt in "${options[@]}"
     do
