@@ -102,6 +102,17 @@ nodes:
 EOF
 ```
 
+### Load a Docker Image from Local Registry into KinD Cluster
+
+##### Step 1: Make sure to pull image local registry
+Verify with `docker images`if your image is present otherwise pull it with `docker pull <imagename>`
+
+##### Step 2: Load local Image into KinD registry
+
+```bash
+kind load docker-image <image_name> --name <name_of_the_kind_cluster>
+```
+
 ### Add Local Registry
 
 ##### Step 1: Create local registry
