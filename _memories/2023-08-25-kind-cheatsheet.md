@@ -15,6 +15,9 @@ Source: [https://kind.sigs.k8s.io/](https://kind.sigs.k8s.io/)
 - [Basic](#basic)
 - [Advanced Configuration](#advanced-configuration)
   - [Ports](#ports)
+  - [Load a Docker Image from Local Registry into KinD Cluster](#load-a-docker-image-from-local-registry-into-kind-cluster)
+      - [Step 1: Make sure to pull image local registry](#step-1-make-sure-to-pull-image-local-registry)
+      - [Step 2: Load local Image into KinD registry](#step-2-load-local-image-into-kind-registry)
   - [Add Local Registry](#add-local-registry)
       - [Step 1: Create local registry](#step-1-create-local-registry)
     - [Step 2: Create cluster](#step-2-create-cluster)
@@ -105,7 +108,7 @@ EOF
 ### Load a Docker Image from Local Registry into KinD Cluster
 
 ##### Step 1: Make sure to pull image local registry
-Verify with `docker images`if your image is present otherwise pull it with `docker pull <imagename>`
+Verify with `docker images`if your image is present otherwise pull it with `docker pull <image_name>`
 
 ##### Step 2: Load local Image into KinD registry
 
