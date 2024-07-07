@@ -1,6 +1,6 @@
 ---
 layout: attack
-title: Sliver Cheat Sheet
+title: Detecting and Exploiting App Vulnerabilities with DYLIB Injection
 ---
 
 <img height="150" align="left" src="/images/dylib_injection.jpg" > A short intro into DYLIB injection, a technique that attackers can use to compromise MacOS applications. The presented script tries in an automated way to find vulnerable apps and exploit over dylib injection if possible. The script itself is not entirely hardened against errors and very likely will be busted by EDRs solutions based on the nature of this script. Also this is meant to be used for educational purposes only.
@@ -19,9 +19,9 @@ While the script demonstrates how attackers might exploit vulnerabilities, it al
 
 
 ## Some sources:
-* https://book.hacktricks.xyz/macos-hardening/macos-security-and-privilege-escalation/macos-proces-abuse/macos-library-injection
-* https://book.hacktricks.xyz/macos-hardening/macos-security-and-privilege-escalation/macos-proces-abuse/macos-library-injection/macos-dyld-hijacking-and-dyld_insert_libraries
-* https://malwareunicorn.org/workshops/macos_dylib_injection.html#0
+* [HackTricks MacOS Lib Injection](https://book.hacktricks.xyz/macos-hardening/macos-security-and-privilege-escalation/macos-proces-abuse/macos-library-injection)
+* [HackTricks - Macos Dyld Hijacking and Insert Libs](https://book.hacktricks.xyz/macos-hardening/macos-security-and-privilege-escalation/macos-proces-abuse/macos-library-injection/macos-dyld-hijacking-and-dyld_insert_libraries)
+* [Malware Unictorn - Dylib Injection](https://malwareunicorn.org/workshops/macos_dylib_injection.html#0)
 
 ## The code
 ```python
