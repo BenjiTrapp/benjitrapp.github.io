@@ -21,7 +21,7 @@ While the script demonstrates how attackers might exploit vulnerabilities, it al
 ## Some sources:
 * [HackTricks MacOS Lib Injection](https://book.hacktricks.xyz/macos-hardening/macos-security-and-privilege-escalation/macos-proces-abuse/macos-library-injection)
 * [HackTricks - Macos Dyld Hijacking and Insert Libs](https://book.hacktricks.xyz/macos-hardening/macos-security-and-privilege-escalation/macos-proces-abuse/macos-library-injection/macos-dyld-hijacking-and-dyld_insert_libraries)
-* [Malware Unictorn - Dylib Injection](https://malwareunicorn.org/workshops/macos_dylib_injection.html#0)
+* [Malware Unicorn - Dylib Injection](https://malwareunicorn.org/workshops/macos_dylib_injection.html#0)
 
 ## The code
 ```python

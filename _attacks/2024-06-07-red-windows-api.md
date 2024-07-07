@@ -1,9 +1,11 @@
 ---
 layout: attack
-title: Windows API for Red Team and MalDevs
+title: Offensive Windows API
 ---
 
 <img height="150" align="left" src="/images/red-windows-api.png"> Compilation of the main Windows APIs for use in PenTest, Red Team operations and Malware Analysis. These APIs and snippets are mainly part from some investigations and learnings, mostly related to casual "malware combos". The code is meant for educational purposes only and form a baseline for further studying of the Windows API.
+
+A great resource into common combos and APIs is [VX-AP]I(https://github.com/vxunderground/VX-API) from [VX-Underground](https://vx-underground.org/).Most of the API described below were taken from three or learn Microsoft.
 
 <!-- cSpell:disable -->
 - [Basic Shell Loader Combo](#basic-shell-loader-combo)
@@ -61,7 +63,7 @@ title: Windows API for Red Team and MalDevs
 
 ## Basic Shell Loader Combo
 
-```
+```cpp
 #include <stdio.h>
 #include <Windows.h>
 
@@ -155,10 +157,11 @@ int main() {
 
 The CreateToolhelp32Snapshot API is commonly used in C++ programming to enumerate processes and modules on Windows systems. Although it is not an API directly related to cybersecurity or pen testing, it can be used to obtain information about running processes, which can be useful in security contexts.
 
+[Learn Microsoft Link](https://learn.microsoft.com/de-de/windows/win32/api/tlhelp32/nf-tlhelp32-createtoolhelp32snapshot)
+
 ### Code Example 
 
-C++ 
-```
+```cpp
 #include <windows.h>
 #include <tlhelp32.h>
 #include <iostream>
@@ -198,10 +201,11 @@ The GetModuleFileName API in C++ is typically used to retrieve the full path of 
 
 Here's a simple C++ code example that demonstrates how to use the GetModuleFileName API to retrieve the full path of the executable for a specified process using its Process ID (PID). This information can be valuable in security auditing and process monitoring scenarios.
 
+[Learn Microsoft Link](https://learn.microsoft.com/de-de/windows/win32/api/libloaderapi/nf-libloaderapi-getmodulefilenamea)
+
 ### Code Example
 
-C++
-```
+```cpp
 #include <windows.h>
 #include <iostream>
 
@@ -242,10 +246,11 @@ int main() {
 
 The ShellExecuteEx API in C++ is commonly used to launch external applications and perform various file-related operations. While it may not be a direct tool for cybersecurity or penetration testing, it can be used in these fields for scripting or automation tasks, such as opening specific files or URLs as part of an assessment. Here's a simple example of using ShellExecuteEx to open a web page:
 
+[Learn Microsoft Link](https://learn.microsoft.com/de-de/windows/win32/api/shellapi/nf-shellapi-shellexecuteexa)
+
 ### Code Example
 
-C++ 
-```
+```cpp
 #include <windows.h>
 #include <iostream>
 
@@ -276,10 +281,11 @@ In this example, we're using ShellExecuteEx to open a web page (https://www.exam
 
 The GetTokenInformation API in C++ is used to retrieve information about a security token associated with a process or thread. It can be valuable in cybersecurity and penetration testing when you need to gather information about the privileges, groups, or other characteristics of a user's access token. Here's an example of how to use GetTokenInformation to retrieve the groups that a user belongs to:
 
+[Learn Microsoft Link](https://learn.microsoft.com/de-de/windows/win32/api/securitybaseapi/nf-securitybaseapi-gettokeninformation)
+
 ### Code Example
 
-C++ 
-```
+```cpp
 #include <windows.h>
 #include <iostream>
 
@@ -338,10 +344,11 @@ We iterate through the token groups and use LookupAccountSidW to convert the gro
 
 The AdjustTokenPrivileges API in C++ is used to enable or disable privileges in an access token. It is commonly used in cybersecurity and penetration testing scenarios when you need to adjust privileges to perform specific actions with elevated permissions. Here's an example of how to use AdjustTokenPrivileges to enable a privilege for the current process:
 
+[Learn Microsoft Link](https://learn.microsoft.com/de-de/windows/win32/api/securitybaseapi/nf-securitybaseapi-adjusttokenprivileges)
+
 ### Code Example
 
-C++ 
-```
+```cpp
 #include <windows.h>
 #include <iostream>
 
@@ -393,10 +400,11 @@ Toolhelp32ReadProcessMemory is not a standard or recognized Windows API function
 
 If you want to read the memory of a different process for cybersecurity or penetration testing purposes, you can use ReadProcessMemory. Here's an example of how to use ReadProcessMemory to read the memory of another process:
 
+[Learn Microsoft Link](https://learn.microsoft.com/en-us/windows/win32/api/tlhelp32/nf-tlhelp32-toolhelp32readprocessmemory)
+
 ### Code Example
 
-C++ 
-```
+```cpp
 #include <windows.h>
 #include <iostream>
 
@@ -441,10 +449,11 @@ The WriteProcessMemory API in C++ is used to write data to the memory of another
 
 Here's an example of how to use WriteProcessMemory to write a value to the memory of another process:
 
+[Learn Microsoft Link](https://learn.microsoft.com/de-de/windows/win32/api/memoryapi/nf-memoryapi-writeprocessmemory)
+
 ### Code Example
 
-C++ 
-```
+```cpp
 #include <windows.h>
 #include <iostream>
 
@@ -491,10 +500,11 @@ WTSEnumerateProcessesEx is an API used to enumerate processes on a Windows Termi
 
 Here's an example of how to use WTSEnumerateProcessesEx to list processes on a remote Terminal Server:
 
+[Learn Microsoft Link](https://learn.microsoft.com/en-us/windows/win32/api/wtsapi32/nf-wtsapi32-wtsenumerateprocessesexa)
+
 ### Code Example
 
-C++ 
-```
+```cpp
 #include <windows.h>
 #include <wtsapi32.h>
 #include <iostream>
@@ -529,10 +539,11 @@ I apologize, but as of my last knowledge update in September 2021, there is no s
 
 It's possible that such an API was introduced in a newer version of Windows or as part of a third-party library. If you have specific information about WTSFreeMemoryEx or its intended usage, please provide more details, and I'll do my best to assist you with a code example.
 
+[Learn Microsoft Link](https://learn.microsoft.com/en-us/windows/win32/api/wtsapi32/nf-wtsapi32-wtsfreememory)
+
 ### Code Example
 
-C++ 
-```
+```cpp
 BOOL WTSFreeMemoryExA(
   [in] WTS_TYPE_CLASS WTSTypeClass,
   [in] PVOID          pMemory,
@@ -544,10 +555,11 @@ BOOL WTSFreeMemoryExA(
 
 The LookupPrivilegeValue API in C++ is used to retrieve the locally unique identifier (LUID) that represents a privilege name on a system. This API can be helpful in cybersecurity and penetration testing when you need to work with privileges, such as enabling or disabling them for a process. Here's an example of how to use LookupPrivilegeValue to retrieve the LUID for a privilege:
 
+[Learn Microsoft Link](https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-lookupprivilegevaluea)
+
 ### Code Example
 
-C++ 
-```
+```cpp
 #include <windows.h>
 #include <iostream>
 
@@ -574,10 +586,11 @@ If LookupPrivilegeValue fails, we print an error message with the error code obt
 
 The GetCurrentProcess API in C++ is a simple function used to obtain a handle to the current process. While it may not have a direct application in cybersecurity or penetration testing, it can be used to gather information about the current process or to perform certain operations on it. Here's a basic example of how to use GetCurrentProcess:
 
+[Learn Microsoft Link](https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getcurrentprocess)
+
 ### Code Example
 
-C++ 
-```
+```cpp
 #include <windows.h>
 #include <iostream>
 
@@ -604,10 +617,11 @@ int main() {
 
 The OpenProcessToken API in C++ is commonly used in cybersecurity and penetration testing when you need to obtain a handle to the access token associated with a process. Access tokens contain information about a user's security context, including their privileges, groups, and user rights. Here's an example of how to use OpenProcessToken:
 
+[Learn Microsoft Link](https://learn.microsoft.com/de-de/windows/win32/api/processthreadsapi/nf-processthreadsapi-openprocesstoken)
+
 ### Code Example
 
-C++ 
-```
+```cpp
 #include <windows.h>
 #include <iostream>
 
@@ -647,10 +661,11 @@ int main() {
 
 The LookupAccountSid API in C++ is used to convert a security identifier (SID) into a user or group name. This API can be helpful in cybersecurity and penetration testing when you need to identify the user or group associated with a SID. Here's an example of how to use LookupAccountSid:
 
+[Learn Microsoft Link](https://learn.microsoft.com/de-de/windows/win32/api/winbase/nf-winbase-lookupaccountsida)
+
 ### Code Example
 
-C++ 
-```
+```cpp
 #include <windows.h>
 #include <iostream>
 #include <sddl.h>
@@ -687,11 +702,11 @@ int main() {
 
 The ConvertSidToStringSidA API in C++ is used to convert a security identifier (SID) into its string representation. This can be useful in cybersecurity and penetration testing when you need to display or manipulate SIDs in a human-readable format. Here's an example of how to use ConvertSidToStringSidA:
 
+[Learn Microsoft Link](https://learn.microsoft.com/de-de/windows/win32/api/sddl/nf-sddl-convertsidtostringsida)
 
 ### Code Example
 
-C++ 
-```
+```cpp
 #include <windows.h>
 #include <iostream>
 
@@ -723,10 +738,11 @@ int main() {
 
 The MessageBoxA API in C++ is used to display a message box dialog on the Windows operating system. While it's not a direct tool for cybersecurity or penetration testing, message boxes can be used for various purposes, including displaying alerts or information during testing. Here's an example of how to use MessageBoxA to display a simple message box:
 
+[Learn Microsoft Link](https://learn.microsoft.com/de-de/windows/win32/api/winuser/nf-winuser-messageboxa)
+
 ### Code Example
 
-C++ 
-```
+```cpp
 #include <windows.h>
 
 int main() {
@@ -743,10 +759,11 @@ Creating a HookedMessageBox API from scratch would involve implementing a custom
 
 Below is a simplified example of how you might use function hooking to intercept and modify the behavior of the MessageBoxA function. Note that this example demonstrates the concept of hooking and is not suitable for cybersecurity or penetration testing purposes:
 
+[Learn Microsoft Link](https://learn.microsoft.com/en-us/archive/msdn-magazine/2002/november/cutting-edge-using-windows-hooks-to-enhance-messagebox-in-net)
+
 ### Code Example
 
-C++ 
-```
+```cpp
 #include <windows.h>
 #include <iostream>
 
@@ -815,10 +832,11 @@ Finally, we remove the hook using UnhookWindowsHookEx.
 
 The GetProcAddress API in C++ is used to retrieve the address of an exported function or variable in a dynamic-link library (DLL) or executable (EXE). It can be used in cybersecurity and penetration testing to inspect the available functions and potentially find vulnerabilities or weaknesses in a target application. Here's an example of how to use GetProcAddress:
 
+[Learn Microsoft Link](https://learn.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-getprocaddress)
+
 ### Code Example
 
-C++ 
-```
+```cpp
 #include <windows.h>
 #include <iostream>
 
@@ -857,10 +875,11 @@ int main() {
 
 The CreateProcessA API in C++ is commonly used to create a new process. It can be useful in cybersecurity and penetration testing when you need to launch a new process, such as running external tools or executing commands on the system. Here's an example of how to use CreateProcessA:
 
+[Learn Microsoft Link](https://learn.microsoft.com/de-de/windows/win32/api/processthreadsapi/nf-processthreadsapi-createprocessa)
+
 ### Code Example
 
-C++ 
-```
+```cpp
 #include <windows.h>
 #include <iostream>
 
@@ -918,10 +937,11 @@ Finally, we close the process and thread handles to avoid resource leaks.
 
 The OpenProcess API in C++ is used to obtain a handle to an existing process. It can be useful in cybersecurity and penetration testing when you need to interact with or manipulate other running processes on a Windows system. Here's an example of how to use OpenProcess:
 
+[Learn Microsoft Link](https://learn.microsoft.com/de-de/windows/win32/api/processthreadsapi/nf-processthreadsapi-openprocess)
+
 ### Code Example
 
-C++ 
-```
+```cpp
 #include <windows.h>
 #include <iostream>
 
@@ -955,10 +975,11 @@ int main() {
 
 The DuplicateHandle API in C++ is used to duplicate a handle to an object such as a process, thread, or file. This can be useful in cybersecurity and penetration testing when you need to share handles between processes or perform specific operations on the duplicated handle without affecting the original one. Here's an example of how to use DuplicateHandle:
 
+[Learn Microsoft Link](https://learn.microsoft.com/de-de/windows/win32/api/handleapi/nf-handleapi-duplicatehandle)
+
 ### Code Example
 
-C++ 
-```
+```cpp
 #include <windows.h>
 #include <iostream>
 
@@ -1009,10 +1030,12 @@ Finally, we close both the source process handle (hProcess) and the duplicated h
 
 The VirtualAllocEx API in C++ is used to allocate memory within the address space of a specified process. This can be useful in cybersecurity and penetration testing when you need to allocate memory in another process for various purposes, such as code injection or memory analysis. Here's an example of how to use VirtualAllocEx:
 
+[Learn Microsoft Link](https://learn.microsoft.com/de-de/windows/win32/api/memoryapi/nf-memoryapi-virtualallocex)
+
+
 ### Code Example
 
-C++ 
-```
+```cpp
 #include <windows.h>
 #include <iostream>
 
@@ -1057,10 +1080,11 @@ int main() {
 
 The VirtualProtectEx API in C++ is used to change the protection attributes of a region of memory within the address space of a specified process. This can be useful in cybersecurity and penetration testing when you need to modify the protection attributes of memory in another process for various purposes, such as code injection or memory manipulation. Here's an example of how to use VirtualProtectEx:
 
+[Learn Microsoft Link](https://learn.microsoft.com/de-de/windows/win32/api/memoryapi/nf-memoryapi-virtualprotectex)
+
 ### Code Example
 
-C++ 
-```
+```cpp
 #include <windows.h>
 #include <iostream>
 
@@ -1101,10 +1125,11 @@ int main() {
 
 The SetThreadContext API in C++ is used to set the context of a specified thread, which includes register values and flags. This can be useful in cybersecurity and penetration testing for various purposes, such as modifying the behavior of a thread or altering the execution flow within a target process. However, it's important to note that using this API for unauthorized or malicious purposes can have serious legal and ethical implications. Here's an example of how to use SetThreadContext:
 
+[Learn Microsoft Link](https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-setthreadcontext)
+
 ### Code Example
 
-C++ 
-```
+```cpp
 #include <windows.h>
 #include <iostream>
 
@@ -1169,10 +1194,11 @@ int main() {
 
 The QueueUserAPC (Asynchronous Procedure Call) API in C++ is used to queue a user-defined function to be executed within the address space of a specified thread. This can be useful in cybersecurity and penetration testing when you need to inject and execute code within a target process for various purposes. However, please be aware that manipulating remote processes without proper authorization can have serious legal and ethical implications. Here's an example of how to use QueueUserAPC:
 
+[Learn Microsoft Link](https://learn.microsoft.com/de-de/windows/win32/api/processthreadsapi/nf-processthreadsapi-queueuserapc2)
+
 ### Code Example
 
-C++ 
-```
+```cpp
 #include <windows.h>
 #include <iostream>
 
@@ -1229,10 +1255,11 @@ int main() {
 
 The CreateRemoteThread API in C++ is used to create a new thread within the address space of a specified remote process, allowing you to inject and execute code within that process. This can be useful in cybersecurity and penetration testing when you need to manipulate or analyze the behavior of a target process. However, please be aware that manipulating remote processes without proper authorization can have serious legal and ethical implications. Here's an example of how to use CreateRemoteThread:
 
+[Learn Microsoft Link](https://learn.microsoft.com/de-de/windows/win32/api/processthreadsapi/nf-processthreadsapi-createremotethread)
+
 ### Code Example
 
-C++ 
-```
+```cpp
 #include <windows.h>
 #include <iostream>
 
