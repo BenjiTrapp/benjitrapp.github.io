@@ -508,7 +508,7 @@ int main() {
 
 So far, there is no standard Windows API function named WTSFreeMemoryEx. Therefore,it's hard to provide a valid C++ code example for this specific API.
 
-[Learn Microsoft Link](https://learn.microsoft.com/en-us/windows/win32/api/wtsapi32/nf-wtsapi32-wtsfreememory)
+[Learn Microsoft Link](https://learn.microsoft.com/en-us/windows/win32/api/wtsapi32/nf-wtsapi32-wtsfreememoryexa)
 
 ### Code Example
 
