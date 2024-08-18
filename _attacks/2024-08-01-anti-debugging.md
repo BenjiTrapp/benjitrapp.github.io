@@ -3,7 +3,7 @@ layout: attack
 title: Anti Debugging 
 ---
 
-<img height="150" align="left" src="/images/antidebug.png"> The techniques described below are intended to detect if a debugger is present based on how debuggers behave when the CPU executes are certain instruction. The main focus here lays on windows but most of the techniques can easily be adopted for *nix based operating systems with ease. Most of the techniques here also require some additional obfuscation and hardening in order to increase the likelihood of getting reversed by a forensic guy.
+<img height="150" align="left" src="/images/antidebug.png"> The techniques described below are intended to detect if a debugger is present, based on how debuggers behave when the CPU executes a certain instruction. The main focus here lays on Windows but most of the techniques can easily be adopted for *nix based operating systems with ease. Most of the techniques here also require some additional obfuscation and hardening in order to decrease the likelihood of getting fast reversed by a forensic guy.
 
 
 - [Basic C/C++ debugger detection snippets](#basic-cc-debugger-detection-snippets)
