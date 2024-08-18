@@ -20,9 +20,8 @@ title: Anti Debugging
 
 ## Basic C/C++ debugger detection snippets
 
-A very basic option to detect a debugger, is to create a delta based on the tick counts and check the elapsed time. If a debugger is getting attached this function will detect it over the changed timing. If this function is returning false we can throw of the debugger at a random benign location and not execute the malicious part of our application. 
+A very basic option to detect a debugger, is to create a delta based on the tick counts and check the elapsed time. If a debugger is getting attached, this function will detect it over the elapsed timing. If this function is returning false, we can throw of the debugger at a random benign location, and not execute the malicious part of our application. 
 
-```cpp
 #include <iostream>
 #include <Windows.h>
 
@@ -39,7 +38,7 @@ BOOL isDebuggerPresentTickCount() {
 
 ```
 `
-The two brothers in crime are using `GetLocalTime()` and `QueryPerformanceFrequency()`. Additional we can also calculate a prime number here to spend some time and circumvent a monkey patching of the sleep function. This can additionally help to evade EDR/XDR analysis in sandboxes:
+The second brother in crime is using `GetLocalTime()` and `QueryPerformanceFrequency()`. Additional we can also calculate a prime number here to spend some time and circumvent a monkey patching of the sleep function. This can additionally help to evade EDR/XDR analysis done via sandboxing:
 
 ```cpp
 BOOL isDebuggerPresentLocalTime(){
@@ -92,10 +91,10 @@ void calculatePrime() {
 ```
 
 ## Assembly instructions
-Another way to disturb debugging processes are using Assembly instructions. They don't create interferences with the regular execution of the program but hook a debugger. That can help to disturb the normal execution during debugging sessions and let a reverse engineer run into circles. 
+Another way to disturb debugging processes are using Assembly instructions. They don't create interferences with the regular execution of the program, but hook a debugger. That can help to disturb the normal execution during debugging sessions and let a reverse engineer run into circles. 
 
 ### INT 3
-THe instruction INT3 is an interruption in a nutshell, that is used as a software breakpoint. Without a debugger present, after getting to an INT3 instruction, the exception `EXCEPTION_BREAKPOINT (0x80000003) is thrown and transferred to an exception handler. If the debugger is present, the control won't be given to the exception handler.
+The instruction INT3 is an interruption in a nutshell, that is used as a software breakpoint. Without a debugger present, after getting to an INT3 instruction, the exception `EXCEPTION_BREAKPOINT (0x80000003) is thrown and transferred to an exception handler. If the debugger is present, the control won't be given to the exception handler.
 
 ```cpp
 BOOL IsDebugged() {
