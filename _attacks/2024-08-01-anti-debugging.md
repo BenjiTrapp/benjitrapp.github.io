@@ -22,6 +22,7 @@ title: Anti Debugging
 
 A very basic option to detect a debugger, is to create a delta based on the tick counts and check the elapsed time. If a debugger is getting attached, this function will detect it over the elapsed timing. If this function is returning false, we can throw of the debugger at a random benign location, and not execute the malicious part of our application. 
 
+```cpp
 #include <iostream>
 #include <Windows.h>
 
@@ -37,7 +38,6 @@ BOOL isDebuggerPresentTickCount() {
 }
 
 ```
-`
 The second brother in crime is using `GetLocalTime()` and `QueryPerformanceFrequency()`. Additional we can also calculate a prime number here to spend some time and circumvent a monkey patching of the sleep function. This can additionally help to evade EDR/XDR analysis done via sandboxing:
 
 ```cpp
@@ -87,7 +87,6 @@ void calculatePrime() {
         }
     }
 }
-
 ```
 
 ## Assembly instructions
