@@ -237,6 +237,21 @@ $client.close();
 $stream.Dispose()
 ```
 
+Another and shorter version:
+```powershell
+$listener = New-Object System.Net.Sockets.TcpListener('127.0.0.1', 1234)
+$listener.Start()
+Write-Host "Listening on port 1234..."
+while ($true) {
+    $client = $listener.AcceptTcpClient()
+    Write-Host "Connection received from $($client.Client.RemoteEndPoint.Address)"
+    $stream = $client.GetStream()
+    $reader = New-Object System.IO.StreamReader($stream)
+    $data = $reader.ReadToEnd()
+    Write-Host "Received data: $data"
+    $client.Close()
+}
+```
 
 ## Upgrading your Reverse Shell
 
