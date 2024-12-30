@@ -67,6 +67,18 @@ alias q!='exit'
 alias h='history'
 alias k='kill'
 alias meow='cat'
+alias chuck_norris='sudo -i'
+alias fuck='sudo $(history -p !!)'
+
+# Some other stuff
+alias del='rm -rf "@$"'
+alias web-srv='python3 -m http.server 8080'
+alias obsidian='/usr/share/obsidian/Obsidian.AppImage --no-sandbox'
+alias nmap-VulScan="nmap --script vulscan/scipag_vulscan/vulscan.nse --script-args=vulscanoutput='ID: {id} - Title: {title} ({matches})\n' --script-args=vulscan/vulscandb=exploitdb.csv -sV -sC -O -p- -f "
+alias nmap-Vulners='nmap -sV --script vulners --script-args mincvss=5.0 -O -p- -f '
+alias c='clear'   
+alias off='shutdown -h now'
+alias rr='reboot'
 
 # ----------------------
 # Docker Aliases
@@ -181,6 +193,57 @@ function extract () {
         esac
     else
         echo \"'$1' is not a valid file\"
+    fi
+}
+
+function inet() {
+    # Get the default network interface
+    netdevice=$(ip route | awk '/default/ {print $5}')
+    
+    if [ -z "$netdevice" ]; then
+        echo "No active network interface found."
+        return
+    fi
+
+    # Get the IP address
+    ip=$(ip -o -4 addr show "$netdevice" | awk '{print $4}' | cut -d "/" -f 1)
+    
+    # Check if the IP address is a link-local address
+    if [[ $ip == 169.* ]]; then
+        echo "Disconnected"
+        return
+    fi
+
+    # Get the gateway, ping latency, and subnet mask
+    gwip=$(ip route | awk "/$netdevice/ && /via/ {print \$3}")
+    ping=$(ping -c 1 -W 1 "$gwip" | awk -F'/' 'END {print ($5 != "" ? $5 : "N/A")}')
+
+    netmask=$(ip -o -4 addr show "$netdevice" | awk '{print $4}')
+    
+    # Get the DNS server
+    DNS_SRV=$(awk '/^nameserver/ {print $2; exit}' /etc/resolv.conf)
+
+    # Display network information
+    echo "Interface: $netdevice"
+    echo "  IP: $ip [Ping: $ping ms]"
+    echo "  Subnet: $netmask"
+    echo "  Default Gateway: $gwip"
+    echo "  DNS Server: $DNS_SRV"
+
+    # Check internet connectivity using wget
+    echo -n "  Internet via wget: "
+    if wget -q --spider https://google.com; then
+        echo "YES"
+    else
+        echo "NO"
+    fi
+
+    # Check internet connectivity using ping
+    echo -n "  Internet via ping: "
+    if ping -c 1 -W 1 8.8.8.8 &>/dev/null; then
+        echo "YES"
+    else
+        echo "NO"
     fi
 }
 
