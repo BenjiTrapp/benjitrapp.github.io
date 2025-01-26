@@ -3,6 +3,7 @@ layout: memory
 title: Hacking and Living of the Land Links
 ---
 
+<!-- cSpell:disable -->
 # Resources & Guides
 - [Application Security Cheat Sheet](https://0xn3va.gitbook.io/cheat-sheets)
 - [AppSecExplained](https://appsecexplained.gitbook.io/appsecexplained)
@@ -54,3 +55,4 @@ title: Hacking and Living of the Land Links
 - [Unprotect Project](https://unprotect.it/)
 - [WADComs (Windows/AD Techniques)](https://wadcoms.github.io/)
 - [WTFBins](https://wtfbins.wtf/)
+<!-- cSpell:enable -->

@@ -4,11 +4,10 @@ title: /whoami
 permalink: /about/
 ---
 
-Hi 👋, I'm Benji - A Purple Teamer and DevSecOps Engineer, who is interested in cloud native technologies, DevOps culture, and Security that isn't based on Excel. Automation is king. 
+Hi 👋, I'm Benji - A Red Team Operator, MalDev researcher, and DevSecOps Engineer, who is interested in cloud native technologies, DevOps culture, and Security that isn't based on Excel. Automation is king. 
 
 #### 💬 How to Reach Me?
 
-[![Twitter](https://img.shields.io/badge/-TWITTER-0077B5?style=for-the-badge&logo=twitter&logoColor=white)](https://twitter.com/spreadthekaozz)
 [![LinkedIn](https://img.shields.io/badge/-LINKEDIN-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/benjamin-yves-trapp/)
 [![Website](https://img.shields.io/badge/-WEBSITE-0077B5?style=for-the-badge&logo=jekyll&logoColor=white)](https://benjitrapp.github.io)
 
@@ -36,15 +35,17 @@ Hi 👋, I'm Benji - A Purple Teamer and DevSecOps Engineer, who is interested i
 <img src="https://img.shields.io/badge/splunk-%23000000.svg?style=for-the-badge&logo=splunk&logoColor=white"/>&nbsp;
 <img src="https://img.shields.io/badge/-ElasticSearch-005571?style=for-the-badge&logo=elasticsearch"/>&nbsp;
 
+#### 🏆 My Trophies
+
+##### Pulic Talks
+* [Open Security Summit - A Call For Metrics](https://open-security-summit.org/sessions/2024/mini-summits/jan/devsecops/call-for-metrics/)
+* [// heise devSec() - Die Macht zur Veränderung, Security Kompetenz im Team etablieren](https://heise-devsec.de/veranstaltung-22370-21-die-macht-zur-veraenderung-security-kompetenz-im-team-etablieren.html) ==> [Slides](/assets/HeiseDevSec2024.pdf)
 
 
+##### Certificates
+<img height="350" src="/images/grtp.png"/>&nbsp;<img height="350" src="/images/oscp.png"/>&nbsp;<img height="350" src="/images/ctal-full.png"/>
 
-#### Meet me on GitHub
-
-![Metrics](https://metrics.lecoq.io/BenjiTrapp?template=classic&base.header=0&isocalendar=1&languages=1&introduction=1&habits=1&stars=1&gists=1&lines=1&repositories=1&traffic=1&repositories=100&repositories.batch=100&repositories.forks=false&repositories.affiliations=owner&isocalendar.duration=half-year&languages.limit=8&languages.sections=most-used&languages.colors=github&languages.threshold=0%25&languages.indepth=false&languages.analysis.timeout=15&languages.categories=markup%2C%20programming&languages.recent.categories=markup%2C%20programming&languages.recent.load=300&languages.recent.days=14&introduction.title=true&habits.from=200&habits.days=14&habits.facts=true&habits.charts=false&habits.trim=false&stars.limit=4&config.timezone=Europe%2FBerlin)
-
-#### 🏆 My Github Trophies 
-
+##### Github
 <p align="center">
   <img src="https://github-profile-trophy.vercel.app/?username=BenjiTrapp&row=1" alt="Git Trophies">
 </p>
