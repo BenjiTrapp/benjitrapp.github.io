@@ -43,7 +43,7 @@ Hi 👋, I'm Benji - A Red Team Operator, MalDev researcher, and DevSecOps Engin
 
 
 ##### Certificates
-<img height="350" src="/images/grtp.png"/>&nbsp;<img height="350" src="/images/oscp.png"/>&nbsp;<img height="350" src="/images/ctal-full.png"/>
+<img height="150" src="/images/grtp.png"/>&nbsp;<img height="150" src="/images/oscp.png"/>&nbsp;<img height="150" src="/images/ctal-full.png"/>
 
 ##### Github
 <p align="center">
