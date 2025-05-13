@@ -750,6 +750,7 @@
     "pwncat",
     "pwntools",
     "pyarmor",
+    "pyfiglet",
     "pyinstaller",
     "Pyminifier",
     "pyshark",
