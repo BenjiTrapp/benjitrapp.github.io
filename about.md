@@ -40,7 +40,7 @@ Hi 👋, I'm Benji - A Red Team Operator, MalDev researcher, and DevSecOps Engin
 ##### Pulic Talks
 * [Open Security Summit - A Call For Metrics](https://open-security-summit.org/sessions/2024/mini-summits/jan/devsecops/call-for-metrics/)
 * [// heise devSec() - Die Macht zur Veränderung, Security Kompetenz im Team etablieren](https://heise-devsec.de/veranstaltung-22370-21-die-macht-zur-veraenderung-security-kompetenz-im-team-etablieren.html) ==> [Slides](/assets/HeiseDevSec2024.pdf)
-
+* [46. Cologne OWASP Stammtisch am 22.05.2025](https://owasp.org/www-chapter-cologne/) ==> [Slides](https://owasp.org/www-chapter-cologne/slides/OWASP_Stammtisch_42_Meet_the_Raccoons%20_Ghosts_in_the_pipelines.pdf) 
 
 ##### Certificates
 <img height="150" src="/images/grtp.png"/>&nbsp;<img height="150" src="/images/oscp.png"/>&nbsp;<img height="150" src="/images/ctal-full.png"/>
