@@ -62,6 +62,21 @@ pattern.
 * `Context` – A very useful parameter in that, you can define the number of lines before and after the match that will be displayed. Adding
 this parameter modifies the emitted MatchInfo object to include a new Context property that contains the lines specified.
 
+### PowerShell "Grep -nlri"
+
+```powershell
+Get-ChildItem -Recurse -File |
+  Select-String -Pattern 'string to search' -SimpleMatch -List |
+  Select-Object -ExpandProperty Path
+```
+* `Get-ChildItem -Recurse -File ` - Recursively retrieves files.
+* `Select-String` -  PowerShell’s equivalent of grep.
+* `-Pattern 'string'` - Specifies the search pattern.
+* `-SimpleMatch`- Literal match (no regex metacharacters).
+
+`Note`: grep interprets the pattern as a regex; if you want an exact literal match in PowerShell, -SimpleMatch is the safest option.
+-List → Returns only the first match per file (similar to grep -l, which lists filenames instead of all matching lines).
+Case-insensitive by default, so no need for -CaseSensitive.
 
 ### Export results to .csv
 To export all the results intoa file simply append the snippet below:
