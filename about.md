@@ -45,14 +45,8 @@ Hi 👋, I'm Benji - A Red Team Operator, MalDev researcher, and DevSecOps Engin
 ##### Certificates
 <img height="150" src="/images/grtp.png"/>&nbsp;<img height="150" src="/images/oscp.png"/>&nbsp;<img height="150" src="/images/ctal-full.png"/>
 
-##### Github
-<p align="center">
-  <img src="https://github-profile-trophy.vercel.app/?username=BenjiTrapp&row=1" alt="Git Trophies">
-</p>
-
 #### Meet me on TryHackMe
 <iframe src="https://tryhackme.com/api/v2/badges/public-profile?userPublicId=6338558" style='border:none;'></iframe>
-
 
 #### Meet me on HTB (retired)
 ![nyctophobia](https://www.hackthebox.eu/badge/image/226686)
