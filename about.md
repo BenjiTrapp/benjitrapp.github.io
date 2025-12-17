@@ -43,7 +43,7 @@ Hi 👋, I'm Benji - A Red Team Operator, MalDev researcher, and DevSecOps Engin
 * [46. Cologne OWASP Stammtisch am 22.05.2025](https://owasp.org/www-chapter-cologne/) ==> [Slides](https://owasp.org/www-chapter-cologne/slides/OWASP_Stammtisch_42_Meet_the_Raccoons%20_Ghosts_in_the_pipelines.pdf) 
 
 ##### Certificates
-<img height="150" src="/images/grtp.png"/>&nbsp;<img height="150" src="/images/oscp.png"/>&nbsp;<img height="150" src="/images/ctal-full.png"/>
+<img height="150" src="/images/grtp.png"/>&nbsp;<img height="150" src="/images/oscp.png"/>&nbsp;<img height="150" src="/images/ctal-full.png"/><a href="https://tryhackme-certificates.s3-eu-west-1.amazonaws.com/THM-EUHVAALVLK.pdf"><img src="/images/thm_redteaming.svg" height="150" alt="CTAL Logo"/></a>
 
 #### Meet me on TryHackMe
 <iframe src="https://tryhackme.com/api/v2/badges/public-profile?userPublicId=6338558" style='border:none;'></iframe>
