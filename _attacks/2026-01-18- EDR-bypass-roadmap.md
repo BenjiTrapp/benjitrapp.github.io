@@ -219,7 +219,7 @@ Direct syscalls removed EDR visibility by transitioning directly to kernel mode,
 
 - **Direct Syscalls ([T1106](https://attack.mitre.org/techniques/T1106/))**
 
-```C
+```cpp
 ; Example: Syscall stub for NtAllocateVirtualMemory (x64)
 public NtAllocateVirtualMemory
 
