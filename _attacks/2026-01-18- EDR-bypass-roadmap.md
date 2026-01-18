@@ -23,6 +23,9 @@ This timeline breaks down the evolution of evasion—from early Windows API abus
 - [Conclusion](#conclusion)
 - [Conclusion](#conclusion-1)
 
+Overview about the timeline, it phases and related techniques that will be discussed below:
+
+![](/images/edr_bypass_timeline_chart.png)
 
 ## Phase 1: The Foundation (2010–2015)
 **Strategy:** Exploiting trust by utilizing legitimate Windows mechanisms for code placement.
