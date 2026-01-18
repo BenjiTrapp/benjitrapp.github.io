@@ -3,7 +3,7 @@ layout: attack
 title: Recon using a Tracking pixel
 ---
 
-<img height="150" align="left" src="/images/tracking_pixel.png">  > "Technology is best when it brings people together." — Matt Mullenweg
+> "Technology is best when it brings people together." — Matt Mullenweg
 
 The digital world thrives on connection, with devices linking across the globe in an intricate dance of data and communication. Hidden within this interconnected web are invisible tools that allow us to track, analyze, and understand user behavior. One such tool combines the simplicity of a transparent image and the ingenuity of IP tracking. With IP tracking it's also possible to gain insights on the possible target infrastructure including ip ranges, location and more.
 
