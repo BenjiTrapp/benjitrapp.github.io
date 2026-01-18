@@ -47,6 +47,9 @@ Hi 👋, I'm Benji - A Red Team Operator, MalDev researcher, and DevSecOps Engin
 <img height="150" src="/images/grtp.png" alt="GRTP Certificate"/>&nbsp;
 <img height="150" src="/images/oscp.png" alt="OSCP Certificate"/>&nbsp;
 <img height="150" src="/images/ctal-full.png" alt="CTAL Certificate"/>&nbsp;
+<a href="/images/SecChampion_Fraunhofer.jpg">
+    <img height="150" src="/images/fraunhofer_sec_champion.png" alt="Fraunhofer Security Champion Certificate"/>
+</a>&nbsp;
 <a href="https://tryhackme-certificates.s3-eu-west-1.amazonaws.com/THM-EUHVAALVLK.pdf">
     <img height="150" src="/images/thm_redteaming.svg" alt="TryHackMe Red Teaming Certificate"/>
 </a>&nbsp;
