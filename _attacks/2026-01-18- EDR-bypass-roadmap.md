@@ -1,6 +1,6 @@
 ---
 layout: attack
-title: The EDR Bypass Roadmap: Technical Evolution & API Subversion
+title: "The EDR Bypass Roadmap: Technical Evolution and API Subversion"
 ---
 
 <img height="150" align="left" src="/images/edr-bypass-timeline.png"> The battle for the endpoint is won or lost in telemetry. This has been increasingly recognised by the security community, with projects such as [EDR Telemetry](https://www.edr-telemetry.com/) aiming to systematically compare and improve EDR visibility.  
