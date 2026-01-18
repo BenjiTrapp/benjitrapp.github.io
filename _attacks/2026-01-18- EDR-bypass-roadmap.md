@@ -7,8 +7,6 @@ title: "The EDR Bypass Roadmap: Technical Evolution and API Subversion"
 
 This timeline breaks down the evolution of evasion—from early Windows API abuse to modern hardware- and behavior-level subversion—mapped against the **MITRE ATT&CK®** framework and aligned with my research into [**Windows APIs**](https://benjitrapp.github.io/attacks/2024-06-07-red-windows-api/) and [**ETW (Event Tracing for Windows)**](https://benjitrapp.github.io/defenses/2024-02-11-etw/).
 
----
-
 ## Phase 1: The Foundation (2010–2015)
 **Strategy:** Exploiting trust by utilizing legitimate Windows mechanisms for code placement.
 
@@ -74,8 +72,6 @@ While still heavily used in modern C2 frameworks, reflective loading has increas
 
 This evolution mirrors the detection trends discussed in the Windows API series above.
 
----
-
 ## Phase 2: The Hooking Wars (2015–2017)
 **Strategy:** Detecting and removing userland sensors.
 
@@ -115,8 +111,6 @@ memcpy(pNtOpenProcess, "\x4c\x8b\xd1\xb8\x26", 5); // Original bytes
 VirtualProtect(pNtOpenProcess, 5, oldProtect, &oldProtect);
 ```
 
----
-
 ## Phase 3: The Syscall Revolution (2017–2019)
 **Strategy:** Bypassing the hooked middleman (`ntdll.dll`) entirely.
 
@@ -142,8 +136,6 @@ NtAllocateVirtualMemory endp
 
 Research such as **Hell’s Gate**, **Halos Gate**, and **Tartarus’ Gate** addressed syscall volatility and hooked exports, culminating in tools like **SysWhispers**.
 
----
-
 ## Phase 4: Indirect Syscalls & Stack Integrity (2019–2021)
 **Strategy:** Preserving legitimate execution context.
 
@@ -154,8 +146,6 @@ As EDRs began analysing call stacks, indirect syscalls ensured execution appeare
 - Return address spoofing
 
 These techniques laid the groundwork for modern call stack spoofing and sleep obfuscation.
-
----
 
 ## Phase 5: The ETW & Memory Evasion Era (2020–2022)
 **Strategy:** Blinding telemetry pipelines.
