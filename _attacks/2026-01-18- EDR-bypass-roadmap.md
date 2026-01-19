@@ -21,7 +21,6 @@ This timeline breaks down the evolution of evasion—from early Windows API abus
 - [Phase 6: Advanced Injection \& Modern Era (2022–Present / Time of Writing: 2026)](#phase-6-advanced-injection--modern-era-2022present--time-of-writing-2026)
 - [Technical Summary \& API Matrix](#technical-summary--api-matrix)
 - [Conclusion](#conclusion)
-- [Conclusion](#conclusion-1)
 
 Overview about the timeline, it phases and related techniques that will be discussed below:
 
@@ -220,7 +219,7 @@ Direct syscalls removed EDR visibility by transitioning directly to kernel mode,
 
 - **Direct Syscalls ([T1106](https://attack.mitre.org/techniques/T1106/))**
 
-```C
+```cpp
 ; Example: Syscall stub for NtAllocateVirtualMemory (x64)
 public NtAllocateVirtualMemory
 
@@ -485,8 +484,6 @@ AddVectoredExceptionHandler(1, MyHandler);
 
 
 ## Conclusion
-## Conclusion
-
 EDR bypass research has consistently demonstrated one truth: **visibility gaps define opportunity**. As detection shifts from APIs to behavior, and from userland to kernel and hardware, attackers adapt by abusing trust, context, and execution semantics.
 
 This timeline illustrates a clear pattern: each defensive innovation creates new constraints that offensive research systematically defeats. From Stephen Fewer's [Reflective DLL Injection](https://github.com/stephenfewer/ReflectiveDLLInjection) ([T1055.001](https://attack.mitre.org/techniques/T1055/001/)) to Jackson_T's [SysWhispers](https://github.com/jthuraisamy/SysWhispers) ([T1106](https://attack.mitre.org/techniques/T1106/)), the community has consistently pushed the boundaries of what's detectable.
