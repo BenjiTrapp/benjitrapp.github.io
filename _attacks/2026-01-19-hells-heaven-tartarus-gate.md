@@ -15,7 +15,7 @@ The goal is not to provide weaponization but to explain the mechanisms, strength
 
 
 ## Hell’s Gate
-Hell’s Gate, introduced by am0nsec and RtlMateusz, laid the foundation for dynamic syscall resolution without relying on static (and easily fingerprinted) syscall IDs. Instead of hardcoding System Service Numbers (SSNs), the technique parses native function stubs inside ntdll.dll at runtime, extracting the actual SSN from the function’s first bytes.
+Hell’s Gate, introduced by am0nsec and RtlMateusz [VX-Underground](https://x.com/vxunderground/status/1267865030495789056?s=20), laid the foundation for dynamic syscall resolution without relying on static (and easily fingerprinted) syscall IDs. Instead of hardcoding System Service Numbers (SSNs), the technique parses native function stubs inside ntdll.dll at runtime, extracting the actual SSN from the function’s first bytes.
 
 This enables resilient, cross‑version direct syscalls, even when Windows updates shift syscall numbers. [redops.at](https://redops.at/blog/exploring-hells-gate)
 
