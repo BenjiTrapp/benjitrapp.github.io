@@ -10,7 +10,7 @@ This article examines two significant methods for achieving this: the classic **
 
 ## Early Bird Injection
 
-Early Bird Injection is a stealthy variation of Asynchronous Procedure Call (APC) injection. It targets a process in its infancy to ensure the malicious payload runs before the EDR's user-mode hooks are in place.
+Early Bird Injection is a stealthy variation of [Asynchronous Procedure Call (APC)](https://learn.microsoft.com/en-us/windows/win32/sync/asynchronous-procedure-calls) injection. It targets a process in its infancy to ensure the malicious payload runs before the EDR's user-mode hooks are in place.
 
 ![](/images/EarlyBirdFlow.jpg)
 
@@ -20,7 +20,7 @@ The technique exploits the state of a process created with the `CREATE_SUSPENDED
 
 1. **Create Suspended Process:** A legitimate process, such as `svchost.exe`, is started in a suspended state.
 2. **Allocate & Write:** Memory is allocated in the target process, and the shellcode is written to that space.
-3. **Queue APC:** The `QueueUserAPC` function points the main thread to the shellcode.
+3. **Queue APC:** The `QueueUserAPC` function points the main thread to the shellcode. API is also discussed [here](https://benjitrapp.github.io/attacks/2024-06-07-red-windows-api/#queueuserapc)
 4. **Resume Thread:** When the thread resumes, the system triggers the APC immediately, executing the malicious code before the thread reaches its original entry point.
 
 This technique has been used by several malware families, including **TurnedUp** (APT33), **Carberp**, and **DorkBot**.
