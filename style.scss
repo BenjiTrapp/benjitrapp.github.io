@@ -1085,6 +1085,19 @@ pre.highlight {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     margin: 16px 0;
     border: 1px solid #30363d;
+    display: block;
+    overflow: hidden;
+  }
+
+  // TryHackMe Badge specific
+  iframe[src*="tryhackme"] {
+    background: transparent;
+    padding: 0;
+    margin: 16px 0;
+    border: none !important;
+    border-radius: 0;
+    box-shadow: none !important;
+    overflow: visible;
   }
   
   // Contact Badges

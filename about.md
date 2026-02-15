@@ -97,7 +97,7 @@ Hi 👋, I'm Benji - A Red Team Operator, MalDev researcher, and DevSecOps Engin
 
 
 #### Meet me on TryHackMe
-<iframe src="https://tryhackme.com/api/v2/badges/public-profile?userPublicId=6338558" style='border:none;'></iframe>
+<iframe src="https://tryhackme.com/api/v2/badges/public-profile?userPublicId=6338558" width="450" height="180" style="border:none; overflow:hidden;" scrolling="no"></iframe>
 
 #### Meet me on HTB (retired)
 ![nyctophobia](https://www.hackthebox.eu/badge/image/226686)
@@ -106,6 +106,3 @@ Hi 👋, I'm Benji - A Red Team Operator, MalDev researcher, and DevSecOps Engin
 #### 😆 Random Joke
 
 ![Jokes Card](https://readme-jokes.vercel.app/api)
-
-#### 🎵 Spotify
- [![Spotify](https://novatorem.vercel.app/api/spotify?background_color=0d1117&border_color=ffffff)](https://open.spotify.com/user/el_benjo)
