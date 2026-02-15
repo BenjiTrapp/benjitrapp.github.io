@@ -38,10 +38,46 @@ Hi 👋, I'm Benji - A Red Team Operator, MalDev researcher, and DevSecOps Engin
 #### 🏆 My Trophies
 
 ##### Public Talks
-* [Open Security Summit - A Call For Metrics](https://open-security-summit.org/sessions/2024/mini-summits/jan/devsecops/call-for-metrics/)
-* [// heise devSec() - Die Macht zur Veränderung, Security Kompetenz im Team etablieren](https://heise-devsec.de/veranstaltung-22370-21-die-macht-zur-veraenderung-security-kompetenz-im-team-etablieren.html) ==> [Slides](/assets/HeiseDevSec2024.pdf)
-* [Navigate 2025 - Die Macht zur Veränderung: Security-Kompetenz im Team etablieren](https://www.youtube.com/watch?v=k3h_UIYr-fg&t=842s)
-* [46. Cologne OWASP Stammtisch am 22.05.2025](https://owasp.org/www-chapter-cologne/) ==> [Slides](https://owasp.org/www-chapter-cologne/slides/OWASP_Stammtisch_42_Meet_the_Raccoons%20_Ghosts_in_the_pipelines.pdf) 
+
+<div class="talks-timeline">
+  <div class="timeline-year">
+    <span class="year-badge">2025</span>
+    <div class="timeline-events">
+      <div class="timeline-event">
+        <span class="event-icon">🎤</span>
+        <div class="event-content">
+          <a href="https://owasp.org/www-chapter-cologne/">46. Cologne OWASP Stammtisch am 22.05.2025</a>
+          <span class="event-links">→ <a href="https://owasp.org/www-chapter-cologne/slides/OWASP_Stammtisch_42_Meet_the_Raccoons%20_Ghosts_in_the_pipelines.pdf">Slides</a></span>
+        </div>
+      </div>
+      <div class="timeline-event">
+        <span class="event-icon">🎤</span>
+        <div class="event-content">
+          <a href="https://www.youtube.com/watch?v=k3h_UIYr-fg&t=842s">Navigate 2025 - Die Macht zur Veränderung: Security-Kompetenz im Team etablieren</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="timeline-year">
+    <span class="year-badge">2024</span>
+    <div class="timeline-events">
+      <div class="timeline-event">
+        <span class="event-icon">🎤</span>
+        <div class="event-content">
+          <a href="https://heise-devsec.de/veranstaltung-22370-21-die-macht-zur-veraenderung-security-kompetenz-im-team-etablieren.html">// heise devSec() - Die Macht zur Veränderung, Security Kompetenz im Team etablieren</a>
+          <span class="event-links">→ <a href="/assets/HeiseDevSec2024.pdf">Slides</a></span>
+        </div>
+      </div>
+      <div class="timeline-event">
+        <span class="event-icon">🎤</span>
+        <div class="event-content">
+          <a href="https://open-security-summit.org/sessions/2024/mini-summits/jan/devsecops/call-for-metrics/">Open Security Summit - A Call For Metrics</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> 
 
 ##### Certificates
 <img height="150" src="/images/grtp.png" alt="GRTP Certificate"/>&nbsp;
