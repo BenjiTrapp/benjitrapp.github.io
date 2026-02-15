@@ -77,6 +77,19 @@ Hi 👋, I'm Benji - A Red Team Operator, MalDev researcher, and DevSecOps Engin
       </div>
     </div>
   </div>
+
+  <div class="timeline-year">
+    <span class="year-badge">2023</span>
+    <div class="timeline-events">
+      <div class="timeline-event">
+        <span class="event-icon">🎤</span>
+        <div class="event-content">
+          <a href="https://github.com/BenjiTrapp/aws-threat-hunting/blob/main/DEATHonAWS.pptx">AXA Doomsday Session</a>
+          <span class="event-links">→ <a href="https://github.com/BenjiTrapp/aws-threat-hunting/blob/main/DEATHonAWS.pptx">Slides</a></span>
+        </div>
+      </div>
+    </div>
+  </div>
 </div> 
 
 ##### Certificates
