@@ -42,15 +42,15 @@ The developer's laptop is where most of the magic happens, but also where most o
 
 | Control | Name | Priority | Description | Difficulty | Maps to security frameworks |
 | :--- | :---        | :---   | :--- | :---    | :---    |
-| 1.1 | Secure Code Training | 2 | Developers who receive Secure Code Training are less likely to introduce security bugs, be aware of tooling that can support them, and design systems with security in mind. | <span style="color: orange">Medium</span> | <ul><li>CIS8</li><li>APRA234</li><li>NIST 800-53B</li><li>SSDF1.1</li></ul> |
-| 1.2 | Source Code Versioning | 1 | Version Control Systems introduce peer review processes, an auditable history, and consistent work patterns between software engineers.  | <span style="color: green">Easy</span> | <ul><li>APRA234</li><li>CIS8</li><li>ISM GSD</li><li>ISO27001</li><li>NIST 800-53B</li><li>SSDF1.1</li></ul> |
-| 1.3 | .gitignore | 1 | .gitignore files help prevent accidental commits of sensitive, debug, or workstation specific data | <span style="color: green">Easy</span> | <ul><li>APRA234</li><li>CIS8</li><li>NIST 800-53B</li><li>SSDF1.1</li></ul> |
-| 1.4 | Pre-Commit Hook Scans | 2 | A Pre-Commit Hook for security scans provides timely feedback to engineers and helps to prevent vulnerable code being introduced to a repository | <span style="color: green">Easy</span> | <ul><li>APRA234</li><li>CIS8</li><li>NIST 800-53B</li><li>SSDF1.1</li></ul> |
-| 1.5 | IDE plugins | 2 | Most IDE's support the use of third-party plugins, and devs should implement these tools to highlight security issues as they happen in realtime while they are programming. | <span style="color: green">Easy</span> | <ul><li>APRA234</li><li>CIS8</li><li>NIST 800-53B</li><li>SSDF1.1</li></ul> |
-| 1.6 | Local Software Composition Analysis | 1 | Helps you find and fix libraries with known security issues | <span style="color: green">Easy</span> | <ul><li>APRA234</li><li>CIS8</li><li>ISM GSD</li><li>ISO27001</li><li>NIST 800-53B</li><li>SSDF1.1</li></ul> |
-| 1.7 | Local Static Code Analysis | 2 | Helps you find and fix security vulnerabilities in your source code | <span style="color: green">Easy</span> | <ul><li>APRA234</li><li>CIS8</li><li>ISM GSD</li><li>ISO27001</li><li>NIST 800-53B</li><li>SSDF1.1</li></ul> |
-| 1.8 | Local Sensitive Data Analysis | 1 | Audits your repository for secrets, credentials, API keys and similar in dev environment. Secrets stored in source code are visible to other people | <span style="color: green">Easy</span> | <ul><li>APRA234</li><li>CIS8</li><li>ISM GSD</li><li>ISO27001</li><li>NIST 800-53B</li><li>SSDF1.1</li></ul> |
-| 1.9 | Application Baseline | 3 | Create a "recipe" for building the application from ground up that takes into consideration its risk and compliance requirements, data sensitivity, stakeholders and relationships with other systems, as well as its technical components. | <span style="color: orange">Medium</span> | <ul><li>APRA234</li><li>CIS8</li><li>ISM GSD</li><li>NIST 800-53B</li><li>SSDF1.1</li></ul> |
+| 1.1 | Secure Code Training | 2 | Developers who receive Secure Code Training are less likely to introduce security bugs, be aware of tooling that can support them, and design systems with security in mind. | <span style="color: orange">Medium</span> | • CIS8<br>• APRA234<br>• NIST 800-53B<br>• SSDF1.1 |
+| 1.2 | Source Code Versioning | 1 | Version Control Systems introduce peer review processes, an auditable history, and consistent work patterns between software engineers.  | <span style="color: green">Easy</span> | • APRA234<br>• CIS8<br>• ISM GSD<br>• ISO27001<br>• NIST 800-53B<br>• SSDF1.1 |
+| 1.3 | .gitignore | 1 | .gitignore files help prevent accidental commits of sensitive, debug, or workstation specific data | <span style="color: green">Easy</span> | • APRA234<br>• CIS8<br>• NIST 800-53B<br>• SSDF1.1 |
+| 1.4 | Pre-Commit Hook Scans | 2 | A Pre-Commit Hook for security scans provides timely feedback to engineers and helps to prevent vulnerable code being introduced to a repository | <span style="color: green">Easy</span> | • APRA234<br>• CIS8<br>• NIST 800-53B<br>• SSDF1.1 |
+| 1.5 | IDE plugins | 2 | Most IDE's support the use of third-party plugins, and devs should implement these tools to highlight security issues as they happen in realtime while they are programming. | <span style="color: green">Easy</span> | • APRA234<br>• CIS8<br>• NIST 800-53B<br>• SSDF1.1 |
+| 1.6 | Local Software Composition Analysis | 1 | Helps you find and fix libraries with known security issues | <span style="color: green">Easy</span> | • APRA234<br>• CIS8<br>• ISM GSD<br>• ISO27001<br>• NIST 800-53B<br>• SSDF1.1 |
+| 1.7 | Local Static Code Analysis | 2 | Helps you find and fix security vulnerabilities in your source code | <span style="color: green">Easy</span> | • APRA234<br>• CIS8<br>• ISM GSD<br>• ISO27001<br>• NIST 800-53B<br>• SSDF1.1 |
+| 1.8 | Local Sensitive Data Analysis | 1 | Audits your repository for secrets, credentials, API keys and similar in dev environment. Secrets stored in source code are visible to other people | <span style="color: green">Easy</span> | • APRA234<br>• CIS8<br>• ISM GSD<br>• ISO27001<br>• NIST 800-53B<br>• SSDF1.1 |
+| 1.9 | Application Baseline | 3 | Create a "recipe" for building the application from ground up that takes into consideration its risk and compliance requirements, data sensitivity, stakeholders and relationships with other systems, as well as its technical components. | <span style="color: orange">Medium</span> | • APRA234<br>• CIS8<br>• ISM GSD<br>• NIST 800-53B<br>• SSDF1.1 |
 
 <h2 id="scm">Source code management (SCM)</h2>
 
@@ -58,15 +58,15 @@ Most companies now store their source code in cloud based repositories like GitH
 
 | Control | Name | Priority | Description | Difficulty | Maps to security frameworks |
 | :--- | :---        | :---   | :--- | :---    | :---    |
-| 2.1 | Source Code Management | 1 | Use a centralized source code management (SCM) system like Bitbucket, GitHub or Gitlab | <span style="color: green">Easy</span> | <ul><li>APRA234</li><li>CIS8</li><li>ISM GSD</li><li>ISO27001</li><li>NIST 800-53B</li><li>SSDF1.1</li></ul> |
-| 2.2 | User Roles | 1 | Create unique user and team roles so that access to source code can be tailored | <span style="color: green">Easy</span> | <ul><li>APRA234</li><li>CIS8</li><li>ISM GSD</li><li>NIST 800-53B</li><li>SSDF1.1</li></ul> |
-| 2.3 | SSH | 2 | Use the SSH protocol to access your repositories instead of HTTPS | <span style="color: green">Easy</span> | <ul><li>APRA234</li><li>CIS8</li><li>ISM GSD</li><li>NIST 800-53B</li><li>SSDF1.1</li></ul> |
-| 2.4 | Multi-Factor Authentication | 1 | Make sure all developers use multi-factor authentication (MFA) when pulling, fetching or pushing code to remote. This is especially important if you use company email as your login for SCM | <span style="color: green">Easy</span> | <ul><li>APRA234</li><li>CIS8</li><li>ISM GSD</li><li>NIST 800-53B</li><li>SSDF1.1</li></ul> |
-| 2.5 | Server side git hook | 3 | Utilize a server side git hook like update or post-receive hook to run automatic scans | <span style="color: orange">Medium</span> | <ul><li>APRA234</li><li>CIS8</li><li>NIST 800-53B</li><li>SSDF1.1</li></ul> |
-| 2.6 | Developer Collaboration | 2 | Use collaboration tools to document the changes to a software application | <span style="color: red">Difficult</span> | <ul><li>APRA234</li><li>CIS8</li><li>NIST 800-53B</li><li>SSDF1.1</li></ul> |
-| 2.6 | Pull Requests | 1 | Enforce pull or merge requests so all code is verified by team lead or senior engineer | <span style="color: green">Easy</span> | <ul><li>APRA234</li><li>CIS8</li><li>ISO27001</li><li>NIST 800-53B</li><li>SSDF1.1</li></ul> |
-| 2.8 | Peer reviews | 1 | Enforce peer reviews by software engineers colleagues to increase code quality and security | <span style="color: green">Easy</span> | <ul><li>APRA234</li><li>CIS8</li><li>ISO27001</li><li>NIST 800-53B</li><li>SSDF1.1</li></ul> |
-| 2.9 | CODEOWNERS | 1 | Create a CODEOWNERS file that identifies people and teams that own specific parts of the repository and should be consulted via PR when those parts of the repo are modified. | <span style="color: green">Easy</span> | <ul><li>APRA234</li><li>CIS8</li><li>ISO27001</li><li>NIST 800-53B</li><li>SSDF1.1</li></ul> |
+| 2.1 | Source Code Management | 1 | Use a centralized source code management (SCM) system like Bitbucket, GitHub or Gitlab | <span style="color: green">Easy</span> | • APRA234<br>• CIS8<br>• ISM GSD<br>• ISO27001<br>• NIST 800-53B<br>• SSDF1.1 |
+| 2.2 | User Roles | 1 | Create unique user and team roles so that access to source code can be tailored | <span style="color: green">Easy</span> | • APRA234<br>• CIS8<br>• ISM GSD<br>• NIST 800-53B<br>• SSDF1.1 |
+| 2.3 | SSH | 2 | Use the SSH protocol to access your repositories instead of HTTPS | <span style="color: green">Easy</span> | • APRA234<br>• CIS8<br>• ISM GSD<br>• NIST 800-53B<br>• SSDF1.1 |
+| 2.4 | Multi-Factor Authentication | 1 | Make sure all developers use multi-factor authentication (MFA) when pulling, fetching or pushing code to remote. This is especially important if you use company email as your login for SCM | <span style="color: green">Easy</span> | • APRA234<br>• CIS8<br>• ISM GSD<br>• NIST 800-53B<br>• SSDF1.1 |
+| 2.5 | Server side git hook | 3 | Utilize a server side git hook like update or post-receive hook to run automatic scans | <span style="color: orange">Medium</span> | • APRA234<br>• CIS8<br>• NIST 800-53B<br>• SSDF1.1 |
+| 2.6 | Developer Collaboration | 2 | Use collaboration tools to document the changes to a software application | <span style="color: red">Difficult</span> | • APRA234<br>• CIS8<br>• NIST 800-53B<br>• SSDF1.1 |
+| 2.6 | Pull Requests | 1 | Enforce pull or merge requests so all code is verified by team lead or senior engineer | <span style="color: green">Easy</span> | • APRA234<br>• CIS8<br>• ISO27001<br>• NIST 800-53B<br>• SSDF1.1 |
+| 2.8 | Peer reviews | 1 | Enforce peer reviews by software engineers colleagues to increase code quality and security | <span style="color: green">Easy</span> | • APRA234<br>• CIS8<br>• ISO27001<br>• NIST 800-53B<br>• SSDF1.1 |
+| 2.9 | CODEOWNERS | 1 | Create a CODEOWNERS file that identifies people and teams that own specific parts of the repository and should be consulted via PR when those parts of the repo are modified. | <span style="color: green">Easy</span> | • APRA234<br>• CIS8<br>• ISO27001<br>• NIST 800-53B<br>• SSDF1.1 |
 
 <h2 id="cicd">CI/CD Pipelines and Automation</h2>
 
@@ -74,15 +74,15 @@ Modern web applications are built using modern continuous integration and deploy
 
 | Control | Name | Priority | Description | Difficulty | Maps to security frameworks |
 | :--- | :---        | :---   | :--- | :---    | :---    |
-| 3.1 | CI/CD pipeline | 1 |Implement a CI/CD pipeline | <span style="color: orange">Medium</span> | <ul><li>APRA234</li><li>CIS8</li><li>ISM GSD</li><li>ISO27001</li><li>SSDF1.1</li></ul> |
-| 3.2 | Application Environments | 2 | Create separate environments for dev, staging and prod, and treat each as independent with its own data, testing and requirements | <span style="color: orange">Medium</span> | <ul><li>CIS8</li><li>ISM GSD</li><li>ISO27001</li><li>SSDF1.1</li></ul> |
-| 3.3 | Application Data Separation | 3 | Make sure that dev and test environments are **not** using the same data as production. If the use of live data is required then make sure that data is anonymized. | <span style="color: red">Difficult</span> | <ul><li>CIS8</li><li>ISM GSD</li><li>ISO27001</li><li>SSDF1.1</li></ul> |
-| 3.4 | CI/CD Administration | 3 | Create and enforce user or team roles so that only the appropriate people can change or disable tests and deployment requirements | <span style="color: orange">Medium</span> | <ul><li>CIS8</li><li>ISM GSD</li><li>ISO27001</li><li>SSDF1.1</li></ul> |
-| 3.5 | Credential Store | 1 | Create a secure encrypted place to store sensitive credentials like passwords, API keys, etc. | <span style="color: orange">Medium</span> | <ul><li>APRA234</li><li>CIS8</li><li>ISM GSD</li><li>NIST 800-53.2b</li><li>SSDF1.1</li></ul> |
-| 3.6 | Centralized Software Composition Analysis | 1 | Scan source code for vulnerable libraries and open source software from within a CD stage | <span style="color: green">Easy</span> | <ul><li>APRA234</li><li>CIS8</li><li>ISM GSD</li><li>ISO27001</li><li>NIST 800-53.2a</li><li>SSDF1.1</li></ul> |
-| 3.7 | Centralized Static Code Analysis | 2 | Scan source code for vulnerabilities in the source code itself from within a CD stage | <span style="color: green">Easy</span> | <ul><li>APRA234</li><li>CIS8</li><li>ISM GSD</li><li>ISO27001</li><li>NIST 800-53.2b</li><li>SSDF1.1</li></ul> |
-| 3.8 | Centralized Sensitive Data Analysis | 2 | Scan source code for secrets, credentials, API keys and similar from within a CD stage | <span style="color: green">Easy</span> | <ul><li>APRA234</li><li>CIS8</li><li>ISM GSD</li><li>ISO27001</li><li>NIST 800-53B</li><li>SSDF1.1</li></ul> |
-| 3.9 | DAST | 3 | Scan running application for vulnerabilities | <span style="color: orange">Medium</span> | <ul><li>CIS8</li><li>ISM GSD</li><li>ISO27001</li><li>NIST 800-53B</li><li>NIST 800-53B</li><li>SSDF1.1</li></ul> |
+| 3.1 | CI/CD pipeline | 1 |Implement a CI/CD pipeline | <span style="color: orange">Medium</span> | • APRA234<br>• CIS8<br>• ISM GSD<br>• ISO27001<br>• SSDF1.1 |
+| 3.2 | Application Environments | 2 | Create separate environments for dev, staging and prod, and treat each as independent with its own data, testing and requirements | <span style="color: orange">Medium</span> | • CIS8<br>• ISM GSD<br>• ISO27001<br>• SSDF1.1 |
+| 3.3 | Application Data Separation | 3 | Make sure that dev and test environments are **not** using the same data as production. If the use of live data is required then make sure that data is anonymized. | <span style="color: red">Difficult</span> | • CIS8<br>• ISM GSD<br>• ISO27001<br>• SSDF1.1 |
+| 3.4 | CI/CD Administration | 3 | Create and enforce user or team roles so that only the appropriate people can change or disable tests and deployment requirements | <span style="color: orange">Medium</span> | • CIS8<br>• ISM GSD<br>• ISO27001<br>• SSDF1.1 |
+| 3.5 | Credential Store | 1 | Create a secure encrypted place to store sensitive credentials like passwords, API keys, etc. | <span style="color: orange">Medium</span> | • APRA234<br>• CIS8<br>• ISM GSD<br>• NIST 800-53.2b<br>• SSDF1.1 |
+| 3.6 | Centralized Software Composition Analysis | 1 | Scan source code for vulnerable libraries and open source software from within a CD stage | <span style="color: green">Easy</span> | • APRA234<br>• CIS8<br>• ISM GSD<br>• ISO27001<br>• NIST 800-53.2a<br>• SSDF1.1 |
+| 3.7 | Centralized Static Code Analysis | 2 | Scan source code for vulnerabilities in the source code itself from within a CD stage | <span style="color: green">Easy</span> | • APRA234<br>• CIS8<br>• ISM GSD<br>• ISO27001<br>• NIST 800-53.2b<br>• SSDF1.1 |
+| 3.8 | Centralized Sensitive Data Analysis | 2 | Scan source code for secrets, credentials, API keys and similar from within a CD stage | <span style="color: green">Easy</span> | • APRA234<br>• CIS8<br>• ISM GSD<br>• ISO27001<br>• NIST 800-53B<br>• SSDF1.1 |
+| 3.9 | DAST | 3 | Scan running application for vulnerabilities | <span style="color: orange">Medium</span> | • CIS8<br>• ISM GSD<br>• ISO27001<br>• NIST 800-53B<br>• NIST 800-53B<br>• SSDF1.1 |
 
 <h2 id="deployment">Deployment</h2>
 
@@ -90,22 +90,22 @@ Applications are deployed somewhere whether that's an AWS Lambda, S3 bucket or s
 
 | Control | Name | Priority | Description | Difficulty | Maps to security frameworks |
 | :--- | :---        | :---   | :--- | :---    | :---    |
-| 4.1 | Valid SSL Certificate | 1 | Create and use a valid SSL certificate for each application URL, or implement a wildcard cert | <span style="color: orange">Easy</span> | <ul><li>APRA234</li><li>CIS8</li><li>ISM GSD</li><li>ISO27001</li><li>NIST 800-53B</li><li>SSDF1.1</li></ul> |
-| 4.2 | Encrypt Traffic | 1 | Encrypt all traffic that's public facing | <span style="color: orange">Medium</span> | <ul><li>APRA234</li><li>CIS8</li><li>CIS8</li><li>ISM GSD</li><li>ISO27001</li><li>NIST 800-53B</li><li>SSDF1.1</li></ul> |
-| 4.3 | Redirect to HTTPS | 1 | Configure web service to redirect all inbound requests to port 80 to the secure HTTPS endpoint | <span style="color: green">Easy</span> | <ul><li>CIS8</li><li>ISM GSD</li><li>ISO27001</li><li>NIST 800-53B</li><li>SSDF1.1</li></ul> |
-| 4.4 | HSTS | 1 | Enable HSTS in your webserver, load balancer or CDN | <span style="color: green">Easy</span> | <ul><li>CIS8</li><li>ISM GSD</li><li>ISO27001</li><li>NIST 800-53B</li><li>SSDF1.1</li></ul> |
-| 4.5 | CSP | 1 | Enable content security policy (CSP) in the webserver, load balancer or CDN | <span style="color: green">Easy</span> | <ul><li>CIS8</li><li>ISM GSD</li><li>ISO27001<li>NIST 800-53B</li></ul> |
-| 4.6 | Use Current Software | 1 | Use the most recent versions of application components, languages, frameworks and operating systems | <span style="color: red">Difficult</span> | <ul><li>CIS8</li><li>ISM GSD</li><li>ISO27001<li>SSDF1.1</li></ul> |
-| 4.7 | Alternative Deployment | 3 | Have tested and working alternative way to deploy changes to your application other than using your standard process with GitHub or Bitbucket in case they go down. This must include the ability to push to PROD from local in emergencies. | <span style="color: red">Difficult</span> | <ul><li>CIS8</li><li>NIST 800-53B</li><li>SSDF1.1</li></ul> |
-| 4.8 | security.txt | 1 | Create a security.txt file in the root of your application so people know how to contact you about security issues | <span style="color: green">Easy</span> | <ul><li>CIS8</li><li>ISM GSD</li><li>SSDF1.1</li></ul> |
-| 4.9 | X-Forwarded-By | 2 | Configure your webservers, load balancers & web proxies to include the X-Forwarded-By: header | <span style="color: green">Easy</span> | <ul><li>APRA234 ATM D-2-d-i</li><li>CIS8</li><li>NIST 800</li></ul> |
-| 4.10 | Logging | 1 | Collect application logs in realtime and send to centralized storage or SIEM | <span style="color: orange">Medium</span> | <ul><li>CIS8 16.11</li><li>APRA234</li><li>ISM GSM</li><li>NIST 800</li><li>SSDF1.1</li></ul> |
-| 4.11 | WAF | 2 | Implement a web application firewall (WAF) to protect your application from known attacks | <span style="color: orange">Medium</span> | <ul><li>APRA234</li><li>CIS8</li><li>NIST 800-53.2a</li></ul> |
-| 4.12 | CDN | 3 | Use a content delivery network (CDN) whenever possible to add availability and security to you applications | <span style="color: orange">Medium</span> | <ul><li>APRA234</li><li>CIS8</li><li>ISM GN</li><li>NIST 800-53.2a</li></ul> |
-| 4.13 | Harden Operating System | 2 | Harden operating system using industry best practices from CIS, ISM, etc | <span style="color: red">Difficult</span> | <ul><li>CIS8</li><li>ISM GSM</li><li>ISM GOSH</li><li>SSDF1.1</li></ul> |
-| 4.14 | Encrypt Storage | 3 | Encrypt all filesystem, disks and cloud storage | <span style="color: orange">Medium</span> | <ul><li>CIS8</li><li>NIST 800-50b</li><li>SSDF1.1</li></ul> |
-| 4.15 | SBOM | 3 | Generate a **real-time** software bill-of-materials (SBOM) | <span style="color: orange">Medium</span> | <ul><li>CIS8</li><li>ISM GSD</li><li>NIST 800-53B</li><li>SSDF1.1</li></ul> |
-| 4.16 | Monitor Application | 1 | Monitor your application in real-time so you know when its state changes for the worse (or better). This includes uptime, performance and security monitoring | <span style="color: orange">Medium</span> | <ul><li>CIS8</li><li>NIST 800-53B</li><li>SSDF1.1</li></ul> |
+| 4.1 | Valid SSL Certificate | 1 | Create and use a valid SSL certificate for each application URL, or implement a wildcard cert | <span style="color: orange">Easy</span> | • APRA234<br>• CIS8<br>• ISM GSD<br>• ISO27001<br>• NIST 800-53B<br>• SSDF1.1 |
+| 4.2 | Encrypt Traffic | 1 | Encrypt all traffic that's public facing | <span style="color: orange">Medium</span> | • APRA234<br>• CIS8<br>• CIS8<br>• ISM GSD<br>• ISO27001<br>• NIST 800-53B<br>• SSDF1.1 |
+| 4.3 | Redirect to HTTPS | 1 | Configure web service to redirect all inbound requests to port 80 to the secure HTTPS endpoint | <span style="color: green">Easy</span> | • CIS8<br>• ISM GSD<br>• ISO27001<br>• NIST 800-53B<br>• SSDF1.1 |
+| 4.4 | HSTS | 1 | Enable HSTS in your webserver, load balancer or CDN | <span style="color: green">Easy</span> | • CIS8<br>• ISM GSD<br>• ISO27001<br>• NIST 800-53B<br>• SSDF1.1 |
+| 4.5 | CSP | 1 | Enable content security policy (CSP) in the webserver, load balancer or CDN | <span style="color: green">Easy</span> | • CIS8<br>• ISM GSD<br>• ISO27001<br>• NIST 800-53B |
+| 4.6 | Use Current Software | 1 | Use the most recent versions of application components, languages, frameworks and operating systems | <span style="color: red">Difficult</span> | • CIS8<br>• ISM GSD<br>• ISO27001<br>• SSDF1.1 |
+| 4.7 | Alternative Deployment | 3 | Have tested and working alternative way to deploy changes to your application other than using your standard process with GitHub or Bitbucket in case they go down. This must include the ability to push to PROD from local in emergencies. | <span style="color: red">Difficult</span> | • CIS8<br>• NIST 800-53B<br>• SSDF1.1 |
+| 4.8 | security.txt | 1 | Create a security.txt file in the root of your application so people know how to contact you about security issues | <span style="color: green">Easy</span> | • CIS8<br>• ISM GSD<br>• SSDF1.1 |
+| 4.9 | X-Forwarded-By | 2 | Configure your webservers, load balancers & web proxies to include the X-Forwarded-By: header | <span style="color: green">Easy</span> | • APRA234 ATM D-2-d-i<br>• CIS8<br>• NIST 800 |
+| 4.10 | Logging | 1 | Collect application logs in realtime and send to centralized storage or SIEM | <span style="color: orange">Medium</span> | • CIS8 16.11<br>• APRA234<br>• ISM GSM<br>• NIST 800<br>• SSDF1.1 |
+| 4.11 | WAF | 2 | Implement a web application firewall (WAF) to protect your application from known attacks | <span style="color: orange">Medium</span> | • APRA234<br>• CIS8<br>• NIST 800-53.2a |
+| 4.12 | CDN | 3 | Use a content delivery network (CDN) whenever possible to add availability and security to you applications | <span style="color: orange">Medium</span> | • APRA234<br>• CIS8<br>• ISM GN<br>• NIST 800-53.2a |
+| 4.13 | Harden Operating System | 2 | Harden operating system using industry best practices from CIS, ISM, etc | <span style="color: red">Difficult</span> | • CIS8<br>• ISM GSM<br>• ISM GOSH<br>• SSDF1.1 |
+| 4.14 | Encrypt Storage | 3 | Encrypt all filesystem, disks and cloud storage | <span style="color: orange">Medium</span> | • CIS8<br>• NIST 800-50b<br>• SSDF1.1 |
+| 4.15 | SBOM | 3 | Generate a **real-time** software bill-of-materials (SBOM) | <span style="color: orange">Medium</span> | • CIS8<br>• ISM GSD<br>• NIST 800-53B<br>• SSDF1.1 |
+| 4.16 | Monitor Application | 1 | Monitor your application in real-time so you know when its state changes for the worse (or better). This includes uptime, performance and security monitoring | <span style="color: orange">Medium</span> | • CIS8<br>• NIST 800-53B<br>• SSDF1.1 |
 
 <h2 id="org">Organization</h2>
 
@@ -113,13 +113,13 @@ People don't deploy applications, organizations do.  Some steps in the DevSecOps
 
 | Control | Name | Priority | Description | Difficulty | Maps to security frameworks |
 | :--- | :---        | :---   | :--- | :---    | :---    |
-| 5.1 | Penetration Testing | 2 | Have your application pentested regularly | <span style="color: orange">Medium</span> | <ul><li>CIS8</li><li>ISM GSD</li><li>NIST 800-53B</li><li>SSDF1.1</li></ul> |
-| 5.2 | Threat Modeling | 3 |  Build a collaborative way for developers and security staff to understand the threat landscape for an individual application | <span style="color: red">Difficult</span> | <ul><li>CIS8</li><li>ISM GSD</li><li>NIST 800-53B</li><li>SSDF1.1</li></ul> |
-| 5.3 | SIEM | 3 | Implement a SIEM and send all application, system and cloud logs to it | <span style="color: red">Difficult</span> | <ul><li>CIS8</li><li>NIST 800-53B</li><li>SSDF1.1</li></ul> |
-| 5.4 | Attack Surface Management | 1 | Identify public facing resources via automation | <span style="color: green">Easy</span> | <ul><li>CIS8</li><li>CIS8</li><li>NIST 800-53B</li><li>SSDF1.1</li></ul> |
-| 5.5 | Sovereignty | 1 | Require that all code is written in, stored in, or otherwise served from a location and/or sovereignty that aligns with your org's requirements | <span style="color: orange">Medium</span> | <ul><li>ISM GCSR</li><li>ISO27001</li></ul> |
-| 5.6 | Vulnerability Disclosure | 1 | Create and publish a set of procedures to let people contact you when they find security issues in your app | <span style="color: green">Easy</span> | <ul><li>CIS8</li><li>ISM GSD</li><li>SSDF1.1</li></ul> |
-| 5.7 | Bug Bounty | 3 | Setup a bug bounty program to incentivize security researchers to tell you about vulnerabilities they find | <span style="color: orange">Medium</span> | <ul><li>CIS8</li><li>ISM GSD</li><li>NIST 800-53B</li><li>SSDF1.1</li></ul> |
+| 5.1 | Penetration Testing | 2 | Have your application pentested regularly | <span style="color: orange">Medium</span> | • CIS8<br>• ISM GSD<br>• NIST 800-53B<br>• SSDF1.1 |
+| 5.2 | Threat Modeling | 3 |  Build a collaborative way for developers and security staff to understand the threat landscape for an individual application | <span style="color: red">Difficult</span> | • CIS8<br>• ISM GSD<br>• NIST 800-53B<br>• SSDF1.1 |
+| 5.3 | SIEM | 3 | Implement a SIEM and send all application, system and cloud logs to it | <span style="color: red">Difficult</span> | • CIS8<br>• NIST 800-53B<br>• SSDF1.1 |
+| 5.4 | Attack Surface Management | 1 | Identify public facing resources via automation | <span style="color: green">Easy</span> | • CIS8<br>• CIS8<br>• NIST 800-53B<br>• SSDF1.1 |
+| 5.5 | Sovereignty | 1 | Require that all code is written in, stored in, or otherwise served from a location and/or sovereignty that aligns with your org's requirements | <span style="color: orange">Medium</span> | • ISM GCSR<br>• ISO27001 |
+| 5.6 | Vulnerability Disclosure | 1 | Create and publish a set of procedures to let people contact you when they find security issues in your app | <span style="color: green">Easy</span> | • CIS8<br>• ISM GSD<br>• SSDF1.1 |
+| 5.7 | Bug Bounty | 3 | Setup a bug bounty program to incentivize security researchers to tell you about vulnerabilities they find | <span style="color: orange">Medium</span> | • CIS8<br>• ISM GSD<br>• NIST 800-53B<br>• SSDF1.1 |
 
 ![DevSecOps Continuous Improvement](/images/devsecops-controls.jpg)
 

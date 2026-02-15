@@ -28,6 +28,7 @@ Hi 👋, I'm Benji - A Red Team Operator, MalDev researcher, and DevSecOps Engin
 <img src="https://img.shields.io/badge/shell_script-%23121011.svg?style=for-the-badge&logo=gnu-bash&logoColor=white"/>&nbsp;
 <img src="https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black"/>&nbsp;
 <img src="https://img.shields.io/badge/Kali-268BEE?style=for-the-badge&logo=kalilinux&logoColor"/>&nbsp;
+<img src="https://img.shields.io/badge/Kali-268BEE?style=for-the-badge&logo=parrotsecurity&logoColor"/>&nbsp;
 <img src="https://img.shields.io/badge/Red%20Hat-EE0000?style=for-the-badge&logo=redhat&logoColor=white"/>&nbsp;
 <img src="https://img.shields.io/badge/jenkins-%232C5263.svg?style=for-the-badge&logo=jenkins&logoColor=white"/>&nbsp;
 <img src="https://img.shields.io/badge/chatGPT-74aa9c?style=for-the-badge&logo=openai&logoColor=white"/>&nbsp;
@@ -93,7 +94,9 @@ Hi 👋, I'm Benji - A Red Team Operator, MalDev researcher, and DevSecOps Engin
 </div> 
 
 ##### Certificates
-<img height="150" src="/images/grtp.png" alt="GRTP Certificate"/>&nbsp;
+<a href="https://www.credly.com/go/z5hD6s052K3vyTnQ2AdrRg">
+  <img height="150" src="/images/grtp.png" alt="GRTP Certificate"/>
+</a>&nbsp;
 <img height="150" src="/images/oscp.png" alt="OSCP Certificate"/>&nbsp;
 <img height="150" src="/images/ctal-full.png" alt="CTAL Certificate"/>&nbsp;
 <a href="/images/SecChampion_Fraunhofer.jpg">
@@ -105,9 +108,6 @@ Hi 👋, I'm Benji - A Red Team Operator, MalDev researcher, and DevSecOps Engin
 <a href="https://tryhackme-certificates.s3-eu-west-1.amazonaws.com/THM-DFQYZ659AE.pdf">
     <img height="150" src="/images/devsecops.svg" alt="TryHackMe DevSecOps Certificate"/>
 </a>
-
-
-
 
 #### Meet me on TryHackMe
 <iframe src="https://tryhackme.com/api/v2/badges/public-profile?userPublicId=6338558" width="450" height="180" style="border:none; overflow:hidden;" scrolling="no"></iframe>
