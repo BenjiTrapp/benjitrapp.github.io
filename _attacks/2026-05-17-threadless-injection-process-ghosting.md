@@ -42,36 +42,7 @@ By eliminating thread creation entirely, Threadless Injection removes the single
 
 ### The Execution Architecture
 
-```
-[ Host/Attacker Process ]
-|
-+===> 1. NtAllocateVirtualMemory()  --> Maps an anonymous RW payload staging buffer
-+===> 2. NtWriteVirtualMemory()     --> Commits Shellcode + Assembly Recovery Stub
-+===> 3. Remote Export Resolution    --> Parses PE Headers to target a high-frequency
-|                                       system function (e.g., ntdll!TpReleaseWork,
-|                                       ntdll!TppWorkerMain, ntdll!EtwEventWrite)
-+===> 4. NtProtect/NtWriteVirtual() --> Replaces target export prologue with JMP sequence
-|
-v
-[ Remote Target Process Environment ]
-+------------------------------------------------------------+
-| Legitimate Native Thread (Pool Worker / System Thread)     |
-|   |                                                        |
-|   v                                                        |
-|   Routine Call to Targeted Export Function                  |
-|   |                                                        |
-|   +---> [ Intercepted by Trampoline Jump ]                 |
-|         |                                                  |
-|         v                                                  |
-|         [ Assembly Recovery Stub + Shellcode Execution ]   |
-|         |                                                  |
-|         v                                                  |
-|         [ Hot-Patch Restoration Routine ]                  |
-|         |                                                  |
-|         v                                                  |
-|         Thread Gracefully Resumes Legitimate Native State  |
-+------------------------------------------------------------+
-```
+![](/images/ghosting-exec-arch_1.png)
 
 ### Deep-Dive Step Sequence & The Assembly Recovery Layer
 
@@ -151,37 +122,7 @@ Modern endpoint defenses log process-creation metadata directly from kernel spac
 
 To comprehend this technique, we need to understand how Windows manages file deletions. A file on an NTFS volume is not instantly purged when a deletion request is made. It is placed into a structural state designated as **Delete-Pending**. This transition happens when a file object handle is initialized with `DELETE` rights and modified via the `FileDispositionInformation` information class.
 
-```
-+--------------------+  1. NtCreateFile()
-| File Created on    |========================> Handle opened with DELETE permissions
-| Physical NTFS Disk |
-+--------------------+
-         |
-         v               2. NtSetInformationFile()
-+--------------------+
-| Set Delete-Pending |========================> File state flag mutated to TRUE
-+--------------------+
-         |
-         v               3. NtWriteFile()
-+--------------------+
-| Populate Payload   |========================> Malicious PE written into delete-pending file
-+--------------------+
-         |
-         v               4. NtCreateSection(..., SEC_IMAGE, hFile)
-+--------------------+
-| Map Image Section  |========================> Kernel maps executable image into memory
-+--------------------+
-         |
-         v               5. NtClose(hFile)
-+--------------------+
-| File Disappears    |========================> Disk entry completely unlinked and erased
-+--------------------+      No on-disk file remains for inspection
-         |
-         v               6. NtCreateProcessEx()
-+--------------------+
-| Ghost Process Spawn|========================> Process generated from decoupled
-+--------------------+      in-memory Section object
-```
+![](/images/ghosting-exec-arch_2.png)
 
 The ordering here is essential. The file must be placed into `Delete-Pending` state **before** the payload is written and the section is mapped. This ensures the kernel has already committed to destroying the file once the handle closes, but the section mapping keeps the in-memory image alive for process creation.
 
