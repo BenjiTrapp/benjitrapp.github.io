@@ -4,7 +4,25 @@ title: /whoami
 permalink: /about/
 ---
 
-Hi 👋, I'm Benji - A Red Team Operator, MalDev researcher, and DevSecOps Engineer, who is interested in cloud native technologies, DevOps culture, and Security that isn't based on Excel. Automation is king. 
+Hi 👋, I'm Benji - Welcome to my digital Pensieve. 
+
+I am a **Daywalker in Cybersecurity**—a wanderer between worlds who refuses to look at security through a single lens. Having spent years pulling the strings in the shadows of offensive engineering (dissecting EDRs, exploring all kind of flaws, and orchestrating post-exploitation frameworks), I have brought that mind-meld into the light of defensive architecture.
+
+I don’t just deploy security tools; I stress-test systems with an offensive mindset to build true, structural resilience. 
+
+### 🌌 My Philosophy: The Purple Mindset
+
+Security is an interconnected ecosystem, not a checklist. My work lives at the intersection of three domains:
+
+* **Offense-Informed Engineering:** Using the real-world tradecraft of an attacker to design proactive defenses, mature Threat Modeling, and actionable Cyber Threat Intelligence (CTI).
+* **DevSecOps & Automation:** Security must move at the speed of code. I focus on embedding Compliance as Code, building reliable AppSec pipelines, and automating Vulnerability Management without breaking agile velocity.
+* **Agility with Common Sense:** Processes exist to serve the mission, not the other way around. I value lean execution and practical, bulletproof results over bureaucratic overhead.
+
+### 🧪 Current Lab Research
+When I am not writing, you will find me diving into the inner workings of Kubernetes security, developing custom binaries in Go and Python, or refining Malware Development techniques to stay ahead of the curve.
+
+### ⚓ About this Blog
+**Benji's Denkarium** is my personal knowledge-base made public. It is a space for deep technical dives, purple teaming methodologies, and architectural reflections. No marketing fluff for vendors, no surface-level summaries—just raw engineering and chaotic-good curiosity.
 
 #### 💬 How to Reach Me?
 
