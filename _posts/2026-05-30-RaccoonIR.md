@@ -41,7 +41,7 @@ Ships with 8 ready-to-use playbooks covering common incident types:
 
 ## The Metamodel
 
-RaccoonIR is based on the FRIPP metamodel (Shaked et al. 2023), combining PROVE artifact-centric process modelling, hierarchical dependency models with probability propagation, and CiO scoring for quantifying response effectiveness. The tool enforces strict metamodel conformance while keeping the UX approachable for IR practitioners.
+RaccoonIR is based on the [FRIPP metamodel (Shaked et al. 2023)](https://orca.cardiff.ac.uk/id/eprint/166210/1/ARES%20-%20Conference%20Paper%20-%20Model-based%20Playbooks.pdf), combining PROVE artifact-centric process modelling, hierarchical dependency models with probability propagation, and CiO scoring for quantifying response effectiveness. The tool enforces strict metamodel conformance while keeping the UX approachable for IR practitioners.
 
 
 ## [Try It Here](https://benjitrapp.github.io/incident-response-playbooks/)
