@@ -7,7 +7,7 @@ title: Threat Hunting with Sysmon
 In today's threat landscape, understanding how attackers operate within a system is crucial. Leveraging Windows and Sysmon event codes can help detect and prevent attacks before they cause significant damage. This guide focuses on the most relevant Windows Event Codes for logons, process creation, and privileged access, as well as Sysmon Event Codes for tracking file changes, process injections, and network activity. Combined with practical hunting queries for ELK and Splunk, this serves as a hands-on reference for defenders actively hunting threats in their environment.
 
 ## Key Windows Event Codes
-
+<!-- cSpell:disable -->
 A more detailed version of [Windows Event Codes](https://benjitrapp.github.io/defenses/2023-05-01-windows-events/) can be found within my blog. Nevertheless I want to repeat it here to set it in a different context, that will help in the hunting steps later. These are the most important Windows Event Codes for tracking suspicious activities:
 
 | Event ID | Description | Why It's Useful |
@@ -693,5 +693,7 @@ index=sysmon EventCode=17 (PipeName="\\msagent*" OR PipeName="\\MSSE-*" OR PipeN
 ```
 
 ---
+
+<!-- cSpell:enableable -->
 
 > The combination of Windows Security Events and Sysmon telemetry provides layered visibility into attacker behavior. Deploy Sysmon with a well-tuned configuration (such as [SwiftOnSecurity's sysmon-config](https://github.com/SwiftOnSecurity/sysmon-config)) and forward events to your SIEM to operationalize these hunting techniques.
