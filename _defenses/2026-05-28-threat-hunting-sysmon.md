@@ -3,7 +3,7 @@ layout: defense
 title: Threat Hunting with Sysmon
 ---
 
-<img height="150" align="left" src="/images/splunk-cheatsheet.png"> 
+<img height="150" align="left" src="/images/sysmon-threat-hunting.png"> 
 In today's threat landscape, understanding how attackers operate within a system is crucial. Leveraging Windows and Sysmon event codes can help detect and prevent attacks before they cause significant damage. This guide focuses on the most relevant Windows Event Codes for logons, process creation, and privileged access, as well as Sysmon Event Codes for tracking file changes, process injections, and network activity. Combined with practical hunting queries for ELK and Splunk, this serves as a hands-on reference for defenders actively hunting threats in their environment.
 
 ## Key Windows Event Codes

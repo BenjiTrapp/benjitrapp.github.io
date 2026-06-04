@@ -3,8 +3,10 @@ layout: memory
 title: Splunk Cheatsheet
 ---
 
+<img height="150" align="left" src="/images/splunk-cheatsheet.png"> 
 I **really** don't like Splunk documentation. Why is it so hard to find out how to do a certain action? So this is a cheatsheet that I constructed to help me quickly gain knowledge that I need.
 
+<!-- cSpell:disable -->
 ## Quick Reference Card
 
 | Command | Description | Example |
@@ -98,7 +100,7 @@ I **really** don't like Splunk documentation. Why is it so hard to find out how 
 - [References](#references)
 
 
-<!-- cSpell:disable -->
+
 ## Analysis
 
 ### Events over time

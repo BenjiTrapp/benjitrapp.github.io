@@ -14,7 +14,7 @@ Analyzing suspicious files on your host machine is risky. Boxed REMnux gives you
 ## What's Inside?
 
 The image ships with the entire REMnux tool suite plus a curated set of additions:
-
+<!-- cSpell:disable -->
 - **Reverse Engineering** — Ghidra, radare2, Rizin, Cutter, Capstone, Unicorn, Keystone, and angr for static and dynamic binary analysis
 - **Malware Analysis** — YARA, PEframe, olevba/oledump, pefile, dnfile, binwalk, and foremost for triaging samples across PE, ELF, Office, PDF, and firmware formats
 - **Dynamic Analysis & Debugging** — GDB, strace, ltrace, Frida, Speakeasy (Windows kernel/user-mode emulation), and Malduck for runtime inspection and config extraction
@@ -22,7 +22,7 @@ The image ships with the entire REMnux tool suite plus a curated set of addition
 - **Memory Forensics** — Volatility for deep-dive memory analysis during incident response
 - **OSINT & Threat Intel** — ioc-finder, vt-py, STIX2, TAXII2 client, and whois for enriching indicators and consuming threat feeds
 - **Productivity** — tmux, vim, jq, CyberChef CLI, SQLite3, p7zip, curl/wget, and git to keep your workflow smooth
-
+<!-- cSpell:enable -->
 ## Getting Started
 
 ```bash
