@@ -21,7 +21,7 @@ DevOps loves automation! The everything-as-code mindset is the beating heart of 
 
 > “So what is toil? Toil is the kind of work tied to running a production service that tends to be manual, repetitive, automatable, tactical, devoid of enduring value, and that scales linearly as a service grows. Not every task deemed toil has all these attributes, but the more closely work matches one or more of the following descriptions, the more likely it is to be toil:” <br>– [Google](https://landing.google.com/sre/sre-book/chapters/eliminating-toil/)
 
-Automation is the antidote to toil – by automating the low value toil it leaves more time for the higher value-add work. Automation should also improve repeatability and reliability by automating all tasks. If the same tasks are performed the same way every time there wont be any surprises left. Manual tasks in the opposite introduce high levels of variation and have therefor a lack of repeatability.
+Automation is the antidote to toil – by automating the low value toil it leaves more time for the higher value-add work. Automation should also improve repeatability and reliability by automating all tasks. If the same tasks are performed the same way every time there wont be any surprises left. Manual tasks in the opposite introduce high levels of variation and have therefore a lack of repeatability.
 
 ## **L**ean
 
