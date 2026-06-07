@@ -380,7 +380,7 @@ tbody tr:nth-child(even) {
   border-bottom: none;
   position: relative;
 
-  @include mobile {
+  @include tablet {
     text-align: center;
   }
 }
@@ -391,7 +391,7 @@ tbody tr:nth-child(even) {
   height: 70px;
   margin-right: 20px;
 
-  @include mobile {
+  @include tablet {
     float: none;
     display: block;
     margin: 0 auto;
@@ -413,7 +413,7 @@ tbody tr:nth-child(even) {
 .site-info {
   float: left;
 
-  @include mobile {
+  @include tablet {
     float: none;
     display: block;
     margin: 0 auto;
@@ -449,7 +449,7 @@ tbody tr:nth-child(even) {
   }
 }
 
-// Hamburger menu button - hidden on desktop
+// Hamburger menu button - hidden on desktop, shown on tablet and mobile
 .menu-toggle {
   display: none;
   background: none;
@@ -461,7 +461,7 @@ tbody tr:nth-child(even) {
   top: 20px;
   right: 16px;
 
-  @include mobile {
+  @include tablet {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -498,7 +498,7 @@ nav {
   font-family: $helveticaNeue;
   font-size: 18px;
 
-  @include mobile {
+  @include tablet {
     float: none;
     display: none;
     width: 100%;
@@ -544,7 +544,7 @@ nav {
       width: 80%;
     }
 
-    @include mobile {
+    @include tablet {
       display: block;
       margin: 0;
       padding: 12px 16px;
