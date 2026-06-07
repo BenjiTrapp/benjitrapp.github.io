@@ -27,7 +27,13 @@
             <p class="site-description">{{ site.description }}</p>
           </div>
 
-          <nav>
+          <button class="menu-toggle" aria-label="Toggle navigation menu" aria-expanded="false">
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+          </button>
+
+          <nav id="main-nav">
             <a href="{{ site.baseurl }}/">Blog</a>
             <a href="{{ site.baseurl }}/pensieve">Pensieve</a>
             <a href="{{ site.baseurl }}/attack">Offense</a>
@@ -53,5 +59,6 @@
 
     {% include analytics.html %}
     <script src="{{ site.baseurl }}/js/code-copy.js"></script>
+    <script src="{{ site.baseurl }}/js/mobile-nav.js"></script>
   </body>
 </html>
