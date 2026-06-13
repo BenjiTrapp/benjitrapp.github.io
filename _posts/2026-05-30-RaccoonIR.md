@@ -4,7 +4,7 @@ title: RaccoonIR - Purple Team Incident Response Playbook Planner
 ---
 
 
-<img height="200" align="left" src="https://github.com/BenjiTrapp/incident-response-playbooks/blob/main/raccoon-ir-logo.png?raw=true"> RaccoonIR is a zero-dependency, browser-based modelling tool for designing, analyzing, and executing operations-informed incident response playbooks with full MITRE ATT&CK and D3FEND mapping. Built for purple teams who think like raccoons: resourceful, persistent, and always digging deeper. No server, no build step, no npm — just open index.html and start planning your response.
+<img height="200" align="left" src="/images/raccoon-ir-logo.png"> RaccoonIR is a zero-dependency, browser-based modelling tool for designing, analyzing, and executing operations-informed incident response playbooks with full MITRE ATT&CK and D3FEND mapping. Built for purple teams who think like raccoons: resourceful, persistent, and always digging deeper. No server, no build step, no npm — just open index.html and start planning your response.
 
 
 
