@@ -204,6 +204,140 @@ ARM64 compatibility: Sysmon runs natively (ARM64 binary), while Fibratus and Rus
 - Defender exclusions are configured for detonation paths only
 - Rustinel active response is disabled by default
 
+## Demo
+
+The following walkthroughs show TDC in action — from initial detonation through detection, analysis, and correlation.
+
+### Service Dashboard
+
+![Dashboard - real-time health monitoring, alert feed, and detection metrics]({{ site.baseurl }}/images/tdc-dashboard.png)
+
+The main landing page shows a stats strip with total alerts, tracked processes, service health (online/degraded), loaded detection rules (Sigma + YARA), and available scanner tools. Six service health cards cover Rustinel, DetonatorAgent, LitterBox, Sysmon, Fibratus, and AV/AMSI Scanner — each displaying port, version, and quick-action buttons. The Recent Activity feed streams live detections with severity coloring (LOW for Sigma rules like Whoami Execution, CRITICAL for YARA hits like SuspiciousPEImports). The sidebar lists all tracked processes with alert counts and a color-coded timeline per engine.
+
+### Sample Detonation (Mimikatz)
+
+![Mimikatz detonation showing multi-stage pipeline progress]({{ site.baseurl }}/images/tdc-mimikatz-detonation.png)
+
+The Submit tab after detonating `mimikatz.exe` (1.3 MB) with target "Both (Agent + LitterBox)" and Fibratus EDR mode. The pipeline shows all 5 stages completed: DetonatorAgent execution (HTTP 200, PID 18612), LitterBox upload, Static Analysis (YARA + CheckPlz + Strings), Dynamic Analysis (PE-Sieve, Moneta, HollowsHunter), and Fibratus/Rustinel EDR (24 alerts). Below lists all CRITICAL detections — SuspiciousPEImports on docker.exe, mimikatz.exe, and gk.exe. Dynamic results include PE-Sieve (Suspicious: 0) and Moneta (IOCs: 0).
+
+### Rustinel Trace Analysis
+
+![Rustinel real-time analysis with scoring and detection timeline]({{ site.baseurl }}/images/tdc-rustinel-analysis.png)
+
+The Tracing console for a process scored "Malicious 100/100" with 23 events. Filter pills show severity breakdown ("23 Critical", "SuspiciousPEImports (23)"). A timeline bar visualizes event distribution by type (Critical/High, Process, Network, DNS, File, Registry). The verdict table lists each hit with severity, timestamp offset, rule name, and PID. Tabs allow switching between Live, HTTP Requests, Connections, DNS, Files, Registry, Artifacts, and Modules views.
+
+![Rustinel detection detail with Sigma rule match and ECS fields]({{ site.baseurl }}/images/tdc-rustinel-analysis-details.png)
+
+The alert detail panel for a Sigma hit: "Example - Whoami Execution (CommandLine + Image)". Shows severity (Low), engine (SIGMA), PID (1304), process (whoami.exe), command line, parent info (powershell.exe PID 10912), and full parent command. MATCH DETAILS shows condition logic (`selection_img AND selection_cmd`) with JSON patterns. The EVENT section contains complete ECS fields (@timestamp, event.action: process-start, event.kind: alert, event.provider: etw).
+
+### Process Relationship Graph
+
+![Process relationship graph - hierarchical layout with 178 nodes]({{ site.baseurl }}/images/tdc-process-rollup.png)
+
+Hierarchical layout showing 178 nodes, 107 edges. Color-coded nodes represent different categories: blue squares (system processes — winlogon.exe, explorer.exe, userinit.exe), yellow/orange with red badges (malicious/detonated — fibratus.exe, MsMpEng.exe), green diamonds (network connections — pypi.org, github.com, loldrivers.io), and purple circles (DNS). Edge types: solid lines for process spawn, dashed for network connections, red for injection. Filters allow toggling Network, DNS, Files, Registry, and Detonated nodes. Time ranges span from 30s to All.
+
+![Process details with scan correlation panel]({{ site.baseurl }}/images/tdc-process-rollup-details.png)
+
+Force-directed layout with a selected process node (e.g. `docker.exe PID 1148`). The detail panel shows image path, process status (Exited), and activity breakdown (Threats, Network, DNS, File, Registry, Injection). Multiple large red nodes (processes with 21-24 alerts each) are surrounded by a dense network/DNS web connecting to destinations like discord.com, shodan.io, github.com, google.com, storage.googleapis, and more.
+
+### PE Binary Analysis & Packer Detection
+
+![PE Header Analyzer showing security features and section details]({{ site.baseurl }}/images/tdc-pe-header-analyzer.png)
+
+PE Header Analysis for a binary showing IOC flags detected — suspicious APIs categorized by privilege_escalation, defense_evasion, and shellcode, plus high entropy indicating packing. Three-column layout: FILE HEADER (architecture, timestamp, section count), OPTIONAL HEADER (PE type, entry point, linker version, subsystem), and SECURITY FEATURES (ASLR/DEP enabled, SEH status, CFG status, overall entropy). Section table with entropy bars and "Inspect" buttons for each section.
+
+![DiE-Style Packing Analysis with entropy heatmap]({{ site.baseurl }}/images/tdc-pe-packing-analyzer.png)
+
+DiE-style detection overview with assessment badge (SUSPICIOUS/CLEAN). Detection cards identify compiler ("LINKER: Microsoft Visual C++ 6.0"), overlays, and protectors. An ENTROPY MAP color bar visualizes per-section entropy — green for low entropy sections (.text/.rdata), large red blocks for packed/compressed data (e.g. .ndata = NSIS compressed). FILE STRUCTURE shows a section layout diagram with legend (Code, Data, High Entropy, Overlay). Expandable sections include RICH HEADER entries.
+
+### Section Inspection & Hex Editor
+
+![PE section inspection with hex dump and strings]({{ site.baseurl }}/images/tdc-pe-analyzer-text-header-section.png)
+
+Section inspection expands in-line, showing metadata (Raw Offset, Raw Size, Virtual Address, Entropy) and characteristic badges (CNT_CODE, MEM_EXECUTE, MEM_READ). A live hex dump displays the first 4 KB with offsets, bytes, and ASCII representation, with "Load more..." for paging. Below the hex, extracted strings are listed (ASCII and UTF-16LE).
+
+![Hex Editor with MZ header and data inspector]({{ site.baseurl }}/images/tdc-hex-editor.png)
+
+Raw hex editor showing 512-byte pages with offset navigation. The MZ header (4D 5A 90...) and DOS stub are visible with ASCII interpretation in the right column. The Data Inspector panel decodes the cursor position as Int8/16/32/64, Float32/64, ASCII, and UTF-16 LE. Quick-access buttons for PE/ELF Analysis sit in the toolbar alongside offset input and page navigation (Prev/Next).
+
+### Sysmon Event Monitoring
+
+![Sysmon events with filtering and search]({{ site.baseurl }}/images/tdc-sysmon-events.png)
+
+The Sysmon tab displays captured events with filter pills by type: ProcessCreate, RegistryValueSet, FileCreate, NetworkConnect, DNSQuery. The table shows TIME, TYPE (color-coded), PID, IMAGE, DETAILS (full command lines), and Windows Event ID column (4688, 4689, 4663, 4656, 11707). Search, type/PID dropdowns, max events slider, and Refresh/Correlate buttons allow targeted investigation.
+
+![Sysmon event correlation with Windows Event IDs]({{ site.baseurl }}/images/tdc-sysmon-correlation.png)
+
+The detail panel for a FileCreate event shows timestamp, Sysmon Event ID, and originating image. "Correlated Windows Events" maps to related Security and Application log entries: 4663 "Object Access (File)", 4656 "Handle to Object Requested", and 11707 "Installation Completed (MSI)" — providing cross-log context for the same operation.
+
+## API Reference
+
+All endpoints are served on port `9000` and return JSON.
+
+### Core Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/alerts` | All detection alerts (Rustinel + Fibratus + LitterBox) |
+| GET | `/api/processes` | Tracked processes with activity counts |
+| GET | `/api/status` | Service health status (all components) |
+| GET | `/api/rustinel` | Rustinel engine info (rules, version) |
+| GET | `/api/submissions` | Submission history (last 200) |
+
+### Submission & Detonation
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/submit` | Submit sample (multipart). Params: `file`, `target` (agent/litterbox/both) |
+| GET | `/api/detonation/results` | Poll results. Params: `sha256`, `pid`, `litterbox_hash`, `filename` |
+
+### Hex Editor & Binary Analysis
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/file/hex` | Hex dump. Params: `path`, `offset`, `bytes` |
+| POST | `/api/file/hex/upload` | Upload file for hex viewing |
+| GET | `/api/file/pe` | PE header analysis. Param: `path` |
+| GET | `/api/file/elf` | ELF binary analysis. Param: `path` |
+
+### Sysmon & Scanner
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/sysmon` | Sysmon events. Params: `max`, `event_id`, `pid` |
+| GET | `/api/sysmon/stats` | Sysmon statistics and diagnostics |
+| POST | `/api/scan/threatcheck` | ThreatCheck scan. Params: `file`/`path`, `engine`, `type` |
+| POST | `/api/scan/defendercheck` | DefenderCheck scan. Params: `file`/`path` |
+| GET | `/api/scan/status` | Scanner tool availability |
+
+### Proxy Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET/POST | `/api/litterbox/<path>` | Proxy to LitterBox API (:1337) |
+| GET | `/api/fibratus/<path>` | Proxy to Fibratus API (:8180) |
+
+## Configuration
+
+### Environment Variables
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `RUSTINEL_ALERTS_DIR` | `C:\tools\rustinel\logs` | Rustinel NDJSON alert directory |
+| `RUSTINEL_INSTALL_DIR` | `C:\tools\rustinel` | Rustinel installation root |
+| `DETONATOR_API` | `http://127.0.0.1:8000` | Detonator REST API |
+| `DETONATOR_AGENT_API` | `http://127.0.0.1:8080` | DetonatorAgent API |
+| `LITTERBOX_API` | `http://127.0.0.1:1337` | LitterBox API |
+| `WEBUI_PORT` | `9000` | Web UI listen port |
+
+### Custom Detection Rules
+
+Detection rules support hot-reload — changes take effect without restarting services:
+
+- **Sigma rules:** `C:\tools\detection-rules\rustinel-rules\dist\windows-advanced\rules\sigma\`
+- **YARA rules:** `C:\tools\detection-rules\yara-combined\`
+- **IOC hashes:** `C:\tools\detection-rules\rustinel-rules\dist\windows-advanced\rules\ioc\` (SHA-256, one per line)
+
 ## Links
 
 - [GitHub Repository](https://github.com/BenjiTrapp/transportable-detonation-chamber)
