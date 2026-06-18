@@ -237,6 +237,14 @@ img {
   max-width: 100%;
 }
 
+.entry img[align="left"] {
+  margin-right: 14px;
+}
+
+.entry img[align="right"] {
+  margin-left: 14px;
+}
+
 hr {
   border: none;
   height: 1px;
