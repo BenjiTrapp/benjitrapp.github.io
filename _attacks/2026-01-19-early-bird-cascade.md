@@ -7,6 +7,8 @@ title: Early Bird & Early Cascade Injection
 
 This article examines two significant methods for achieving this: the classic **Early Bird Injection** and the more advanced **Early Cascade Injection**.
 
+**Related posts in this blog:** [Understanding and Attacking EDRs](https://benjitrapp.github.io/attacks/2024-08-21-edr-and-malware/) | [Detecting EDR Hooks](https://benjitrapp.github.io/attacks/2026-06-19-edr-hook-detection/) | [EDR Bypass Roadmap](https://benjitrapp.github.io/attacks/2026-01-18-%20EDR-bypass-roadmap/) | [Hell's Gate, Heaven's Gate & Tartarus Gate](https://benjitrapp.github.io/attacks/2026-01-19-hells-heaven-tartarus-gate/) | [Threadless Injection & Process Ghosting](https://benjitrapp.github.io/attacks/2026-05-17-threadless-injection-process-ghosting/) | [ETW-TI Deep Dive](https://benjitrapp.github.io/defenses/2026-06-19-etw-ti/)
+
 
 ## Early Bird Injection
 
@@ -45,6 +47,7 @@ By avoiding cross-process APCs and minimizing remote interaction, this technique
 
 | Feature | Early Bird Injection | Early Cascade Injection |
 |:---|:---|:---|
+| **MITRE ATT&CK** | [T1055.004](https://attack.mitre.org/techniques/T1055/004/) (APC Injection) | [T1055](https://attack.mitre.org/techniques/T1055/) (Process Injection) |
 | **Primary Mechanism** | Queues an APC to a suspended thread | Intercepts `LdrInitializeThunk` |
 | **Remote Interaction** | Uses `QueueUserAPC` (higher risk) | Minimizes remote interaction |
 | **Stealth Strategy** | Executes before main thread | Blends with DLL loading cascade |
@@ -52,11 +55,14 @@ By avoiding cross-process APCs and minimizing remote interaction, this technique
 
 ## Defensive Relevance
 
+Both techniques exploit the fact that EDR hooks are installed **after** process initialization completes. This means user-mode hook detection (as described in the [EDR Hook Detection Scanner](https://benjitrapp.github.io/attacks/2026-06-19-edr-hook-detection/)) will show hooks are present in steady-state -- but the injected code already executed before those hooks were active.
+
 Detecting these techniques requires visibility beyond standard user-mode hooks. Defenders should implement:
 
-* **Kernel-mode Monitoring:** Monitor DLL load sequences and early-stage thread activity from the kernel.
+* **Kernel-mode Monitoring:** Monitor DLL load sequences and early-stage thread activity from the kernel. The [ETW-TI provider](https://benjitrapp.github.io/defenses/2026-06-19-etw-ti/) fires `EtwTiLogAllocExecVm` and `EtwTiLogReadWriteVm` events from kernel callbacks regardless of hook state -- catching the `VirtualAllocEx` + `WriteProcessMemory` calls that both techniques require.
 * **Behavioral Analysis:** Baselining process startup to detect unusual patterns, such as `CREATE_SUSPENDED` followed by memory allocation and APC queuing.
 * **Memory Scanning:** Scanning for anomalous modules or shellcode that may have been loaded during the initialization phase.
+* **Process Creation Callbacks:** `PsSetCreateProcessNotifyRoutineEx` fires before user-mode initialization begins, giving kernel-mode EDR components early visibility into the spawned process.
 
 ## References
 

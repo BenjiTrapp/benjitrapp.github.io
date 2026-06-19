@@ -13,6 +13,8 @@ This article provides a compact but practitioner‑focused overview of three inf
 
 The goal is not to provide weaponization but to explain the mechanisms, strengths, and limitations of each technique for defenders and researchers.
 
+**Related posts in this blog:** [Understanding and Attacking EDRs](https://benjitrapp.github.io/attacks/2024-08-21-edr-and-malware/) | [Detecting EDR Hooks](https://benjitrapp.github.io/attacks/2026-06-19-edr-hook-detection/) | [EDR Bypass Roadmap](https://benjitrapp.github.io/attacks/2026-01-18-%20EDR-bypass-roadmap/) | [ETW-TI Deep Dive](https://benjitrapp.github.io/defenses/2026-06-19-etw-ti/) | [Threadless Injection & Process Ghosting](https://benjitrapp.github.io/attacks/2026-05-17-threadless-injection-process-ghosting/)
+
 
 ## Hell’s Gate
 Hell’s Gate, introduced by am0nsec and RtlMateusz [VX-Underground](https://x.com/vxunderground/status/1267865030495789056?s=20), laid the foundation for dynamic syscall resolution without relying on static (and easily fingerprinted) syscall IDs. Instead of hardcoding System Service Numbers (SSNs), the technique parses native function stubs inside ntdll.dll at runtime, extracting the actual SSN from the function’s first bytes.
@@ -139,12 +141,13 @@ In general, the evolution of these techniques can be seen in the diagram below:
 
 Understanding these techniques is essential for modern detection engineering:
 
-- **Memory scanning** of `ntdll` is a strong telemetry point (detects altered stubs)
-- **Kernel callbacks** help prevent purely user‑mode bypasses
+- **Memory scanning** of `ntdll` is a strong telemetry point (detects altered stubs). The [EDR Hook Detection Scanner](https://benjitrapp.github.io/attacks/2026-06-19-edr-hook-detection/) automates exactly this comparison between in-memory and on-disk function prologues -- the same `0xE9` JMP opcodes that Tartarus Gate looks for are exactly what the scanner flags
+- **Kernel callbacks** help prevent purely user‑mode bypasses. Even when all three Gate techniques successfully bypass user-mode hooks, operations like `NtAllocateVirtualMemory` and `NtWriteVirtualMemory` still fire events via the [ETW Threat Intelligence (ETW-TI)](https://benjitrapp.github.io/defenses/2026-06-19-etw-ti/) kernel provider -- making kernel telemetry the definitive backstop
 - **ETW/AMSI improvements** remain relevant but require complementary kernel‑level visibility
 - **Syscall‑pattern analysis** (e.g., unusual SSN resolution or stub walking) is increasingly adopted by modern EDR vendors
+- **Call stack validation** detects direct syscalls because the `syscall` instruction originates from non-`ntdll` memory, producing an anomalous call stack that [Elastic's kernel ETW call stack analysis](https://www.elastic.co/security-labs/doubling-down-etw-callstacks) can flag
 
-> **Defense Recommendation:** Defenders should expect continued iterations of these patterns, combining architectural, memory‑forensic, and heuristic approaches.
+> **Defense Recommendation:** Defenders should expect continued iterations of these patterns, combining architectural, memory‑forensic, and heuristic approaches. Map your EDR's [hook coverage](https://benjitrapp.github.io/attacks/2026-06-19-edr-hook-detection/) against the [ETW-TI monitored events](https://benjitrapp.github.io/defenses/2026-06-19-etw-ti/) to identify functions that lack visibility at both layers.
 
 ## Conclusion
 

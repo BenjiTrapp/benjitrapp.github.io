@@ -6,6 +6,10 @@ title: Breaking ETW (Event Tracing for Windows) and EDR
 <img height="150" align="left" src="/images/etw_attacker_logo.png" >
 As described in my Blog post for defenders: [Windows ETW (Event Tracing for Windows)](https://benjitrapp.github.io/defenses/2024-02-11-etw/) - ETW is a crucial system component for EDR/XDR to identify malicious behavior on Windows. Since the post is going into the depth, I recommend to read this post first before you go down the rabbit hole in this post. 
 
+**Related posts in this blog:** [Understanding and Attacking EDRs](https://benjitrapp.github.io/attacks/2024-08-21-edr-and-malware/) | [Detecting EDR Hooks](https://benjitrapp.github.io/attacks/2026-06-19-edr-hook-detection/) | [ETW-TI Deep Dive](https://benjitrapp.github.io/defenses/2026-06-19-etw-ti/) | [EDR Bypass Roadmap](https://benjitrapp.github.io/attacks/2026-01-18-%20EDR-bypass-roadmap/)
+
+> **Important caveat:** The techniques in this article target **user-mode ETW providers** (e.g., patching `ntdll!EtwEventWrite`, killing tracing sessions via `logman`). These do NOT affect the kernel-mode **ETW Threat Intelligence (ETW-TI)** provider, which fires events directly from `ntoskrnl.exe` kernel callbacks and requires PPL-level access to consume or tamper with. For a deep dive into ETW-TI architecture, its kernel sensors, and the actual bypass vectors that work against it, see the [ETW-TI Deep Dive](https://benjitrapp.github.io/defenses/2026-06-19-etw-ti/).
+
 <br><br>
 - [Useful links](#useful-links)
 - [Main targets for an attacker](#main-targets-for-an-attacker)

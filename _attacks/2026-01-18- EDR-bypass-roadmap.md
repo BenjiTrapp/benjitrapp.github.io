@@ -1,4 +1,4 @@
----
+﻿---
 layout: attack
 title: "The EDR Bypass Roadmap: Technical Evolution and API Subversion"
 ---
@@ -6,6 +6,8 @@ title: "The EDR Bypass Roadmap: Technical Evolution and API Subversion"
 <img height="150" align="left" src="/images/edr-bypass-timeline.png"> The battle for the endpoint is won or lost in telemetry. This has been increasingly recognized by the security community, with projects such as [EDR Telemetry](https://www.edr-telemetry.com/) aiming to systematically compare and improve EDR visibility.  
 
 This timeline breaks down the evolution of evasion—from early Windows API abuse to modern hardware- and behavior-level subversion—mapped against the **MITRE ATT&CK®** framework and aligned with my research into [**Windows APIs**](https://benjitrapp.github.io/attacks/2024-06-07-red-windows-api/) and [**ETW (Event Tracing for Windows)**](https://benjitrapp.github.io/defenses/2024-02-11-etw/).
+
+**Related posts in this blog:** [Understanding and Attacking EDRs](https://benjitrapp.github.io/attacks/2024-08-21-edr-and-malware/) | [Detecting EDR Hooks](https://benjitrapp.github.io/attacks/2026-06-19-edr-hook-detection/) | [Hell's Gate, Heaven's Gate & Tartarus Gate](https://benjitrapp.github.io/attacks/2026-01-19-hells-heaven-tartarus-gate/) | [Early Bird & Early Cascade Injection](https://benjitrapp.github.io/attacks/2026-01-19-early-bird-cascade/) | [Threadless Injection & Process Ghosting](https://benjitrapp.github.io/attacks/2026-05-17-threadless-injection-process-ghosting/) | [ETW-TI Deep Dive](https://benjitrapp.github.io/defenses/2026-06-19-etw-ti/) | [Breaking ETW and EDR](https://benjitrapp.github.io/attacks/2024-02-11-offensive-etw/)
 
 - [Phase 1: The Foundation (2010–2015)](#phase-1-the-foundation-20102015)
   - [2012–2013: Injection Primitives \& API Abuse](#20122013-injection-primitives--api-abuse)
@@ -22,7 +24,7 @@ This timeline breaks down the evolution of evasion—from early Windows API abus
 - [Technical Summary \& API Matrix](#technical-summary--api-matrix)
 - [Conclusion](#conclusion)
 
-Overview about the timeline, it phases and related techniques that will be discussed below:
+Overview about the timeline, its phases and related techniques that will be discussed below:
 
 ![](/images/edr_bypass_timeline_chart.png)
 
@@ -99,7 +101,7 @@ STARTUPINFOA si = { sizeof(si) };
 PROCESS_INFORMATION pi;
 
 CreateProcessA(
-    "C:\Windows\System32\svchost.exe",
+    "C:\\Windows\\System32\\svchost.exe",
     NULL, NULL, NULL, FALSE,
     CREATE_SUSPENDED,
     NULL, NULL,
@@ -128,8 +130,8 @@ HMODULE WINAPI ReflectiveLoader(VOID) {
     ULONG_PTR uiLibraryAddress;
     USHORT usCounter;
     
-    // Get own image base
-    uiLibraryAddress = caller();
+    // Get own image base (uses compiler intrinsic _ReturnAddress() in practice)
+    uiLibraryAddress = caller();  // simplified - Fewer's original uses _ReturnAddress()
     uiLibraryAddress = (ULONG_PTR)((UINT_PTR)uiLibraryAddress & 0xFFFFFFFFFFFF0000);
     
     while (TRUE) {
@@ -175,7 +177,7 @@ These APIs and their monitoring implications are covered in depth in the [Window
 
 Attackers responded by restoring trust boundaries inside userland:
 
-- **Detecting hooks ([T1562.001](https://attack.mitre.org/techniques/T1562/001/))** by comparing in-memory vs. on-disk bytes
+- **Detecting hooks ([T1562.001](https://attack.mitre.org/techniques/T1562/001/))** by comparing in-memory vs. on-disk bytes (for a comprehensive scanner that automates this, see [Detecting and Enumerating EDR Hooks](https://benjitrapp.github.io/attacks/2026-06-19-edr-hook-detection/))
 - Loading clean DLL copies
 - Restoring original syscall stubs
 
@@ -342,6 +344,8 @@ void PatchETW() {
 }
 ```
 
+> **Important caveat:** These user-mode ETW patches only affect standard ETW providers. Microsoft's kernel-mode [ETW Threat Intelligence (ETW-TI)](https://benjitrapp.github.io/defenses/2026-06-19-etw-ti/) provider fires events directly from `ntoskrnl.exe` kernel callbacks and is immune to `EtwEventWrite` patching. For a comprehensive view of offensive ETW techniques and their limitations, see [Breaking ETW and EDR](https://benjitrapp.github.io/attacks/2024-02-11-offensive-etw/).
+
 ---
 
 ## Phase 6: Advanced Injection & Modern Era (2022–Present / Time of Writing: 2026)
@@ -382,8 +386,10 @@ This technique is particularly effective because:
 - The process is legitimate at creation time
 - No remote thread creation is required
 
+For a detailed analysis of both techniques, including Early Cascade's exploitation of `LdrInitializeThunk` and the DLL loading cascade, see [Early Bird & Early Cascade Injection](https://benjitrapp.github.io/attacks/2026-01-19-early-bird-cascade/). For even more advanced approaches that avoid thread creation entirely, see [Threadless Injection & Process Ghosting](https://benjitrapp.github.io/attacks/2026-05-17-threadless-injection-process-ghosting/).
+
 - **Early Cascade Injection ([T1055](https://attack.mitre.org/techniques/T1055/))**  
-  An evolution of Early Bird that chains multiple APC calls to establish persistence and evade behavioral detection.
+  An evolution of Early Bird that targets the `LdrInitializeThunk` function during process initialization, injecting code as part of the natural DLL loading flow before EDR hooks are installed.
 
 ```cpp
 // Example: Early Cascade - Chained APC Injection
@@ -490,6 +496,6 @@ This timeline illustrates a clear pattern: each defensive innovation creates new
 
 Modern techniques like [Ekko](https://github.com/Cracked5pider/Ekko) sleep obfuscation, [ThreadStackSpoofer](https://github.com/mgeeky/ThreadStackSpoofer) ([T1562.001](https://attack.mitre.org/techniques/T1562/001/)), and [module stomping](https://offensivedefence.co.uk/posts/module-stomping/) ([T1055.013](https://attack.mitre.org/techniques/T1055/013/)) represent the convergence of these techniques—combining memory manipulation, execution context spoofing, and ETW evasion into cohesive chains.
 
-As detailed in my research on [Windows APIs](https://benjitrapp.github.io/attacks/2024-06-07-red-windows-api/) and [ETW internals](https://benjitrapp.github.io/defenses/2024-02-11-etw/), the battlefield has moved beyond simple API hooking. Projects like [EDR Telemetry](https://www.edr-telemetry.com/) are pushing vendors toward kernel-level instrumentation and behavioral analytics, while offensive research continues to explore [direct system calls](https://outflank.nl/blog/2019/06/19/red-team-tactics-combining-direct-system-calls-and-srdi-to-bypass-av-edr/), [hardware-based evasion](https://connormcgarr.github.io/hvci/), and [VBS/HVCI bypasses](https://blog.xpnsec.com/windows-warbird-privesc/).
+As detailed in my research on [Windows APIs](https://benjitrapp.github.io/attacks/2024-06-07-red-windows-api/) and [ETW internals](https://benjitrapp.github.io/defenses/2024-02-11-etw/), the battlefield has moved beyond simple API hooking. The [EDR Hook Detection Scanner](https://benjitrapp.github.io/attacks/2026-06-19-edr-hook-detection/) shows exactly which functions your EDR monitors at the user-mode level, while the [ETW-TI Deep Dive](https://benjitrapp.github.io/defenses/2026-06-19-etw-ti/) reveals what the kernel sees regardless of user-mode evasion. Projects like [EDR Telemetry](https://www.edr-telemetry.com/) are pushing vendors toward kernel-level instrumentation and behavioral analytics, while offensive research continues to explore [direct system calls](https://outflank.nl/blog/2019/06/19/red-team-tactics-combining-direct-system-calls-and-srdi-to-bypass-av-edr/), [hardware-based evasion](https://connormcgarr.github.io/hvci/), and [VBS/HVCI bypasses](https://blog.xpnsec.com/windows-warbird-privesc/).
 
 Understanding this evolution—grounded in Windows internals and telemetry design—is essential for both red teams and defenders navigating the modern endpoint arms race. The [MITRE ATT&CK framework](https://attack.mitre.org/) provides structure, but the techniques themselves evolve faster than taxonomies can capture them.
