@@ -3,16 +3,18 @@ layout: culture
 title: Performing a Security Code Review
 ---
 
-Code Reviews are required for auditing an application's source code by people **other then the author**
+Code Reviews are required for auditing an application's source code by people **other than the author**
 
-> Goal: identify errors and mistakes in the code
+> Goal: identify errors, mistakes, and security weaknesses in the code — early
 
 Benefits of a code review:
 
-* Get another perspective
-* Transfer knowledge
+* Get another perspective and challenge assumptions
+* Transfer knowledge and build collective code ownership
 * Find errors and weaknesses early like [CWE Top 25](https://cwe.mitre.org/top25/archive/2022/2022_cwe_top25.html)
 * Reduce rework and testing effort
+* Elevate the security awareness and coding standards of the entire team
+* Create a culture of continuous improvement and shared responsibility
 
 ## Testing ≠ Code Review
 
@@ -25,9 +27,22 @@ Testing isn't enough to find Security issues. The table below shows what both ha
 | Can be (fully) automated          | Cannot be fully automated                              |
 | Code must be compiled             | Can be done early, compilable code not always required |
 
+## Building a Healthy Code Review Culture
+
+Before diving into the "how", it's worth addressing the "why" at a cultural level. A code review is not a gatekeeping ritual or blame exercise — it's a **learning opportunity** for everyone involved. Teams with a strong review culture share these traits:
+
+* **Psychological safety** — Authors don't fear judgment; reviewers don't fear pushback. The goal is improving the code, not proving who's smarter.
+* **Blameless feedback** — Comments target the code, never the person. Prefer "This block could be simplified by…" over "You did this wrong."
+* **Small, frequent reviews** — Reviewing 200 lines takes 30 minutes; reviewing 2000 lines takes all day and still misses things. Encourage small pull requests.
+* **Shared ownership** — Everyone reviews and everyone gets reviewed. Seniority doesn't exempt you from either side.
+* **Celebrate findings** — A caught vulnerability is a success, not a failure. Recognize reviewers who find critical issues.
+* **Continuous improvement** — Regularly revisit checklists, tooling, and processes. What you review today should inform what you automate tomorrow.
+
+> Tip: Pair programming and mob reviews can complement async reviews — especially for complex security-sensitive logic.
+
 ## Code Review Styles
 
-A code review usually consists out of two parts a manual and an automated one. First at all, get a feeling about the code by using some automated tools like a SAST Scanner. Inspect the architecture diagrams (or get some created if they are missing), use some grep statements or SemGrep, and check for code parts with missing code coverage. Also you can create a [Threat Model](https://benjitrapp.github.io/cultures/2022-06-11-threat-modeling/) to derive a prioritized list for the review in a more risk based approach.
+A code review usually consists of two parts: a manual and an automated one. Start by getting a feeling for the code using automated tools like a SAST scanner or [Semgrep](https://www.semgrep.dev/). Inspect the architecture diagrams (or get some created if they are missing), check for code parts with missing coverage, and leverage AI-powered assistants to surface patterns humans might overlook. You can also create a [Threat Model](https://benjitrapp.github.io/cultures/2022-06-11-threat-modeling/) to derive a prioritized list for the review in a more risk-based approach.
 
 <p align="center">
 <img width=600  src="/images/code-review-style.png">
@@ -138,7 +153,7 @@ Look for too much complexity, functionality
 
 ### Automated Code Review
 
-Like spoiled a multiple time above, let's discuss the part which can be automated in a code review. The main magic here can be done with static analysis - so let's get started:
+Like spoiled multiple times above, let's discuss the part which can be automated in a code review. The main magic here can be done with static analysis — so let's get started:
 
 Static analysis:
 
@@ -151,15 +166,125 @@ Automated Static Analysis tools:
 * Scan the whole codebase
 * Provide warnings of common coding mistakes (dead code, hardcoded credentials, null pointer, API misuse…)
 * Use a variety of methods
-  * Fancy grep searches or dig deeper into [SemGrep](https://www.semgrep.dev/)
+  * Pattern matching and AST-based searches (e.g., Semgrep)
   * Model checking
   * Data flow analysis
+
+### Semgrep — Lightweight, Developer-Friendly Static Analysis
+
+[Semgrep](https://www.semgrep.dev/) deserves special attention as a modern, open-source static analysis tool that bridges the gap between simple grep searches and heavyweight commercial SAST scanners. It's fast, language-aware, and easy to integrate.
+
+**Why Semgrep stands out:**
+
+* **Low false-positive rate** — Rules match code structure (AST), not just text, which reduces noise significantly
+* **Write custom rules in minutes** — Rules are written in a YAML format that mirrors the target code, making them accessible to developers (not just security engineers)
+* **Multi-language support** — Python, JavaScript/TypeScript, Java, Go, Ruby, C, and many more
+* **CI/CD native** — Runs in seconds on a PR diff, making it practical for every pull request
+* **Community registry** — Thousands of pre-built rules covering OWASP Top 10, CWE Top 25, and framework-specific pitfalls
+
+**Example: Detecting hardcoded secrets with Semgrep**
+
+```yaml
+rules:
+  - id: hardcoded-password
+    patterns:
+      - pattern: $VAR = "..."
+      - metavariable-regex:
+          metavariable: $VAR
+          regex: (?i)(password|secret|api_key|token)
+    message: Possible hardcoded credential in variable '$VAR'
+    severity: WARNING
+    languages: [python, javascript, java]
+```
+
+**Example: Catching SQL injection in Python**
+
+```yaml
+rules:
+  - id: sql-injection-format-string
+    patterns:
+      - pattern: |
+          cursor.execute(f"...{$USERINPUT}...")
+      - pattern-not: |
+          cursor.execute(f"...{$CONST}...", ...)
+    message: Potential SQL injection via f-string interpolation
+    severity: ERROR
+    languages: [python]
+```
+
+**Integration into your workflow:**
+
+```bash
+# Run Semgrep on a PR diff (CI mode)
+semgrep ci --config auto
+
+# Run with community + custom rules locally
+semgrep scan --config r/owasp.top-ten --config ./custom-rules/
+
+# Generate SARIF output for GitHub Security tab
+semgrep scan --config auto --sarif --output results.sarif
+```
+
+**Tips for adopting Semgrep in your team:**
+
+1. Start with `--config auto` to use Semgrep's curated rules — it's a great baseline
+2. Write custom rules for your internal frameworks and libraries (e.g., "never call `dangerouslySetInnerHTML` without our sanitizer wrapper")
+3. Run Semgrep as a blocking check on PRs for high-severity rules, and as advisory for lower severity
+4. Use Semgrep's `--baseline-commit` flag to only surface findings on new/changed code (avoids flooding developers with legacy issues)
+
+### AI-Assisted Code Review
+
+AI is transforming the code review landscape. While it won't replace human judgment for architectural decisions or nuanced security reasoning, AI can significantly amplify the effectiveness and coverage of reviews.
+
+**How AI enhances code reviews:**
+
+| **Capability** | **How it helps** |
+| --- | --- |
+| Summarizing changes | AI can generate a concise summary of what a PR does, helping reviewers orient quickly |
+| Detecting anti-patterns | LLMs trained on vast code corpora can spot subtle issues that rule-based tools miss |
+| Suggesting fixes | AI can propose concrete fixes alongside findings, reducing reviewer-author round trips |
+| Explaining complex code | Reviewers unfamiliar with a module can ask AI for explanations before diving in |
+| Generating review checklists | AI can produce context-aware checklists based on the specific changes in a PR |
+| Triaging SAST findings | AI can assess whether a static analysis finding is a true or false positive given the surrounding context |
+
+**Tools leveraging AI for code review:**
+
+* **GitHub Copilot Code Review** — Automated reviewer that posts suggestions directly on PRs
+* **Amazon CodeGuru Reviewer** — ML-based reviewer focused on performance and security
+* **Semgrep Assistant** — Uses LLMs to explain findings, reduce false positives, and suggest fixes for Semgrep results
+* **CodeRabbit / Qodo (formerly CodiumAI)** — AI-powered PR review bots with security awareness
+* **Custom LLM pipelines** — Teams can build internal review bots using models like GPT-4 or Claude with organization-specific context
+
+**Practical integration pattern:**
+
+```
+┌─────────────────────────────────────────────────────┐
+│                   PR Opened                          │
+├─────────────────────────────────────────────────────┤
+│  1. Semgrep runs rule-based analysis               │
+│  2. AI assistant summarizes changes & risks         │
+│  3. AI triages Semgrep findings (true/false pos.)  │
+│  4. Human reviewer focuses on:                      │
+│     - Architecture & design decisions               │
+│     - Business logic correctness                    │
+│     - Edge cases AI might miss                      │
+│     - Security implications in context              │
+└─────────────────────────────────────────────────────┘
+```
+
+**Caveats and responsible use of AI in reviews:**
+
+* AI suggestions can be **confidently wrong** — always verify security-relevant findings
+* Don't use AI as an excuse to skip human review on critical paths (auth, crypto, payment flows)
+* Be cautious about feeding proprietary code into external AI services — check your data policies
+* AI works best as a **force multiplier**, not a replacement. It handles the breadth; humans provide the depth.
 
 Key points:
 
 * Code reviews require expertise in secure programming (I'll write about this soon)
-* Humans are fallible and miss faults
-* Manual code reviews are slow but have a high chance to find something.
+* Humans are fallible and miss faults — combine human insight with automated tooling and AI
+* Manual code reviews are slow but have a high chance to find design-level issues
+* Semgrep and AI assistants can handle the repetitive pattern-matching, freeing humans for deeper analysis
 * Can be part of a nightly build or integrated in a CI/CD pipeline
 
 ## How Static Analysis works
@@ -248,5 +373,9 @@ Additional sources and info:
 * [Code Review vs. Testing (Codacy, 2016)](https://www.codacy.com/blog/code-review-vs-testing/)
 * [Rick Kuipers on The Science of Code Reviews (DPC 2018)](https://www.youtube.com/watch?v=EyL7mqwpZhk)
 * [Security Code Review 101 with Paul Ionescu! (OWASP DevSlop Show, 2019)](https://www.youtube.com/watch?v=rAwxFw25x3E)
-* [Let’s play a game: what is the deadly bug here? (LiveOverflow, 2018)](https://www.youtube.com/watch?v=MpeaSNERwQA)
+* [Let's play a game: what is the deadly bug here? (LiveOverflow, 2018)](https://www.youtube.com/watch?v=MpeaSNERwQA)
 * [Sources and Sinks – Code Review Basics (LiveOverflow, 2018)](https://www.youtube.com/watch?v=ZaOtY4i5w_U)
+* [Semgrep Documentation](https://semgrep.dev/docs/)
+* [Semgrep Rule Registry](https://semgrep.dev/r)
+* [Google's Engineering Practices - Code Review](https://google.github.io/eng-practices/review/)
+* [Conventional Comments](https://conventionalcomments.org/) — A structured approach to giving review feedback
