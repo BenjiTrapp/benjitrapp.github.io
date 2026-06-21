@@ -119,13 +119,7 @@ Don't measure success by the number of threat models produced (that incentivizes
 
 Traditional threat modeling happens once, late, and gets outdated. Modern teams treat it as a living practice:
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│  Feature Idea → Design → Threat Model → Build → Review → Ship  │
-│       ↑                                                    │    │
-│       └────────────── Feedback Loop ───────────────────────┘    │
-└─────────────────────────────────────────────────────────────────┘
-```
+![](/images/threat_modelling_flow.jpg)
 
 * **Trigger: New feature or significant change** — Not a quarterly ritual
 * **Scope: The change, not the entire system** — Incremental threat modeling per feature/story
@@ -169,7 +163,7 @@ A threat model that doesn't result in change is waste. Close the loop:
 We already learned that a Threat Model is based on a Data Flow. Let's paint one:
 
 <p align="center">
-<img width="600" src="/images/dataflow.png">
+<img width="600" src="/images/threat_modelling_entities.jpg">
 </p>
 
 In the picture above we have the following components:
@@ -186,7 +180,7 @@ Wait where's the Security coming in? This description doesn't secure anything ye
 Time to bring some Security aspects in and optimize the Dataflow Model to secure things by introducing: Trusted Boundaries
 
 <p align="center">
-<img width="600" src="/images/trustboundary.png">
+<img width="600" src="/images/threat_modelling_trustboundary.jpg">
 </p>
 
 Like shown in the picture above - draw a trust boundary when data from one party to another is not trusted

