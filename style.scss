@@ -7,6 +7,15 @@
 
 @import "reset";
 @import "variables";
+
+// Page transition fade
+body {
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+body.page-loaded {
+  opacity: 1;
+}
 // Syntax highlighting @import is at the bottom of this file
 
 // colors
@@ -1200,7 +1209,7 @@ pre.highlight {
     }
   }
 
-  // Public Talks Timeline Styling
+  // Public Talks Timeline Styling (scoped copy — global copy below .page block)
   .talks-timeline {
     margin: 24px 0;
     padding: 0;
@@ -1306,4 +1315,418 @@ pre.highlight {
       }
     }
   }
+}
+
+// Global Timeline — usable in any layout (.attack, .defense, .page, etc.)
+.talks-timeline {
+  margin: 24px 0;
+  padding: 0;
+
+  .timeline-year {
+    margin-bottom: 32px;
+    position: relative;
+
+    .year-badge {
+      display: inline-block;
+      font-size: 1.6em;
+      font-weight: 700;
+      color: $green-accent;
+      background: linear-gradient(135deg, rgba(23, 254, 51, 0.15), rgba(126, 231, 135, 0.1));
+      padding: 8px 24px;
+      border-radius: 8px;
+      border: 2px solid $green-accent;
+      margin-bottom: 20px;
+      letter-spacing: 2px;
+      text-shadow: 0 0 15px rgba(23, 254, 51, 0.5);
+      box-shadow: 0 4px 12px rgba(23, 254, 51, 0.2);
+    }
+
+    .timeline-events {
+      margin-left: 20px;
+      padding-left: 30px;
+      border-left: 3px solid rgba(23, 254, 51, 0.3);
+      margin-top: 20px;
+
+      .timeline-event {
+        position: relative;
+        margin-bottom: 24px;
+        padding: 16px 0;
+        display: flex;
+        align-items: flex-start;
+        gap: 16px;
+        transition: all 0.3s ease;
+
+        .event-icon {
+          position: absolute;
+          left: -43px;
+          top: 16px;
+          font-size: 18px;
+          background: $background;
+          width: 32px;
+          height: 32px;
+          border-radius: 50%;
+          border: 3px solid $green-accent;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: all 0.3s ease;
+          box-shadow: 0 0 0 5px $background;
+        }
+
+        .event-content {
+          flex: 1;
+          line-height: 1.6;
+
+          a {
+            color: $light-lime;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1.05em;
+            transition: all 0.3s ease;
+
+            &:hover {
+              color: $green-accent;
+              text-shadow: 0 0 8px rgba(23, 254, 51, 0.4);
+            }
+          }
+
+          .event-links {
+            display: inline-block;
+            margin-left: 8px;
+            font-size: 0.95em;
+            color: #8b949e;
+
+            a {
+              color: $green-accent;
+              font-size: 0.9em;
+
+              &:hover {
+                color: $light-lime;
+              }
+            }
+          }
+        }
+
+        &:hover {
+          transform: translateX(8px);
+
+          .event-icon {
+            transform: scale(1.2) rotate(15deg);
+            box-shadow: 0 0 20px rgba(23, 254, 51, 0.6), 0 0 0 5px $background;
+          }
+        }
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+    }
+  }
+}
+
+// ── Assembly annotation spans ──────────────────────────────────────────────
+// General-purpose registers: EAX EBX ECX EDX ESI EDI (x86) / RAX-RDX R8-R15 (x64)
+.reg {
+  color: #17fe33;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-weight: 700;
+  font-size: 0.92em;
+  text-shadow: 0 0 6px rgba(23, 254, 51, 0.55);
+  background: rgba(23, 254, 51, 0.09);
+  padding: 1px 5px;
+  border-radius: 3px;
+}
+
+// Stack / frame / pointer registers: ESP EBP RSP RBP SP LR PC
+.reg-ptr {
+  color: #f97316;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-weight: 700;
+  font-size: 0.92em;
+  text-shadow: 0 0 6px rgba(249, 115, 22, 0.5);
+  background: rgba(249, 115, 22, 0.09);
+  padding: 1px 5px;
+  border-radius: 3px;
+}
+
+// ARM registers: R0-R12, SP, LR, PC, CPSR
+.reg-arm {
+  color: #38bdf8;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-weight: 700;
+  font-size: 0.92em;
+  text-shadow: 0 0 6px rgba(56, 189, 248, 0.5);
+  background: rgba(56, 189, 248, 0.09);
+  padding: 1px 5px;
+  border-radius: 3px;
+}
+
+// Instruction mnemonics used inline in prose: MOV, PUSH, CALL, ...
+.instr {
+  color: #60a5fa;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-weight: 600;
+  font-size: 0.92em;
+  background: rgba(96, 165, 250, 0.09);
+  padding: 1px 5px;
+  border-radius: 3px;
+}
+
+// CPU flags: ZF CF SF OF PF AF
+.flag {
+  color: #fbbf24;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-weight: 700;
+  font-size: 0.92em;
+  text-shadow: 0 0 6px rgba(251, 191, 36, 0.4);
+  background: rgba(251, 191, 36, 0.09);
+  padding: 1px 5px;
+  border-radius: 3px;
+}
+
+// Memory addresses / hex values
+.addr {
+  color: #a78bfa;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 0.92em;
+  background: rgba(167, 139, 250, 0.09);
+  padding: 1px 5px;
+  border-radius: 3px;
+}
+
+// ── Ghidra UI mockup panels (Flat Dark theme) ─────────────────────────────
+.ghidra-mock {
+  background: #2b2b2b;
+  border: 1px solid #4a4a4a;
+  border-radius: 6px;
+  margin: 28px 0;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 12.5px;
+  line-height: 1.55;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.04);
+
+  .gm-bar {
+    background: linear-gradient(180deg, #3c3f41 0%, #333538 100%);
+    padding: 5px 14px;
+    color: #9b9ea2;
+    font-size: 11px;
+    border-bottom: 1px solid #4a4a4a;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    letter-spacing: 0.02em;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+    .gm-dots { display: flex; gap: 5px; }
+    .gm-dot  { width: 10px; height: 10px; border-radius: 50%; background: #555; }
+  }
+
+  .gm-listing {
+    padding: 5px 0;
+    overflow-x: auto;
+
+    .gm-row {
+      display: flex;
+      align-items: baseline;
+      padding: 1px 14px;
+      white-space: nowrap;
+      gap: 0;
+      &:hover     { background: rgba(255,255,255,0.04); }
+      &.gm-focus  { background: #214283; }
+      &.gm-hi     { background: rgba(198, 120, 51, 0.15); }
+    }
+
+    .gm-addr  { color: #9a8cd4; min-width: 80px;  }
+    .gm-bytes { color: #5c7d47; min-width: 145px; font-size: 11px; }
+    .gm-mnem  { color: #cc7832; min-width: 58px;  font-weight: 600; }
+    .gm-reg   { color: #dcdcaa; }
+    .gm-imm   { color: #6897bb; }
+    .gm-lbl   { color: #ffc66d; font-weight: bold; }
+    .gm-fn    { color: #4ec9b0; }
+    .gm-seg   { color: #c57d3b; font-weight: bold; }
+    .gm-str   { color: #6a8759; }
+    .gm-cmt   { color: #629755; font-style: italic; margin-left: auto; padding-left: 20px; }
+    .gm-punct { color: #a9b7c6; }
+
+    .gm-label-line {
+      color: #ffc66d;
+      font-weight: bold;
+      padding: 5px 14px 1px;
+    }
+    .gm-blank { height: 5px; }
+  }
+
+  // Split panel: listing left, decompiler right
+  .gm-split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+
+    > div:first-child { border-right: 1px solid #4a4a4a; }
+
+    .gm-panel-title {
+      background: #2f3133;
+      padding: 3px 14px;
+      color: #666;
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      border-bottom: 1px solid #4a4a4a;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+  }
+
+  .gm-decompiler {
+    padding: 10px 14px;
+    background: #1e1e1e;
+    overflow-x: auto;
+
+    .dc-type  { color: #569cd6; }
+    .dc-fn    { color: #4ec9b0; }
+    .dc-var   { color: #9cdcfe; }
+    .dc-param { color: #dcdcaa; }
+    .dc-num   { color: #b5cea8; }
+    .dc-str   { color: #ce9178; }
+    .dc-kw    { color: #c586c0; }
+    .dc-op    { color: #a9b7c6; }
+    .dc-cmt   { color: #6a9955; font-style: italic; }
+    .dc-field { color: #dcdcaa; }
+  }
+
+  // Graph / CFG view
+  .gm-graph {
+    padding: 14px;
+    background: #1f2021;
+    overflow-x: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+
+    .gm-graph-inner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+      width: 100%;
+    }
+
+    .gm-block {
+      background: #2b2b2b;
+      border: 1px solid #555;
+      border-radius: 3px;
+      padding: 6px 14px;
+      min-width: 220px;
+      max-width: 520px;
+      text-align: left;
+      white-space: nowrap;
+
+      .gm-block-title {
+        color: #666;
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        margin-bottom: 4px;
+        padding-bottom: 3px;
+        border-bottom: 1px solid #3a3a3a;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      }
+
+      .gm-row {
+        display: flex;
+        gap: 6px;
+        padding: 1px 0;
+        white-space: nowrap;
+        align-items: baseline;
+
+        &.gm-focus     { background: #214283; margin: 0 -14px; padding: 1px 14px; }
+        &.gm-backedge-row { margin-top: 4px; }
+      }
+
+      .gm-backedge-label {
+        font-size: 10px;
+        margin-left: auto;
+        padding-left: 10px;
+      }
+    }
+
+    .gm-block-entry { border-color: #4ec9b0; }
+    .gm-block-check { border-color: #9a8cd4; }
+    .gm-block-focus { border-color: #ffc66d; }
+
+    .gm-graph-arrow {
+      color: #555;
+      font-size: 16px;
+      line-height: 1.2;
+      text-align: center;
+      padding: 2px 0;
+
+      &.gm-graph-arrow-down { padding: 4px 0; }
+    }
+
+    .gm-graph-edges {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .gm-graph-edge-row {
+      display: flex;
+      gap: 28px;
+      align-items: flex-start;
+      justify-content: center;
+    }
+
+    .gm-graph-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+    }
+
+    .gm-graph-label {
+      font-size: 10px;
+      padding: 3px 8px;
+      border-radius: 3px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-weight: 600;
+
+      &.gm-edge-t  { color: #4ec9b0; background: rgba(78,201,176,0.12); }
+      &.gm-edge-f  { color: #f85149; background: rgba(248,81,73,0.12); }
+      &.gm-edge-bk { color: #9a8cd4; background: rgba(154,140,212,0.12); }
+    }
+
+    .gm-edge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      padding: 2px 0;
+      color: #666;
+
+      &.gm-edge-t  { color: #4ec9b0; }
+      &.gm-edge-f  { color: #f85149; }
+      &.gm-edge-bk { color: #9a8cd4; }
+
+      .gm-arrow { font-size: 14px; }
+    }
+
+    .gm-row-h { display: flex; gap: 40px; align-items: flex-start; }
+  }
+
+  // Wide variant: extends bytes column for longer encodings
+  .gm-listing-wide .gm-bytes { min-width: 185px; }
+
+  // Colour aliases matching .gm-listing inside graph blocks
+  .gm-graph .gm-mnem  { color: #cc7832; min-width: 58px; font-weight: 600; }
+  .gm-graph .gm-reg   { color: #dcdcaa; }
+  .gm-graph .gm-imm   { color: #6897bb; }
+  .gm-graph .gm-lbl   { color: #ffc66d; font-weight: bold; }
+  .gm-graph .gm-fn    { color: #4ec9b0; }
+  .gm-graph .gm-cmt   { color: #629755; font-style: italic; margin-left: auto; padding-left: 12px; }
+  .gm-graph .gm-punct { color: #a9b7c6; }
+  .gm-graph .gm-edge-t  { color: #4ec9b0; }
+  .gm-graph .gm-edge-f  { color: #f85149; }
+  .gm-graph .gm-edge-bk { color: #9a8cd4; }
 }

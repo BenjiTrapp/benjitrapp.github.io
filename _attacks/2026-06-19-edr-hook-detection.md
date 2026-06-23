@@ -7,7 +7,7 @@ title: "Hunting the Watchers: Detecting and Enumerating EDR User-Mode Hooks"
 
 Understanding exactly which functions are actively monitored is essential for security diagnostics, posture assessment, red team reconnaissance, and building detection engineering context. This article explores the underlying mechanics of user-mode inline patching, dissects the PE structures involved, and provides two automated scanners -- one in C++ for direct system-level analysis and one in Go for portable cross-compilation -- capable of detecting and cataloging hooked functions dynamically.
 
-**Related posts in this blog:** [Understanding and Attacking EDRs](https://benjitrapp.github.io/attacks/2024-08-21-edr-and-malware/) | [EDR Bypass Roadmap](https://benjitrapp.github.io/attacks/2026-01-18-%20EDR-bypass-roadmap/) | [Hell's Gate, Heaven's Gate & Tartarus Gate](https://benjitrapp.github.io/attacks/2026-01-19-hells-heaven-tartarus-gate/) | [Threadless Injection & Process Ghosting](https://benjitrapp.github.io/attacks/2026-05-17-threadless-injection-process-ghosting/) | [Breaking ETW and EDR](https://benjitrapp.github.io/attacks/2024-02-11-offensive-etw/) | [ETW-TI Deep Dive](https://benjitrapp.github.io/defenses/2026-06-19-etw-ti/)
+**Related posts in this blog:** [Understanding and Attacking EDRs](https://benjitrapp.github.io/attacks/2024-08-21-edr-and-malware/) | [EDR Bypass Roadmap](https://benjitrapp.github.io/attacks/2026-01-18-EDR-bypass-roadmap/) | [Hell's Gate, Heaven's Gate & Tartarus Gate](https://benjitrapp.github.io/attacks/2026-01-19-hells-heaven-tartarus-gate/) | [Threadless Injection & Process Ghosting](https://benjitrapp.github.io/attacks/2026-05-17-threadless-injection-process-ghosting/) | [Breaking ETW and EDR](https://benjitrapp.github.io/attacks/2024-02-11-offensive-etw/) | [ETW-TI Deep Dive](https://benjitrapp.github.io/defenses/2026-06-19-etw-ti/)
 
 - [Why EDRs Hook ntdll.dll](#why-edrs-hook-ntdlldll)
 - [The Anatomy of an Inline Hook](#the-anatomy-of-an-inline-hook)
@@ -1085,7 +1085,7 @@ Cross-reference with the [ETW-TI article](https://benjitrapp.github.io/defenses/
 ## References
 
 1. [Understanding and Attacking EDRs](https://benjitrapp.github.io/attacks/2024-08-21-edr-and-malware/) -- Comprehensive EDR architecture overview
-2. [EDR Bypass Roadmap](https://benjitrapp.github.io/attacks/2026-01-18-%20EDR-bypass-roadmap/) -- Historical evolution of evasion techniques
+2. [EDR Bypass Roadmap](https://benjitrapp.github.io/attacks/2026-01-18-EDR-bypass-roadmap/) -- Historical evolution of evasion techniques
 3. [Hell's Gate, Heaven's Gate & Tartarus Gate](https://benjitrapp.github.io/attacks/2026-01-19-hells-heaven-tartarus-gate/) -- Syscall-based hook bypass techniques
 4. [Elastic Security Labs - Doubling Down: Kernel ETW Call Stacks](https://www.elastic.co/security-labs/doubling-down-etw-callstacks) -- How kernel telemetry compensates for user-mode hook fragility
 5. [SysWhispers4 - ETW-TI Limitations](https://joasasantos-syswhispers4.mintlify.app/advanced/etw-ti-limitations) -- What survives after hooks are bypassed
