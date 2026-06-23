@@ -11,17 +11,50 @@
 // Page transition fade
 // Fallback: CSS animation makes body visible after 0.4s even if JS fails
 @keyframes fallback-show {
-  to { opacity: 1; }
+  to { opacity: 1; transform: none; }
 }
 
 body {
   opacity: 0;
-  transition: opacity 0.35s ease;
-  animation: fallback-show 0s 0.4s forwards;
+  transition: opacity 0.4s ease;
+  animation: fallback-show 0s 0.5s forwards;
 }
 body.page-loaded {
   opacity: 1;
-  animation: none; // Cancel fallback once JS has kicked in
+  animation: none;
+}
+
+// Staggered reveal animations (slide-up + fade-in)
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+// Stagger delays for sequential appearance
+@for $i from 1 through 8 {
+  .reveal.reveal-delay-#{$i} {
+    transition-delay: #{$i * 0.1}s;
+  }
+}
+
+// Scroll-triggered reveal for below-the-fold content
+.scroll-reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.scroll-reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 // Syntax highlighting @import is at the bottom of this file
 
