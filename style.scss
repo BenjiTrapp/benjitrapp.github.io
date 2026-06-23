@@ -9,12 +9,19 @@
 @import "variables";
 
 // Page transition fade
+// Fallback: CSS animation makes body visible after 0.4s even if JS fails
+@keyframes fallback-show {
+  to { opacity: 1; }
+}
+
 body {
   opacity: 0;
   transition: opacity 0.35s ease;
+  animation: fallback-show 0s 0.4s forwards;
 }
 body.page-loaded {
   opacity: 1;
+  animation: none; // Cancel fallback once JS has kicked in
 }
 // Syntax highlighting @import is at the bottom of this file
 
