@@ -1,5 +1,5 @@
 (function () {
-  var DURATION = 400; // must match CSS transition duration in ms
+  var DURATION = 600; // must match CSS transition duration in ms
 
   // Auto-assign reveal classes to main content sections on load
   function assignRevealClasses() {
@@ -85,8 +85,8 @@
 
     requestAnimationFrame(function () {
       document.body.classList.add('page-loaded');
-      // Slight delay so body fade completes first, then elements stagger in
-      setTimeout(showRevealElements, 50);
+      // Wait for body fade to complete before staggering elements in
+      setTimeout(showRevealElements, DURATION);
       initScrollReveal();
     });
   });

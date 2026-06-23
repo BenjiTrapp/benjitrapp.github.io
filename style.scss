@@ -16,8 +16,8 @@
 
 body {
   opacity: 0;
-  transition: opacity 0.4s ease;
-  animation: fallback-show 0s 0.5s forwards;
+  transition: opacity 0.6s ease;
+  animation: fallback-show 0s 0.7s forwards;
 }
 body.page-loaded {
   opacity: 1;
@@ -27,9 +27,9 @@ body.page-loaded {
 // Staggered reveal animations (slide-up + fade-in)
 .reveal {
   opacity: 0;
-  transform: translateY(24px);
-  transition: opacity 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-              transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transform: translateY(20px);
+  transition: opacity 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              transform 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 .reveal.visible {
@@ -47,9 +47,9 @@ body.page-loaded {
 // Scroll-triggered reveal for below-the-fold content
 .scroll-reveal {
   opacity: 0;
-  transform: translateY(30px);
-  transition: opacity 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-              transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transform: translateY(24px);
+  transition: opacity 1.0s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              transform 1.0s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 .scroll-reveal.visible {
