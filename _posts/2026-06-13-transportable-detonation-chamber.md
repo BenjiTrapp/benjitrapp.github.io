@@ -20,27 +20,95 @@ TDC packages everything into a single Vagrant-provisioned VM with a unified web 
 
 The system runs multiple core services inside the VM, each handling a different layer of analysis:
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│  Windows 11 VM (Hyper-V / QEMU)                                 │
-│                                                                  │
-│  ┌────────────┐   ┌────────────────┐   ┌────────────┐          │
-│  │  Web UI    │   │ DetonatorAgent │   │ LitterBox  │          │
-│  │  :9000     │──▶│  :8080         │   │  :1337     │          │
-│  └────────────┘   └────────────────┘   └────────────┘          │
-│       │                  │                   │                   │
-│       └──────────────────▼───────────────────┘                  │
-│                  ┌────────────────┐                              │
-│                  │    Fibratus    │  Kernel ETW                  │
-│                  └────────────────┘                              │
-│                  ┌────────────────┐                              │
-│                  │   Rustinel     │  Sigma + YARA + IOC          │
-│                  └────────────────┘                              │
-│                  ┌────────────────┐                              │
-│                  │    Sysmon      │  Event Log                   │
-│                  └────────────────┘                              │
-└─────────────────────────────────────────────────────────────────┘
-```
+<div class="ghidra-mock" style="overflow-x:auto;">
+  <div class="gm-bar">
+    <span style="color:#ff5f56">●</span>&nbsp;<span style="color:#ffbd2e">●</span>&nbsp;<span style="color:#27c93f">●</span>
+    <span style="margin-left:12px;color:#8b949e;font-size:11px;font-family:'Courier New',monospace;">Windows 11 VM · Hyper-V / QEMU</span>
+  </div>
+  <div style="padding:20px 22px 24px;">
+
+    <!-- Intake layer label -->
+    <div style="color:#484f58;font-size:10px;text-transform:uppercase;letter-spacing:2px;margin-bottom:12px;font-family:'Courier New',monospace;">Intake Layer</div>
+
+    <!-- Top row: Web UI → DetonatorAgent  |  LitterBox -->
+    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:stretch;">
+
+      <!-- Web UI -->
+      <div style="flex:1;min-width:130px;background:#0c1829;border:1px solid #1d4ed8;border-radius:6px;padding:12px 14px;">
+        <div style="color:#60a5fa;font-family:'Courier New',monospace;font-size:13px;font-weight:600;">Web UI</div>
+        <div style="color:#3b82f6;font-family:'Courier New',monospace;font-size:11px;margin-top:2px;">:9000</div>
+        <div style="color:#4b5563;font-size:11px;margin-top:8px;">Python / Flask</div>
+        <div style="color:#374151;font-size:10px;margin-top:2px;">Dashboard &amp; API gateway</div>
+      </div>
+
+      <!-- Arrow -->
+      <div style="display:flex;align-items:center;color:#f97316;font-size:18px;font-weight:700;padding:0 2px;">→</div>
+
+      <!-- DetonatorAgent -->
+      <div style="flex:1.4;min-width:155px;background:#1a0a00;border:1px solid #c2410c;border-radius:6px;padding:12px 14px;">
+        <div style="color:#fb923c;font-family:'Courier New',monospace;font-size:13px;font-weight:600;">DetonatorAgent</div>
+        <div style="color:#f97316;font-family:'Courier New',monospace;font-size:11px;margin-top:2px;">:8080</div>
+        <div style="color:#4b5563;font-size:11px;margin-top:8px;">.NET 8.0</div>
+        <div style="color:#374151;font-size:10px;margin-top:2px;">Executes samples · returns PID</div>
+      </div>
+
+      <!-- Gap between execution and analysis -->
+      <div style="flex:0 0 10px;"></div>
+
+      <!-- LitterBox -->
+      <div style="flex:1;min-width:130px;background:#03180d;border:1px solid #166534;border-radius:6px;padding:12px 14px;">
+        <div style="color:#4ade80;font-family:'Courier New',monospace;font-size:13px;font-weight:600;">LitterBox</div>
+        <div style="color:#22c55e;font-family:'Courier New',monospace;font-size:11px;margin-top:2px;">:1337</div>
+        <div style="color:#4b5563;font-size:11px;margin-top:8px;">Python / Flask</div>
+        <div style="color:#374151;font-size:10px;margin-top:2px;">Static + dynamic sandbox</div>
+      </div>
+
+    </div>
+
+    <!-- Flow connector -->
+    <div style="display:flex;align-items:center;padding:14px 0;gap:10px;">
+      <div style="flex:1;height:1px;background:#21262d;"></div>
+      <div style="color:#484f58;font-size:10px;font-family:'Courier New',monospace;white-space:nowrap;">▼&nbsp;&nbsp;events · telemetry · alerts&nbsp;&nbsp;▼</div>
+      <div style="flex:1;height:1px;background:#21262d;"></div>
+    </div>
+
+    <!-- Analysis layer label -->
+    <div style="color:#484f58;font-size:10px;text-transform:uppercase;letter-spacing:2px;margin-bottom:12px;font-family:'Courier New',monospace;">Analysis Layer</div>
+
+    <!-- Bottom row: Fibratus | Rustinel | Sysmon -->
+    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:stretch;">
+
+      <!-- Fibratus -->
+      <div style="flex:1;min-width:155px;background:#170530;border:1px solid #7c3aed;border-radius:6px;padding:12px 14px;">
+        <div style="color:#c084fc;font-family:'Courier New',monospace;font-size:13px;font-weight:600;">Fibratus</div>
+        <div style="color:#a78bfa;font-family:'Courier New',monospace;font-size:11px;margin-top:2px;">:8180 · Kernel ETW</div>
+        <div style="color:#4b5563;font-size:11px;margin-top:8px;">Go</div>
+        <div style="color:#374151;font-size:10px;margin-top:2px;">Process / file / registry / network</div>
+        <div style="color:#374151;font-size:10px;">Behavior rules engine</div>
+      </div>
+
+      <!-- Rustinel -->
+      <div style="flex:1;min-width:155px;background:#130606;border:1px solid #991b1b;border-radius:6px;padding:12px 14px;">
+        <div style="color:#fca5a5;font-family:'Courier New',monospace;font-size:13px;font-weight:600;">Rustinel</div>
+        <div style="color:#f87171;font-family:'Courier New',monospace;font-size:11px;margin-top:2px;">Sigma · YARA · IOC</div>
+        <div style="color:#4b5563;font-size:11px;margin-top:8px;">Rust</div>
+        <div style="color:#374151;font-size:10px;margin-top:2px;">20 Sigma · 717 YARA rules</div>
+        <div style="color:#374151;font-size:10px;">Real-time NDJSON alerts</div>
+      </div>
+
+      <!-- Sysmon -->
+      <div style="flex:1;min-width:130px;background:#161000;border:1px solid #b45309;border-radius:6px;padding:12px 14px;">
+        <div style="color:#fcd34d;font-family:'Courier New',monospace;font-size:13px;font-weight:600;">Sysmon</div>
+        <div style="color:#fbbf24;font-family:'Courier New',monospace;font-size:11px;margin-top:2px;">Event Log</div>
+        <div style="color:#4b5563;font-size:11px;margin-top:8px;">Sysinternals</div>
+        <div style="color:#374151;font-size:10px;margin-top:2px;">Windows event logging</div>
+        <div style="color:#374151;font-size:10px;">ARM64 native binary</div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
 
 **Data flow:**
 

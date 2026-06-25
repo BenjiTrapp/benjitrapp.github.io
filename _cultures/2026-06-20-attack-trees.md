@@ -21,26 +21,67 @@ Traditional threat modeling (STRIDE, data flow diagrams, trust boundaries) excel
 
 An attack tree is a hierarchical diagram built from top to bottom:
 
-```
-                    ┌──────────────────────┐
-                    │   Attacker's Goal    │  ← Root Node
-                    │  (e.g., Steal Data)  │
-                    └──────────┬───────────┘
-                               │
-                 ┌─────────────┼─────────────┐
-                 │             │             │
-            ┌────▼────┐  ┌────▼────┐  ┌────▼────┐
-            │ Path A  │  │ Path B  │  │ Path C  │  ← Sub-goals
-            │  (OR)   │  │  (OR)   │  │  (OR)   │
-            └────┬────┘  └────┬────┘  └─────────┘
-                 │             │
-           ┌─────┼─────┐      │
-           │           │      │
-      ┌────▼────┐ ┌────▼────┐ ┌────▼────┐
-      │ Step 1  │ │ Step 2  │ │ Step X  │  ← Leaf Nodes
-      │  (AND)  │ │  (AND)  │ │         │     (Attack Vectors)
-      └─────────┘ └─────────┘ └─────────┘
-```
+<div style="margin:2rem 0;overflow-x:auto;">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 395" width="100%" style="max-width:760px;display:block;margin:0 auto;font-family:'Courier New',monospace;">
+  <rect width="760" height="395" fill="#0d1117" rx="10"/>
+  <rect width="760" height="395" fill="none" stroke="#30363d" stroke-width="1.5" rx="10"/>
+  <text x="380" y="387" font-size="8" fill="#1f2937" text-anchor="middle">Attack Tree — Generic Structure · OR = any path succeeds · AND = all steps required</text>
+
+  <!-- connectors root → L1 -->
+  <line x1="380" y1="85" x2="380" y2="112" stroke="#374151" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <line x1="167" y1="112" x2="592" y2="112" stroke="#374151" stroke-width="1.5"/>
+  <line x1="167" y1="112" x2="167" y2="140" stroke="#374151" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <line x1="380" y1="112" x2="380" y2="140" stroke="#374151" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <line x1="592" y1="112" x2="592" y2="140" stroke="#374151" stroke-width="1.5" stroke-dasharray="4,3"/>
+
+  <!-- connector Path A → leaf nodes -->
+  <line x1="167" y1="205" x2="167" y2="256" stroke="#374151" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <line x1="115" y1="256" x2="245" y2="256" stroke="#374151" stroke-width="1.5"/>
+  <line x1="115" y1="256" x2="115" y2="280" stroke="#374151" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <line x1="245" y1="256" x2="245" y2="280" stroke="#374151" stroke-width="1.5" stroke-dasharray="4,3"/>
+
+  <!-- connector Path B → Step X -->
+  <line x1="380" y1="205" x2="380" y2="280" stroke="#374151" stroke-width="1.5" stroke-dasharray="4,3"/>
+
+  <!-- ROOT NODE -->
+  <rect x="280" y="20" width="200" height="65" fill="#1a0505" stroke="#dc2626" stroke-width="1.5" rx="5"/>
+  <text x="380" y="47" font-size="12" fill="#fca5a5" text-anchor="middle" font-weight="bold">Attacker's Goal</text>
+  <text x="380" y="66" font-size="10" fill="#ef4444" text-anchor="middle">(e.g., Steal Data)</text>
+  <text x="487" y="49" font-size="9.5" fill="#6b7280">&#8592; Root Node</text>
+
+  <!-- L1 — Path A (OR) -->
+  <rect x="100" y="140" width="135" height="65" fill="#1c0a00" stroke="#f97316" stroke-width="1.5" rx="5"/>
+  <text x="167" y="166" font-size="12" fill="#fb923c" text-anchor="middle" font-weight="bold">Path A</text>
+  <text x="167" y="185" font-size="10" fill="#f97316" text-anchor="middle">(OR)</text>
+
+  <!-- L1 — Path B (OR) -->
+  <rect x="313" y="140" width="135" height="65" fill="#1c0a00" stroke="#f97316" stroke-width="1.5" rx="5"/>
+  <text x="380" y="166" font-size="12" fill="#fb923c" text-anchor="middle" font-weight="bold">Path B</text>
+  <text x="380" y="185" font-size="10" fill="#f97316" text-anchor="middle">(OR)</text>
+
+  <!-- L1 — Path C (OR) -->
+  <rect x="525" y="140" width="135" height="65" fill="#1c0a00" stroke="#f97316" stroke-width="1.5" rx="5"/>
+  <text x="592" y="166" font-size="12" fill="#fb923c" text-anchor="middle" font-weight="bold">Path C</text>
+  <text x="592" y="185" font-size="10" fill="#f97316" text-anchor="middle">(OR)</text>
+  <text x="667" y="163" font-size="9.5" fill="#6b7280">&#8592; Sub-goals</text>
+
+  <!-- L2 — Step 1 (AND) -->
+  <rect x="60" y="280" width="110" height="65" fill="#052e16" stroke="#166534" stroke-width="1.5" rx="5"/>
+  <text x="115" y="306" font-size="12" fill="#4ade80" text-anchor="middle" font-weight="bold">Step 1</text>
+  <text x="115" y="324" font-size="10" fill="#22c55e" text-anchor="middle">(AND)</text>
+
+  <!-- L2 — Step 2 (AND) -->
+  <rect x="190" y="280" width="110" height="65" fill="#052e16" stroke="#166534" stroke-width="1.5" rx="5"/>
+  <text x="245" y="306" font-size="12" fill="#4ade80" text-anchor="middle" font-weight="bold">Step 2</text>
+  <text x="245" y="324" font-size="10" fill="#22c55e" text-anchor="middle">(AND)</text>
+
+  <!-- L2 — Step X (no gate) -->
+  <rect x="325" y="280" width="110" height="65" fill="#161b22" stroke="#374151" stroke-width="1.5" rx="5"/>
+  <text x="380" y="317" font-size="12" fill="#8b949e" text-anchor="middle" font-weight="bold">Step X</text>
+  <text x="442" y="296" font-size="9.5" fill="#6b7280">&#8592; Leaf Nodes</text>
+  <text x="442" y="314" font-size="9.5" fill="#6b7280">   (Attack Vectors)</text>
+</svg>
+</div>
 
 ### Core Concepts
 
@@ -66,27 +107,96 @@ An attack tree is a hierarchical diagram built from top to bottom:
 
 ### A Practical Example: Account Takeover
 
-```
-              ┌───────────────────────────┐
-              │   Take Over User Account  │
-              │          (OR)             │
-              └─────────────┬─────────────┘
-                            │
-        ┌───────────────────┼───────────────────┐
-        │                   │                   │
-   ┌────▼──────┐      ┌────▼──────┐      ┌────▼──────┐
-   │ Credential│      │  Session  │      │  Social   │
-   │   Theft   │      │ Hijacking │      │Engineering│
-   │   (OR)    │      │   (OR)    │      │   (AND)   │
-   └─────┬─────┘      └─────┬─────┘      └─────┬─────┘
-         │                   │                   │
-    ┌────┼────┐         ┌────┼────┐         ┌───┼────┐
-    │    │    │         │         │         │        │
-  ┌──▼┐┌──▼┐┌──▼┐   ┌──▼──┐ ┌───▼──┐  ┌───▼──┐┌───▼───┐
-  │Ph-││Cr-││Key│   │ XSS │ │ MITM │  │Recon ││Vishing│
-  │ish││uff││log│   │     │ │      │  │ user ││ call  │
-  └───┘└───┘└───┘   └─────┘ └──────┘  └──────┘└───────┘
-```
+<div style="margin:2rem 0;overflow-x:auto;">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 475" width="100%" style="max-width:860px;display:block;margin:0 auto;font-family:'Courier New',monospace;">
+  <rect width="860" height="475" fill="#0d1117" rx="10"/>
+  <rect width="860" height="475" fill="none" stroke="#30363d" stroke-width="1.5" rx="10"/>
+  <text x="430" y="467" font-size="8" fill="#1f2937" text-anchor="middle">Account Takeover — Attack Tree Example</text>
+
+  <!-- connectors root → L1 -->
+  <line x1="430" y1="80" x2="430" y2="112" stroke="#374151" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <line x1="122" y1="112" x2="737" y2="112" stroke="#374151" stroke-width="1.5"/>
+  <line x1="122" y1="112" x2="122" y2="130" stroke="#374151" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <line x1="429" y1="112" x2="429" y2="130" stroke="#374151" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <line x1="737" y1="112" x2="737" y2="130" stroke="#374151" stroke-width="1.5" stroke-dasharray="4,3"/>
+
+  <!-- connectors Credential Theft → L2 -->
+  <line x1="122" y1="205" x2="122" y2="263" stroke="#374151" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <line x1="44"  y1="263" x2="200" y2="263" stroke="#374151" stroke-width="1.5"/>
+  <line x1="44"  y1="263" x2="44"  y2="295" stroke="#374151" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <line x1="122" y1="263" x2="122" y2="295" stroke="#374151" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <line x1="200" y1="263" x2="200" y2="295" stroke="#374151" stroke-width="1.5" stroke-dasharray="4,3"/>
+
+  <!-- connectors Session Hijacking → L2 -->
+  <line x1="429" y1="205" x2="429" y2="263" stroke="#374151" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <line x1="379" y1="263" x2="479" y2="263" stroke="#374151" stroke-width="1.5"/>
+  <line x1="379" y1="263" x2="379" y2="295" stroke="#374151" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <line x1="479" y1="263" x2="479" y2="295" stroke="#374151" stroke-width="1.5" stroke-dasharray="4,3"/>
+
+  <!-- connectors Social Engineering → L2 -->
+  <line x1="737" y1="205" x2="737" y2="263" stroke="#374151" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <line x1="684" y1="263" x2="789" y2="263" stroke="#374151" stroke-width="1.5"/>
+  <line x1="684" y1="263" x2="684" y2="295" stroke="#374151" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <line x1="789" y1="263" x2="789" y2="295" stroke="#374151" stroke-width="1.5" stroke-dasharray="4,3"/>
+
+  <!-- ROOT NODE -->
+  <rect x="315" y="15" width="230" height="65" fill="#1a0505" stroke="#dc2626" stroke-width="1.5" rx="5"/>
+  <text x="430" y="42" font-size="12" fill="#fca5a5" text-anchor="middle" font-weight="bold">Take Over User Account</text>
+  <text x="430" y="62" font-size="10" fill="#ef4444" text-anchor="middle">(OR)</text>
+
+  <!-- L1 — Credential Theft (OR) -->
+  <rect x="50"  y="130" width="145" height="75" fill="#1c0a00" stroke="#f97316" stroke-width="1.5" rx="5"/>
+  <text x="122" y="159" font-size="11" fill="#fb923c" text-anchor="middle" font-weight="bold">Credential</text>
+  <text x="122" y="175" font-size="11" fill="#fb923c" text-anchor="middle" font-weight="bold">Theft</text>
+  <text x="122" y="194" font-size="10" fill="#f97316" text-anchor="middle">(OR)</text>
+
+  <!-- L1 — Session Hijacking (OR) -->
+  <rect x="357" y="130" width="145" height="75" fill="#1c0a00" stroke="#f97316" stroke-width="1.5" rx="5"/>
+  <text x="429" y="159" font-size="11" fill="#fb923c" text-anchor="middle" font-weight="bold">Session</text>
+  <text x="429" y="175" font-size="11" fill="#fb923c" text-anchor="middle" font-weight="bold">Hijacking</text>
+  <text x="429" y="194" font-size="10" fill="#f97316" text-anchor="middle">(OR)</text>
+
+  <!-- L1 — Social Engineering (AND) — purple gate: all steps required -->
+  <rect x="665" y="130" width="145" height="75" fill="#170530" stroke="#7c3aed" stroke-width="1.5" rx="5"/>
+  <text x="737" y="159" font-size="11" fill="#c084fc" text-anchor="middle" font-weight="bold">Social</text>
+  <text x="737" y="175" font-size="11" fill="#c084fc" text-anchor="middle" font-weight="bold">Engineering</text>
+  <text x="737" y="194" font-size="10" fill="#a78bfa" text-anchor="middle">(AND)</text>
+
+  <!-- L2 — under Credential Theft -->
+  <rect x="9"   y="295" width="70" height="65" fill="#161b22" stroke="#374151" stroke-width="1" rx="4"/>
+  <text x="44"  y="332" font-size="10" fill="#8b949e" text-anchor="middle">Phishing</text>
+
+  <rect x="87"  y="295" width="70" height="65" fill="#161b22" stroke="#374151" stroke-width="1" rx="4"/>
+  <text x="122" y="322" font-size="10" fill="#8b949e" text-anchor="middle">Cred</text>
+  <text x="122" y="338" font-size="10" fill="#8b949e" text-anchor="middle">Stuffing</text>
+
+  <rect x="165" y="295" width="70" height="65" fill="#161b22" stroke="#374151" stroke-width="1" rx="4"/>
+  <text x="200" y="322" font-size="10" fill="#8b949e" text-anchor="middle">Key-</text>
+  <text x="200" y="338" font-size="10" fill="#8b949e" text-anchor="middle">logging</text>
+
+  <!-- L2 — under Session Hijacking -->
+  <rect x="334" y="295" width="90" height="65" fill="#161b22" stroke="#374151" stroke-width="1" rx="4"/>
+  <text x="379" y="332" font-size="10" fill="#8b949e" text-anchor="middle">XSS</text>
+
+  <rect x="434" y="295" width="90" height="65" fill="#161b22" stroke="#374151" stroke-width="1" rx="4"/>
+  <text x="479" y="332" font-size="10" fill="#8b949e" text-anchor="middle">MITM</text>
+
+  <!-- L2 — under Social Engineering -->
+  <rect x="637" y="295" width="95" height="65" fill="#161b22" stroke="#374151" stroke-width="1" rx="4"/>
+  <text x="684" y="322" font-size="10" fill="#8b949e" text-anchor="middle">Recon</text>
+  <text x="684" y="338" font-size="10" fill="#8b949e" text-anchor="middle">User</text>
+
+  <rect x="742" y="295" width="95" height="65" fill="#161b22" stroke="#374151" stroke-width="1" rx="4"/>
+  <text x="789" y="322" font-size="10" fill="#8b949e" text-anchor="middle">Vishing</text>
+  <text x="789" y="338" font-size="10" fill="#8b949e" text-anchor="middle">Call</text>
+
+  <!-- legend -->
+  <rect x="175" y="388" width="210" height="28" fill="#1c0a00" stroke="#f97316" stroke-width="1" rx="4"/>
+  <text x="280" y="407" font-size="9" fill="#fb923c" text-anchor="middle">&#9646; OR: any sub-path succeeds</text>
+  <rect x="405" y="388" width="240" height="28" fill="#170530" stroke="#7c3aed" stroke-width="1" rx="4"/>
+  <text x="525" y="407" font-size="9" fill="#c084fc" text-anchor="middle">&#9646; AND: all sub-paths required</text>
+</svg>
+</div>
 
 From this tree, defenders can immediately see:
 * There are 7 distinct attack vectors (leaf nodes) to defend against
