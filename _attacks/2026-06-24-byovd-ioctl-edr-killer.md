@@ -182,7 +182,7 @@ The four phase bands in the diagram read left-to-right within each band, connect
 
 **Phase 1: Driver Triage and IOCTL Discovery**
 
-Three parallel workstreams identify a viable weapon. A catalogue check against [LOLDrivers](https://www.loldrivers.io/) filters the 2,197-sample pool for known-vulnerable drivers and returns SHA-256, certificate chain, and WDAC block-list status upfront. Static reverse engineering in IDA or Ghidra targets the import table: the combined presence of `ZwTerminateProcess`, `PsLookupProcessByProcessId`, and `ObOpenObjectByPointer` signals a workable process-kill chain. The `IRP_MJ_DEVICE_CONTROL` handler stored at `MajorFunction[14]` is then inspected for the IOCTL constant. For `BootRepair.sys` that constant is `0x222014`, with a 4-byte DWORD PID as the sole input. The device path (`\Device\BootRepair`, Win32 alias `\\.\BootRepair`) is recovered from `DriverEntry` string references.
+Three parallel workstreams identify a viable weapon. A catalogue check against [LOLDrivers](https://www.loldrivers.io/) filters a multiple thousands of entries pool for known-vulnerable drivers and returns SHA-256, certificate chain, and WDAC block-list status upfront. Static reverse engineering in IDA or Ghidra targets the import table: the combined presence of `ZwTerminateProcess`, `PsLookupProcessByProcessId`, and `ObOpenObjectByPointer` signals a workable process-kill chain. The `IRP_MJ_DEVICE_CONTROL` handler stored at `MajorFunction[14]` is then inspected for the IOCTL constant. For `BootRepair.sys` that constant is `0x222014`, with a 4-byte DWORD PID as the sole input. The device path (`\Device\BootRepair`, Win32 alias `\\.\BootRepair`) is recovered from `DriverEntry` string references.
 
 **Phase 2: Kernel-Mode Loading**
 
@@ -1287,18 +1287,7 @@ Deploy the LOLDrivers community WDAC deny policy alongside Microsoft's built-in 
 
 BYOVD sits squarely in Phase 4 (Defense Evasion) of the [Unified Ransomware Kill Chain](https://benjitrapp.github.io/cultures/2026-06-24-unified-ransomware-kill-chain/). Its role is to buy unobserved execution time:
 
-```
-[+] Initial Access via phishing / exposed RDP
-[+] Establish persistence (scheduled task)
-[+] Lateral movement to high-value system
-[+] Drop BootRepair.sys to %TEMP%\update.sys
-[+] sc.exe create svc_update binPath="%TEMP%\update.sys" type=kernel
-[+] sc.exe start svc_update
-[+] PhantomKiller.exe <EDR_PID>   # EDR terminated at Ring 0
-[+] Deploy ransomware payload — no EDR to block it
-[+] vssadmin delete shadows /all /quiet
-[+] Encryption begins
-```
+![](/images/ransomware_deployment_chain.png)
 
 The dwell time between driver load and EDR termination is typically under 30 seconds. If your Sysmon pipeline has a 5-minute ingest delay, you will see the EID 6 alert after the EDR is already dead.
 
