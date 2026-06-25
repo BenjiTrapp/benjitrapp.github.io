@@ -221,24 +221,49 @@ Understanding why both perspectives matter is crucial to building robust securit
 
 The real power comes from combining both:
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│  1. THREAT MODEL (Top-Down)                                     │
-│     → Broad identification of threats across the system         │
-│     → Prioritize: which threats are highest risk?               │
-│                                                                 │
-│  2. ATTACK TREES (Bottom-Up)                                    │
-│     → For each high-priority threat, build an attack tree       │
-│     → Deep-dive: how would an attacker actually do this?        │
-│     → Map existing controls to leaf nodes                       │
-│     → Identify gaps and single points of failure                │
-│                                                                 │
-│  3. VALIDATE & ITERATE                                          │
-│     → Use attack trees to run micro attack simulations          │
-│     → Feed findings back into the threat model                  │
-│     → Update as the system evolves                              │
-└─────────────────────────────────────────────────────────────────┘
-```
+<div class="ghidra-mock" style="margin:2rem 0;">
+  <div class="gm-bar">
+    <span style="color:#ff5f56;">●</span>&nbsp;<span style="color:#ffbd2e;">●</span>&nbsp;<span style="color:#27c93f;">●</span>
+    <span style="margin-left:12px;color:#8b949e;font-size:11px;">threat-model-and-attack-tree-workflow.md</span>
+  </div>
+  <div style="padding:20px 24px 22px;font-family:'Courier New',monospace;font-size:12.5px;line-height:1.8;">
+
+    <div style="display:flex;gap:14px;align-items:flex-start;margin-bottom:12px;">
+      <span style="flex:0 0 auto;background:#0c1829;border:1.5px solid #1d4ed8;border-radius:4px;padding:3px 10px;color:#60a5fa;font-weight:700;font-size:13px;line-height:1.6;">1</span>
+      <div>
+        <div style="color:#60a5fa;font-weight:700;margin-bottom:5px;letter-spacing:.03em;">THREAT MODEL <span style="color:#374151;font-weight:400;font-size:11px;">(Top-Down)</span></div>
+        <div style="color:#484f58;font-size:11px;">→ Broad identification of threats across the system</div>
+        <div style="color:#484f58;font-size:11px;">→ Prioritize: which threats are highest risk?</div>
+      </div>
+    </div>
+
+    <div style="padding-left:16px;color:#1f2937;font-size:13px;margin-bottom:12px;line-height:1;">│</div>
+
+    <div style="display:flex;gap:14px;align-items:flex-start;margin-bottom:12px;">
+      <span style="flex:0 0 auto;background:#170530;border:1.5px solid #7c3aed;border-radius:4px;padding:3px 10px;color:#c084fc;font-weight:700;font-size:13px;line-height:1.6;">2</span>
+      <div>
+        <div style="color:#c084fc;font-weight:700;margin-bottom:5px;letter-spacing:.03em;">ATTACK TREES <span style="color:#374151;font-weight:400;font-size:11px;">(Bottom-Up)</span></div>
+        <div style="color:#484f58;font-size:11px;">→ For each high-priority threat, build an attack tree</div>
+        <div style="color:#484f58;font-size:11px;">→ Deep-dive: how would an attacker actually do this?</div>
+        <div style="color:#484f58;font-size:11px;">→ Map existing controls to leaf nodes</div>
+        <div style="color:#484f58;font-size:11px;">→ Identify gaps and single points of failure</div>
+      </div>
+    </div>
+
+    <div style="padding-left:16px;color:#1f2937;font-size:13px;margin-bottom:12px;line-height:1;">│</div>
+
+    <div style="display:flex;gap:14px;align-items:flex-start;">
+      <span style="flex:0 0 auto;background:#052e16;border:1.5px solid #166534;border-radius:4px;padding:3px 10px;color:#4ade80;font-weight:700;font-size:13px;line-height:1.6;">3</span>
+      <div>
+        <div style="color:#4ade80;font-weight:700;margin-bottom:5px;letter-spacing:.03em;">VALIDATE &amp; ITERATE</div>
+        <div style="color:#484f58;font-size:11px;">→ Use attack trees to run micro attack simulations</div>
+        <div style="color:#484f58;font-size:11px;">→ Feed findings back into the threat model</div>
+        <div style="color:#484f58;font-size:11px;">→ Update as the system evolves</div>
+      </div>
+    </div>
+
+  </div>
+</div>
 
 **Example workflow:**
 1. A STRIDE-based threat model identifies "Elevation of Privilege via API" as a high-risk threat
