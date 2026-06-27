@@ -453,6 +453,25 @@ textarea:focus-visible,
   border-radius: 4px;
 }
 
+// Mermaid diagrams — themed to match the dark / green card aesthetic.
+// font-size: 0 hides the raw diagram source until Mermaid swaps in the SVG.
+.mermaid {
+  margin: 28px 0;
+  padding: 20px;
+  text-align: center;
+  font-size: 0;
+  background: $background-card;
+  border: 1px solid $gray-border;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  overflow-x: auto;
+
+  svg {
+    max-width: 100%;
+    height: auto;
+  }
+}
+
 /*********************/
 /* LAYOUT / SECTIONS */
 /*********************/

@@ -61,5 +61,41 @@
     <script src="{{ site.baseurl }}/js/code-copy.js"></script>
     <script src="{{ site.baseurl }}/js/mobile-nav.js"></script>
     <script src="{{ site.baseurl }}/js/page-transitions.js"></script>
+
+    <!-- Mermaid: only pulled in when a diagram is present on the page -->
+    <script type="module">
+      if (document.querySelector('.mermaid')) {
+        const { default: mermaid } = await import('https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs');
+        mermaid.initialize({
+          startOnLoad: false,
+          securityLevel: 'strict',
+          theme: 'base',
+          themeVariables: {
+            darkMode: true,
+            background: '#0d1117',
+            mainBkg: '#161b22',
+            primaryColor: '#161b22',
+            primaryBorderColor: '#2ea043',
+            primaryTextColor: '#c9d1d9',
+            secondaryColor: '#172427',
+            secondaryBorderColor: '#30363d',
+            secondaryTextColor: '#c9d1d9',
+            tertiaryColor: '#0d2c40',
+            tertiaryBorderColor: '#30363d',
+            tertiaryTextColor: '#c9d1d9',
+            lineColor: '#7ee787',
+            textColor: '#c9d1d9',
+            nodeBorder: '#2ea043',
+            clusterBkg: '#11161c',
+            clusterBorder: '#30363d',
+            titleColor: '#17fe33',
+            edgeLabelBackground: '#0d1117',
+            fontFamily: 'Consolas, Monaco, monospace',
+            fontSize: '15px'
+          }
+        });
+        await mermaid.run({ querySelector: '.mermaid' });
+      }
+    </script>
   </body>
 </html>
