@@ -1,5 +1,8 @@
 (function () {
-  var DURATION = 600; // must match CSS transition duration in ms
+  var LEAVE_DURATION = 260; // must match CSS .page-leaving transition (ms)
+
+  var prefersReducedMotion = window.matchMedia &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   // Auto-assign reveal classes to main content sections on load
   function assignRevealClasses() {
@@ -50,6 +53,14 @@
     }
   }
 
+  // Show every reveal/scroll-reveal element at once (no animation path)
+  function showEverything() {
+    var els = document.querySelectorAll('.reveal, .scroll-reveal');
+    for (var i = 0; i < els.length; i++) {
+      els[i].classList.add('visible');
+    }
+  }
+
   // Intersection Observer for scroll-triggered elements
   function initScrollReveal() {
     var scrollElements = document.querySelectorAll('.scroll-reveal');
@@ -79,19 +90,34 @@
     }
   }
 
-  // Fade in once the page is ready
-  document.addEventListener('DOMContentLoaded', function () {
+  // Reveal the page. The body fade-in and the staggered content reveal are
+  // started together (overlapping) rather than in sequence, so the page
+  // settles quickly and cleanly even when the network was slow.
+  function revealPage() {
     assignRevealClasses();
+    document.body.classList.add('page-loaded');
 
+    if (prefersReducedMotion) {
+      showEverything();
+      return;
+    }
+
+    // Two frames: let the browser paint the initial (hidden) state once,
+    // then flip elements to visible so the CSS transition actually runs.
     requestAnimationFrame(function () {
-      document.body.classList.add('page-loaded');
-      // Wait for body fade to complete before staggering elements in
-      setTimeout(showRevealElements, DURATION);
-      initScrollReveal();
+      requestAnimationFrame(showRevealElements);
     });
-  });
+    initScrollReveal();
+  }
 
-  // Fade out before leaving
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', revealPage);
+  } else {
+    // Script ran after the document was already parsed
+    revealPage();
+  }
+
+  // Fade out before leaving (internal navigation only)
   document.addEventListener('click', function (e) {
     var link = e.target.closest('a[href]');
     if (!link) return;
@@ -104,27 +130,26 @@
     if (link.target === '_blank') return;
     if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
 
+    // No motion preference: navigate straight away, no artificial delay
+    if (prefersReducedMotion) return;
+
     e.preventDefault();
 
-    // Remove visible from reveal elements (they fade out)
-    var reveals = document.querySelectorAll('.reveal.visible, .scroll-reveal.visible');
-    for (var i = 0; i < reveals.length; i++) {
-      reveals[i].classList.remove('visible');
-    }
     document.body.classList.remove('page-loaded');
+    document.body.classList.add('page-leaving');
 
     setTimeout(function () {
       window.location.href = href;
-    }, DURATION);
+    }, LEAVE_DURATION);
   });
 
-  // Re-fade-in when navigating back via browser history
+  // Re-fade-in when navigating back via browser history (bfcache restore)
   window.addEventListener('pageshow', function (e) {
     if (e.persisted) {
+      document.body.classList.remove('page-leaving');
       assignRevealClasses();
       document.body.classList.add('page-loaded');
-      showRevealElements();
-      initScrollReveal();
+      showEverything();
     }
   });
 }());

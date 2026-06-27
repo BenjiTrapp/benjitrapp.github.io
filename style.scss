@@ -8,28 +8,43 @@
 @import "reset";
 @import "variables";
 
-// Page transition fade
-// Fallback: CSS animation makes body visible after 0.4s even if JS fails
-@keyframes fallback-show {
-  to { opacity: 1; transform: none; }
+// Page transition & reveal animations
+// --------------------------------------------------
+// Shared easing for a calm, "decelerate-into-place" feel.
+$reveal-ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+
+// Initial page fade-in.
+// The fallback animation guarantees the page becomes visible (with a real
+// fade, not a hard pop) even if JS is slow or fails to run.
+@keyframes page-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 
 body {
   opacity: 0;
-  transition: opacity 0.6s ease;
-  animation: fallback-show 0s 0.7s forwards;
+  transition: opacity 0.4s ease;
+  animation: page-fade-in 0.5s ease 1s forwards;
 }
+
 body.page-loaded {
   opacity: 1;
   animation: none;
 }
 
-// Staggered reveal animations (slide-up + fade-in)
+// Quick, clean cross-fade out when navigating to another internal page.
+body.page-leaving {
+  opacity: 0;
+  transition: opacity 0.26s ease;
+}
+
+// Staggered reveal animations (slide-up + fade-in) for above-the-fold content.
 .reveal {
   opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-              transform 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transform: translateY(14px);
+  transition: opacity 0.5s $reveal-ease,
+              transform 0.5s $reveal-ease;
+  will-change: opacity, transform;
 }
 
 .reveal.visible {
@@ -37,24 +52,42 @@ body.page-loaded {
   transform: translateY(0);
 }
 
-// Stagger delays for sequential appearance
+// Stagger delays for sequential appearance — kept tight so the page settles fast.
 @for $i from 1 through 8 {
   .reveal.reveal-delay-#{$i} {
-    transition-delay: #{$i * 0.1}s;
+    transition-delay: #{$i * 0.05}s;
   }
 }
 
-// Scroll-triggered reveal for below-the-fold content
+// Scroll-triggered reveal for below-the-fold content.
 .scroll-reveal {
   opacity: 0;
-  transform: translateY(24px);
-  transition: opacity 1.0s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-              transform 1.0s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transform: translateY(20px);
+  transition: opacity 0.6s $reveal-ease,
+              transform 0.6s $reveal-ease;
 }
 
 .scroll-reveal.visible {
   opacity: 1;
   transform: translateY(0);
+}
+
+// Respect users who prefer reduced motion: show everything immediately,
+// no fades, slides or transition delays.
+@media (prefers-reduced-motion: reduce) {
+  body,
+  body.page-leaving {
+    opacity: 1 !important;
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .reveal,
+  .scroll-reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
 }
 // Syntax highlighting @import is at the bottom of this file
 
@@ -371,6 +404,53 @@ pre.highlight code {
 
 .clearfix:after {
     clear: both;
+}
+
+//
+// UI polish: custom scrollbar + accessible keyboard focus
+// (keeps the existing dark / green terminal aesthetic)
+//
+
+// Themed scrollbar — Firefox
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #30363d $background;
+}
+
+// Themed scrollbar — WebKit / Chromium
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: $background;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #30363d;
+  border: 3px solid $background;
+  border-radius: 8px;
+  transition: background 0.2s ease;
+
+  &:hover {
+    background: #484f58;
+  }
+}
+
+::-webkit-scrollbar-thumb:active {
+  background: rgba(23, 254, 51, 0.5);
+}
+
+// Visible focus ring for keyboard users only — mouse clicks stay clean.
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid $green-accent;
+  outline-offset: 2px;
+  border-radius: 4px;
 }
 
 /*********************/
