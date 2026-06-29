@@ -5,9 +5,9 @@ title: "RaccDrop: HTML Smuggling Made Simple"
 
 <img height="200" align="left" src="/images/raccdrop_logo.jpg"> HTML Smuggling is a payload delivery technique that abuses legitimate HTML5 and JavaScript features to construct malicious files directly inside the victim's browser. Unlike traditional downloads, the payload never crosses the network as a recognizable binary — it arrives as harmless-looking HTML, reassembles itself client-side, and drops to disk. This makes it particularly effective at bypassing email gateways, web proxies, and sandboxes that rely on inspecting file transfers.
 
-[RaccDrop](https://benjitrapp.github.io/requestsmuggling-generator/) is a self-contained, browser-based tool that generates HTML smuggling payloads. Pick a file, choose an encoding method, and it produces a standalone HTML file that reconstructs and delivers the original payload when opened. No server needed, no dependencies — everything runs in the browser.
+[RaccDrop](https://benjitrapp.github.io/RaccDrop/) is a self-contained, browser-based tool that generates HTML smuggling payloads. Pick a file, choose an encoding method, and it produces a standalone HTML file that reconstructs and delivers the original payload when opened. No server needed, no dependencies — everything runs in the browser.
 
-The source code lives at [github.com/BenjiTrapp/requestsmuggling-generator](https://github.com/BenjiTrapp/requestsmuggling-generator), forked from [Team-Recon-Black-Ops](https://github.com/Team-Recon-Black-Ops/requestsmuggling-generator).
+The source code lives at [github.com/BenjiTrapp/RaccDrop](https://github.com/BenjiTrapp/RaccDrop), forked from [Team-Recon-Black-Ops](https://github.com/Team-Recon-Black-Ops/requestsmuggling-generator).
 
 ## HTML Smuggling vs. HTTP Request Smuggling
 
@@ -245,7 +245,7 @@ When using multi-layer mode, you select which methods to chain via checkboxes. R
 
 ## Using RaccDrop
 
-1. Open [RaccDrop](https://benjitrapp.github.io/requestsmuggling-generator/) in your browser
+1. Open [RaccDrop](https://benjitrapp.github.io/RaccDrop/) in your browser
 2. Click **Choose File** and select the file you want to smuggle
 3. Pick an encoding method from the dropdown (or select **Full trash panda combo** to chain multiple layers)
 4. If using multi-layer mode, check the individual methods you want to chain
@@ -374,6 +374,6 @@ The entire tool is pure vanilla JavaScript with zero dependencies. It uses the W
 - [MITRE ATT&CK T1027.006 — HTML Smuggling](https://attack.mitre.org/techniques/T1027/006/)
 - [Microsoft: What is HTML Smuggling?](https://www.microsoft.com/en-us/security/blog/2021/11/11/html-smuggling-surges-highly-evasive-loader-technique-increasingly-used-in-banking-malware-phishing-campaigns/)
 - [Outflank: HTML Smuggling Explained](https://outflank.nl/blog/2018/08/14/html-smuggling-explained/)
-- [RaccDrop Live Tool](https://benjitrapp.github.io/requestsmuggling-generator/)
-- [Source Code on GitHub](https://github.com/BenjiTrapp/requestsmuggling-generator)
+- [RaccDrop Live Tool](https://benjitrapp.github.io/RaccDrop/)
+- [Source Code on GitHub](https://github.com/BenjiTrapp/RaccDrop)
 - [HTTP Request Smuggling Lab](https://github.com/BenjiTrapp/http-request-smuggling-lab) (different attack type)
