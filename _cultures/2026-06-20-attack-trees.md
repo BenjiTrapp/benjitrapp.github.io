@@ -3,6 +3,7 @@ layout: culture
 title: Attack Trees — Bottom-Up Threat Analysis
 ---
 
+<img height="160" align="left" src="/images/attack_tree_logo.png">
 Attack Trees are a structured, methodical way to describe the security of a system based on varying attacks. They represent attacks against a system in a tree structure, with the **attacker's goal as the root** and the different ways to achieve that goal as branches and leaves.
 
 > While a [Threat Model](https://benjitrapp.github.io/cultures/2022-06-11-threat-modeling/) casts a wide net from the top — asking "what can go wrong across the system?" — an Attack Tree starts from one specific adversarial goal and decomposes it downward into the concrete steps required to achieve it. Both perspectives are essential: **top-down breadth** meets **bottom-up depth**.

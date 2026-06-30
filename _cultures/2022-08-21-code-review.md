@@ -2,7 +2,7 @@
 layout: culture
 title: Performing a Security Code Review
 ---
-
+<img height="160" align="left" src="/images/code_review_logo.png">
 Code Reviews are required for auditing an application's source code by people **other than the author**
 
 > Goal: identify errors, mistakes, and security weaknesses in the code — early

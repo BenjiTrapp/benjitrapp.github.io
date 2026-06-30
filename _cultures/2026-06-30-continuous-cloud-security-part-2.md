@@ -2,7 +2,7 @@
 layout: culture
 title: "Continuous Cloud Security, Part 2: From Mindset to Pipeline"
 ---
-<img height="200" align="left" src="/images/devsecops-controls.jpg">
+<img height="160" align="left" src="/images/devsecops-controls.jpg">
 Part 1 ended on a cliffhanger and an honest "still Work in Progress". We had the mindset (security is just a natural part of DevOps), the metaphor (mix the blueberries into the dough), and the uncomfortable truth that in the cloud the responsibility is not shared, it is **split**. That is the philosophy. This follow up is about the machine: how to turn "Continuous Cloud Security" from a nice poster on the wall into something that actually runs on every commit and every account, every day.
 
 **Related:** [Continuous Cloud Security (Part 1)](https://benjitrapp.github.io/cultures/2022-03-29-continuous-cloud-security/) | [CALMS](https://benjitrapp.github.io/cultures/2022-03-30-CALMS-devops/) | [The Three Ways of DevOps](https://benjitrapp.github.io/cultures/2022-04-09-three-ways-of-devops/) | [Secure SDLC](https://benjitrapp.github.io/cultures/2022-06-10-ssdlc/)

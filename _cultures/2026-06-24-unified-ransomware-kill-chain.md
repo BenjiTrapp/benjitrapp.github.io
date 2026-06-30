@@ -2,7 +2,7 @@
 layout: culture
 title: "The Unified Ransomware Kill Chain"
 ---
-<img height="200" align="left" src="/images/unified-ransomware-kill-chain.png">
+<img height="160" align="left" src="/images/unified-ransomware-kill-chain.png">
 Ransomware is no longer a smash-and-grab operation. Modern ransomware groups operate as full businesses — with HR, affiliate programmes, SLAs, and PR teams. Understanding their **kill chain** is the prerequisite for stopping them at any stage. This article maps the unified end-to-end ransomware attack lifecycle, ties each phase to MITRE ATT&CK tactics, and connects them to the MITRE impact categories defenders must use when writing incident impact statements.
 
 **Related:** [Threat Modeling](https://benjitrapp.github.io/cultures/2022-06-11-threat-modeling/) | [Attack Trees](https://benjitrapp.github.io/cultures/2026-06-20-attack-trees/) | [Security Maturity Models](https://benjitrapp.github.io/cultures/2022-03-27-security-maturity-models/)
