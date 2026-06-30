@@ -1,5 +1,5 @@
 ---
-layout: culture
+layout: memory
 title: Dev(Sec)Ops Maturity Models
 ---
 
