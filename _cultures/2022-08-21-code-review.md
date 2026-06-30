@@ -257,20 +257,9 @@ AI is transforming the code review landscape. While it won't replace human judgm
 
 **Practical integration pattern:**
 
-```
-┌─────────────────────────────────────────────────────┐
-│                   PR Opened                          │
-├─────────────────────────────────────────────────────┤
-│  1. Semgrep runs rule-based analysis               │
-│  2. AI assistant summarizes changes & risks         │
-│  3. AI triages Semgrep findings (true/false pos.)  │
-│  4. Human reviewer focuses on:                      │
-│     - Architecture & design decisions               │
-│     - Business logic correctness                    │
-│     - Edge cases AI might miss                      │
-│     - Security implications in context              │
-└─────────────────────────────────────────────────────┘
-```
+<p align="center">
+<img width=600  src="/images/semgrep_pr.png">
+</p>
 
 **Caveats and responsible use of AI in reviews:**
 
