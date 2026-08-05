@@ -1700,6 +1700,25 @@
                   "Zilla",
                   "zipfiles",
                   "zipndownload",
-                  "zodiacon"
+                  "zodiacon",
+                  "TrashPandaPaws",
+                  "trashpandapaws",
+                  "SMBLoot",
+                  "smbloot",
+                  "malleable",
+                  "Lsassy",
+                  "lsassy",
+                  "NetExec",
+                  "RelayKing",
+                  "Responder",
+                  "RaccDrop",
+                  "raccdrop",
+                  "macchanger",
+                  "autossh",
+                  "NTLMv2",
+                  "EAPOL",
+                  "ebtables",
+                  "arptables",
+                  "datagrams"
               ]
 }
