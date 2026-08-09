@@ -1719,6 +1719,20 @@
                   "EAPOL",
                   "ebtables",
                   "arptables",
-                  "datagrams"
+                  "datagrams",
+                  "BACnet",
+                  "EtherCAT",
+                  "KNXnet",
+                  "PROFINET",
+                  "MTConnect",
+                  "PosiStageNet",
+                  "posistagenet",
+                  "ISOBUS",
+                  "MELSEC",
+                  "FOCAS",
+                  "SERCOS",
+                  "TriStation",
+                  "Triconex",
+                  "synchrophasor"
               ]
 }
