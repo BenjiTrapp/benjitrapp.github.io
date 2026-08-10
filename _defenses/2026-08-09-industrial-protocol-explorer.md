@@ -85,7 +85,34 @@ Click any protocol node to investigate it deeper: specifications, Nmap scripts, 
 #pe-detail .pd-card a{color:var(--cat1);text-decoration:none;font-size:13px;font-weight:600;word-break:break-word;display:block}
 #pe-detail .pd-card a:hover{text-decoration:underline}
 #pe-detail .pd-card .pd-cdesc{color:var(--t3);font-size:11px;margin-top:2px;line-height:1.3}
-#pe-table-wrap{display:none;overflow-x:auto;border:1px solid var(--bdr);border-radius:8px;background:var(--s1)}
+@media(max-width:600px){
+#pe-search{min-width:0;flex:1 1 100%}
+#pe-search-wrap{gap:6px}
+#pe-view-toggle{flex:0 0 auto;font-size:12px;padding:6px 10px}
+.pe-chip{padding:3px 7px;font-size:11px;gap:3px}
+.pe-chip .pe-cnt{font-size:10px}
+.pe-chip-all{padding:3px 9px;font-size:11px}
+#pe-filters{gap:4px}
+#pe-stats{font-size:12px;gap:8px}
+#pe-stats strong{font-size:13px}
+#pe-graph-wrap{min-height:300px;border-radius:6px}
+#pe-tooltip{display:none!important}
+#pe-detail{width:100vw;padding:16px 14px;border-left:none}
+#pe-detail h2{font-size:17px;padding-right:30px}
+#pe-detail .pd-aliases{font-size:12px}
+#pe-detail .pd-desc{font-size:13px}
+#pe-detail .pd-grid{grid-template-columns:1fr}
+#pe-detail .pd-section h3{font-size:11px}
+#pe-detail .pd-card{padding:6px 8px}
+#pe-detail .pd-card-ico{width:24px;height:24px;font-size:12px}
+#pe-detail .pd-card a{font-size:12px}
+#pe-detail .pd-card .pd-cdesc{font-size:10px}
+#pe-detail .pd-link{font-size:12px;padding:6px 12px}
+#pe-table-wrap table{font-size:12px}
+#pe-table-wrap th,#pe-table-wrap td{padding:5px 6px}
+.td-badge{font-size:10px!important;padding:1px 3px!important}
+}
+#pe-table-wrap{display:none;overflow-x:auto;border:1px solid var(--bdr);border-radius:8px;background:var(--s1);-webkit-overflow-scrolling:touch}
 #pe-table-wrap table{width:100%;border-collapse:collapse;font-size:13px}
 #pe-table-wrap th{text-align:left;padding:8px 10px;border-bottom:2px solid var(--bdr);color:var(--t3);font-size:12px;text-transform:uppercase;letter-spacing:.3px;position:sticky;top:0;background:var(--s1);cursor:pointer;user-select:none;white-space:nowrap}
 #pe-table-wrap th:hover{color:var(--t1)}
@@ -293,19 +320,21 @@ function onSearch(){renderStats();renderGraph();renderTable();}
 function renderGraph(){
 var wrap=document.getElementById("pe-graph-wrap");
 var W=wrap.clientWidth||800;
-var H=Math.max(480,Math.min(W*0.65,640));
+var mob=W<600;
+var H=mob?Math.max(300,W*0.9):Math.max(480,Math.min(W*0.65,640));
 var svg=document.getElementById("pe-svg");
 svg.setAttribute("viewBox","0 0 "+W+" "+H);
 svg.style.height=H+"px";
 var visible=getVisible();
-var nodes=visible.map(function(p){return{id:p.id,name:p.name,cat:p.cat,tr:p.tr,ports:p.ports,r:Math.sqrt(Math.max(p.tr,1))*4+10,x:0,y:0,vx:0,vy:0}});
+var nScale=mob?0.65:1;
+var nodes=visible.map(function(p){return{id:p.id,name:p.name,cat:p.cat,tr:p.tr,ports:p.ports,r:(Math.sqrt(Math.max(p.tr,1))*4+10)*nScale,x:0,y:0,vx:0,vy:0}});
 var nodeMap={};
 nodes.forEach(function(n){nodeMap[n.id]=n});
 var catList=[];var seen={};
 nodes.forEach(function(n){if(!seen[n.cat]){seen[n.cat]=true;catList.push(n.cat)}});
 catList.sort(function(a,b){return(CAT_META[a]?CAT_META[a].order:99)-(CAT_META[b]?CAT_META[b].order:99)});
 var cx=W/2,cy=H/2;
-var orbitR=Math.min(W,H)*0.28;
+var orbitR=Math.min(W,H)*(mob?0.22:0.28);
 var catCenters={};
 catList.forEach(function(c,i){
 var a=(2*Math.PI*i/catList.length)-Math.PI/2;
@@ -313,8 +342,9 @@ catCenters[c]={x:cx+Math.cos(a)*orbitR,y:cy+Math.sin(a)*orbitR};
 });
 nodes.forEach(function(n){
 var cc=catCenters[n.cat]||{x:cx,y:cy};
-n.x=cc.x+(Math.random()-0.5)*80;
-n.y=cc.y+(Math.random()-0.5)*80;
+var scatter=mob?40:80;
+n.x=cc.x+(Math.random()-0.5)*scatter;
+n.y=cc.y+(Math.random()-0.5)*scatter;
 });
 for(var tick=0;tick<220;tick++){
 var alpha=0.3*(1-tick/220);
@@ -344,17 +374,17 @@ if(na&&nb)html+='<line class="pe-edge" x1="'+na.x+'" y1="'+na.y+'" x2="'+nb.x+'"
 });
 Object.keys(catCenters).forEach(function(cat){
 var pos=catCenters[cat];var meta=CAT_META[cat];
-if(meta)html+='<text class="pe-cat-label" x="'+pos.x+'" y="'+Math.max(18,pos.y-orbitR*0.35)+'">'+meta.label+'</text>';
+if(meta)html+='<text class="pe-cat-label" x="'+pos.x+'" y="'+Math.max(14,pos.y-orbitR*0.35)+'"'+(mob?' font-size="8"':'')+'>'+meta.label+'</text>';
 });
 nodes.forEach(function(n){
 var col=(CAT_META[n.cat]||{}).color||"var(--t3)";
 var sel=selectedId===n.id?"selected":"";
 html+='<g class="pe-node '+sel+'" data-id="'+n.id+'" onmouseenter="peHover(event,\''+n.id+'\')" onmouseleave="peUnhover()" onclick="peClick(\''+n.id+'\')">';
 html+='<circle cx="'+n.x+'" cy="'+n.y+'" r="'+n.r+'" fill="'+col+'" fill-opacity="0.2" stroke="'+col+'"/>';
-var fs=n.r>16?9:7;var label=n.name.length>12?n.name.substring(0,11)+"..":n.name;
-var hasPort=n.ports&&n.r>14;
+var fs=mob?(n.r>12?7:5):(n.r>16?9:7);var maxL=mob?9:12;var label=n.name.length>maxL?n.name.substring(0,maxL-1)+"..":n.name;
+var hasPort=n.ports&&n.r>(mob?10:14);
 html+='<text x="'+n.x+'" y="'+(n.y+(hasPort?0:3))+'" font-size="'+fs+'">'+label+'</text>';
-if(hasPort){var pl=n.ports.split(",")[0].trim();html+='<text class="pe-port-label" x="'+n.x+'" y="'+(n.y+fs+1)+'">'+pl+'</text>';}
+if(hasPort){var pl=n.ports.split(",")[0].trim();html+='<text class="pe-port-label" x="'+n.x+'" y="'+(n.y+fs+1)+'"'+(mob?' font-size="5"':'')+'>'+pl+'</text>';}
 html+='</g>';
 });
 svg.innerHTML=html;
