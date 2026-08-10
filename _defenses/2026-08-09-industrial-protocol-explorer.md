@@ -1,6 +1,7 @@
 ---
 layout: defense
 title: "Industrial Protocol Explorer: 76 OT/ICS Protocols at a Glance"
+excerpt_separator: <!--more-->
 ---
 
 <!-- cSpell:disable -->
@@ -8,6 +9,8 @@ title: "Industrial Protocol Explorer: 76 OT/ICS Protocols at a Glance"
 <img height="150" align="left" src="/images/ics-protocols.png"> Industrial and operational technology networks run on dozens of specialized protocols that most IT security teams never encounter. Understanding these protocols, their ports, their transport layers, and the security tooling available for each is essential for anyone doing OT threat hunting, network segmentation reviews, or ICS penetration testing. This interactive explorer maps all 76 protocols from the [awesome-industrial-protocols](https://github.com/Orange-Cyberdefense/awesome-industrial-protocols) collection by Orange Cyberdefense into a searchable, filterable visualization with semantic connections between related protocols.
 
 Click any protocol node to investigate it deeper: specifications, Nmap scripts, Wireshark dissectors, Scapy layers, example PCAPs, tools, articles, conference talks, and papers with direct links. Use the category chips to filter: clicking a chip shows only that sector, then click additional chips to combine. The graph draws connections between semantically related protocols such as protocol families, shared ecosystems, or common infrastructure.
+
+<!--more-->
 
 <div id="pe-root" style="margin-top:1.5em;">
 

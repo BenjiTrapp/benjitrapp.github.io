@@ -39,17 +39,21 @@ body.page-leaving {
 }
 
 // Staggered reveal animations (slide-up + fade-in) for above-the-fold content.
+// Note: the settled state uses `transform: none` (not translateY(0)) and no
+// `will-change`, so a finished reveal leaves no lingering transform. A lingering
+// transform would turn the element into the containing block for any
+// `position: fixed` descendant (e.g. the Protocol Explorer detail panel),
+// breaking full-screen overlays inside post content.
 .reveal {
   opacity: 0;
   transform: translateY(14px);
   transition: opacity 0.5s $reveal-ease,
               transform 0.5s $reveal-ease;
-  will-change: opacity, transform;
 }
 
 .reveal.visible {
   opacity: 1;
-  transform: translateY(0);
+  transform: none;
 }
 
 // Stagger delays for sequential appearance — kept tight so the page settles fast.
@@ -69,7 +73,7 @@ body.page-leaving {
 
 .scroll-reveal.visible {
   opacity: 1;
-  transform: translateY(0);
+  transform: none;
 }
 
 // Respect users who prefer reduced motion: show everything immediately,
@@ -711,6 +715,143 @@ nav {
         background: rgba(23, 254, 51, 0.08);
       }
     }
+  }
+}
+
+// Reading progress bar: hidden by default, only shown in the mobile header.
+.reading-progress {
+  display: none;
+}
+
+// ==========================================================================
+// Smartphone header: slim, fixed, pinned bar with a collapsible menu and a
+// reading progress indicator. Scoped entirely to the mobile breakpoint so the
+// desktop and tablet layouts stay exactly as they were.
+// ==========================================================================
+@include mobile {
+  .wrapper-masthead {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    margin-bottom: 0;
+    // A touch more opaque than the desktop gradient so text scrolling
+    // underneath the pinned bar stays readable.
+    background: rgba(13, 17, 23, 0.92);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+
+  // Slim bar, left aligned (overrides the tablet centering).
+  .masthead {
+    padding: 8px 0;
+    text-align: left;
+    display: flex;
+    align-items: center;
+  }
+
+  .site-avatar {
+    float: none;
+    display: inline-flex;
+    flex: 0 0 auto;
+    width: 36px;
+    height: 36px;
+    margin: 0 12px 0 0;
+
+    img {
+      width: 36px;
+      height: 36px;
+    }
+  }
+
+  .site-info {
+    float: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: 0;
+    min-width: 0;
+    // Leave room for the hamburger on the right.
+    padding-right: 44px;
+  }
+
+  .site-name {
+    font-size: 18px;
+    line-height: 1.2;
+    letter-spacing: -0.3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  // The tagline would make the bar too tall, so drop it from the slim header.
+  .site-description {
+    display: none;
+  }
+
+  // Center the hamburger vertically within the slim bar.
+  .menu-toggle {
+    top: 50%;
+    transform: translateY(-50%);
+    right: 12px;
+    padding: 8px;
+  }
+
+  // The menu opens as a panel dropping down from the pinned bar.
+  nav {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    margin: 0;
+    padding: 8px 12px;
+    background: #0d1117;
+    border-top: 1px solid #30363d;
+    border-bottom: 1px solid #30363d;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.55);
+  }
+
+  // Reading progress, pinned to the bottom edge of the fixed header.
+  // Doubles as a scrubber: tap or drag along it to jump through the page.
+  .reading-progress {
+    display: block;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 3px;
+    background: rgba(48, 54, 61, 0.5);
+    cursor: pointer;
+    touch-action: none;
+
+    // Invisible, enlarged hit area so the thin bar is easy to grab, mostly
+    // reaching down into the gap below the header to avoid the header controls.
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: -5px;
+      bottom: -12px;
+    }
+
+    span {
+      display: block;
+      height: 100%;
+      width: 0;
+      // Gradient anchored to the full viewport width, so the leading edge
+      // colour reflects how far through the page you are (blue to bright green).
+      background-image: linear-gradient(90deg, #58a6ff 0%, #7ee787 55%, #17fe33 100%);
+      background-size: 100vw 100%;
+      background-repeat: no-repeat;
+      box-shadow: 0 0 8px rgba(23, 254, 51, 0.5);
+    }
+  }
+
+  // Push the page content clear of the fixed header.
+  #main {
+    margin-top: 72px;
   }
 }
 

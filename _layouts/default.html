@@ -43,6 +43,8 @@
           </nav>
         </header>
       </div>
+      <!-- Reading progress (visible on smartphones only, styled in style.scss) -->
+      <div class="reading-progress"><span></span></div>
     </div>
 
     <div id="main" role="main" class="container">
@@ -60,6 +62,7 @@
     {% include analytics.html %}
     <script src="{{ site.baseurl }}/js/code-copy.js"></script>
     <script src="{{ site.baseurl }}/js/mobile-nav.js"></script>
+    <script src="{{ site.baseurl }}/js/reading-progress.js"></script>
     <script src="{{ site.baseurl }}/js/page-transitions.js"></script>
 
     <!-- Mermaid: only pulled in when a diagram is present on the page -->
