@@ -3,7 +3,7 @@ layout: post
 title: "TrashPandaPaws: A Raspberry Pi Red Team Network Implant"
 ---
 
-<img height="200" align="left" src="/images/trashpandapaws_logo.png"> Physical implants are the quietest way into a network. Drop a small device inline between a switch port and a legitimate host, let it bridge traffic transparently, and the network barely notices a new participant. TrashPandaPaws is a Raspberry Pi 4 based inline Ethernet tap built for authorized red team engagements. It sits between a PoE switch port and the target device, extracts power from the Ethernet cable, bridges all traffic at Layer 2, and phones home through a Sliver C2 beacon while hiding behind a convincing cover identity as either a Cisco IP Phone or an HP LaserJet printer.
+<img width="200" align="left" src="/images/trashpandapaws_logo.png"> Physical implants are the quietest way into a network. Drop a small device inline between a switch port and a legitimate host, let it bridge traffic transparently, and the network barely notices a new participant. TrashPandaPaws is a Raspberry Pi 4 based inline Ethernet tap built for authorized red team engagements. It sits between a PoE switch port and the target device, extracts power from the Ethernet cable, bridges all traffic at Layer 2, and phones home through a Sliver C2 beacon while hiding behind a convincing cover identity as either a Cisco IP Phone or an HP LaserJet printer.
 
 The project covers the full stack: custom PCB hardware with PoE extraction, 802.1X NAC bypass, dual cover identities with working protocol emulation, credential harvesting, multi layer persistence, and encrypted C2 channels. Everything runs on ParrotOS ARM64.
 
