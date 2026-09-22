@@ -125,6 +125,12 @@ When I am not writing, you will find me diving into the inner workings of Kubern
 </a>&nbsp;
 <a href="https://tryhackme-certificates.s3-eu-west-1.amazonaws.com/THM-DFQYZ659AE.pdf">
     <img height="150" src="/images/devsecops.svg" alt="TryHackMe DevSecOps Certificate"/>
+</a>&nbsp;
+<a href="/images/exeon_analyst.pdf">
+    <img height="150" src="/images/exeon_analyst.png" alt="Exeon Certified Analyst Certificate"/>
+</a>&nbsp;
+<a href="/images/exeon_deployment.pdf">
+    <img height="150" src="/images/exeon_deployment.png" alt="Exeon Certified Deployment Engineer Certificate"/>
 </a>
 
 #### Meet me on TryHackMe

@@ -77,5 +77,11 @@ Write-Host ""
 Write-Host "Press Ctrl+C to stop the server" -ForegroundColor Yellow
 Write-Host ""
 
-# Starte Server mit live reload
-bundle exec jekyll serve --livereload --host=0.0.0.0
+# Starte Server
+# Hinweis: --livereload wird bewusst weggelassen. Die eventmachine-Gem
+# (Abhaengigkeit von jekyll --livereload) ist unter Windows mit Ruby 3.3
+# nicht kompatibel und wirft "no acceptor (port is in use or requires
+# root privileges)", egal ob auf 0.0.0.0 oder 127.0.0.1 gebunden wird.
+# Jekylls eingebautes Auto-Regeneration (Dateiwatcher) funktioniert weiterhin,
+# nur ein automatisches Browser-Reload findet nicht statt.
+bundle exec jekyll serve --host=127.0.0.1
