@@ -1733,6 +1733,23 @@
                   "SERCOS",
                   "TriStation",
                   "Triconex",
-                  "synchrophasor"
+                  "synchrophasor",
+                  "QUIC",
+                  "WPAD",
+                  "DCERPC",
+                  "Lsar",
+                  "hmac",
+                  "netlist",
+                  "unrouted",
+                  "RSET",
+                  "proxyinfo",
+                  "avenum",
+                  "airmon",
+                  "iface",
+                  "deauth",
+                  "netdiscover",
+                  "Ollama",
+                  "crowdstrike",
+                  "Exeon"
               ]
 }
