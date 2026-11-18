@@ -260,9 +260,9 @@ Two things in that screenshot deserve pointing at. The band says **TDC cannot se
 
 The engines do not know who wrote the sample. That is the whole reason this works in both directions: the model that grades a piece of commodity malware grades an implant I compiled an hour ago on exactly the same scale, and it will tell me which of my tricks survived contact with a defender and which one gave the whole thing away.
 
-Two things have to be true first, or the answer is worthless. The host baseline has to be captured on a **clean** box, before anything has been detonated — **Sweep as baseline** takes about four minutes, **Full dump baseline** twenty or more — because anything that lands in the baseline stops counting as evidence forever after. And the scale has to be calibrated, which it is: three harmless test programs on the ARM64 VM score **CLEAN 0.75** (does nothing), **MALICIOUS 6.54** (private RWX thread, a PE copy in private memory, an implant string on the heap) and **SUSPICIOUS 2.9** (connects every two seconds), and a system-wide sweep of the clean VM — 139 processes — scores **0**.
+Two things have to be true first, or the answer is worthless. The host baseline has to be captured on a **clean** box, before anything has been detonated — **Sweep as baseline** takes about four minutes, **Full dump baseline** twenty or more — because anything that lands in the baseline stops counting as evidence forever after. And the scale has to be calibrated, which it is: three harmless test programs on the ARM64 VM score **CLEAN 0.75** for one that does nothing, **MALICIOUS 6.54** for the private RWX thread, PE copy and heap string of Act 1's `injectsim.exe`, and **SUSPICIOUS 2.9** for one that merely connects every two seconds — while a system-wide sweep of the clean VM, 139 processes, scores **0**.
 
-So when my own build comes back at 3.8, that number means something.
+So when something comes back at 3.8 rather than 6.5, the difference is information and not noise.
 
 ### Does anything see it in memory
 
@@ -270,7 +270,7 @@ So when my own build comes back at 3.8, that number means something.
 
 ThreatScan is two halves. On a file it runs **ThreatCheck**, **DefenderCheck**, **EMBER2024** (eight models) and **capa**; against a running process it runs the **Live Process Memory** panel — an Aether scan by PID or by name, a memory dump, the host baseline, or a sweep of every process on the box. The baseline readout says what it currently knows: **575 keys**, 574 memory signatures and one reflective PE, captured on a date it shows you, so there is never any doubt about whether it predates the sample.
 
-For payload work the single most useful button in the chamber is ThreatCheck, because it does not say *detected*, it says **at which offset** — and links that offset straight into the hex editor. That is the difference between knowing an engine hates your binary and knowing which 32 bytes to go and change.
+For payload work the single most useful button in the chamber is ThreatCheck, because it does not say *detected*, it says **at which offset** — and links that offset straight into the hex editor. That is the difference between knowing an engine hates your binary and knowing which bytes to go and change.
 
 The **SCORE HISTORY** chart is the other half of the value: a point per scan, oldest left, with dashed lines at **SUSPICIOUS 2** and **MALICIOUS 6**, so a series of builds reads as a trend instead of a pile of verdicts. Over the **61 scans** in that screenshot: 29 clean, 12 suspicious, 3 malicious, and 17 with no score at all — the tools that return a classification rather than a number live in their own lane. The history rows below mix my own builds with the simulators: `rascal-linux-amd641` came back **CLEAN** from ThreatCheck and **TIMEOUT** from capa, while an Aether scan of PID 5876 scored **SUSPICIOUS 5.00** and an Exit Capture of PID 7824 **SUSPICIOUS 2.24**. A capa timeout is not a verdict, and the chamber does not dress it up as one.
 
