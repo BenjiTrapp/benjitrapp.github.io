@@ -314,74 +314,96 @@ The screenshot is the two-minute version of a real question. `pipesim.exe` — *
 
 The engineering detail I like most here is the console. rizin 0.9.1 has no sandbox mode of its own, and the Web UI runs as SYSTEM with no login, so every command is checked against a server-side allowlist before rizin ever sees it. The families `a p i f C s / ? x t b e` are permitted — analysis, print, info, flags, comments, seek, search, help, hexdump, types, block size, settings — while `!`, `|`, `>`, backticks, `o` (open), `w` (write), `d` (debug), `.` (scripts) and `(` (macros) come back as a single line, `refused: '!' is not allowed: no shell commands`, and nothing moves. Even `aa` and `aaa` are refused from the console, because they outlast a command's 60-second budget; the **Full analysis** button runs their steps one at a time instead. Measured under x64 emulation on the ARM64 VM: `aaa` up to 20 MB, and `aa` of a **31 MB** exit dump with **10,295 functions** in under four seconds, with Full analysis taking another 23.
 
-## API Reference
+## The Rest of the Box
 
-All endpoints are served on port `9000` and return JSON.
+Two acts do not use every tab. Here is what is left, in one paragraph each.
 
-### Core Endpoints
+**LOGS** searches six sources in one place with a subset of Splunk's search language: `powershell` (script blocks 4104, module logging 4103, engine errors 4100), `access` (every HTTP request to the Web UI), `mcp` (every action of the MCP server), `netflow` (Sysmon 3 bundled into flows), `dns` (Sysmon 22) and `firewall` (`pfirewall.log`). Terms take `field=value`, `field>n`, `AND`/`OR`/`NOT` and parentheses; the pipes are `head`, `tail`, `sort`, `dedup`, `table`, `fields`, `stats`, `top`, `rare` and `timechart`.
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/alerts` | All detection alerts (Rustinel + Fibratus + LitterBox) |
-| GET | `/api/processes` | Tracked processes with activity counts |
-| GET | `/api/status` | Service health status (all components) |
-| GET | `/api/rustinel` | Rustinel engine info (rules, version) |
-| GET | `/api/submissions` | Submission history (last 200) |
+![The LOGS tab running source=dns top 10 query: the six source chips with their counts, events over time, the field bar, and the result as a sortable table]({{ site.baseurl }}/images/tdc-logs.png)
 
-### Submission & Detonation
+`source=dns | top 10 query` over seven days: **10 rows from 252 events in 93.9 ms**. The Firewall tab's **HUNT FURTHER** card hands over ready-made versions of the ones worth having — `source=firewall action=DROP | stats count by dst_ip, dst_port` for what was dropped, `source=dns result="-" | top query` for names that never resolved (the DGA suspects), `source=powershell "http" | head 50` for download cradles in clear text. And the screenshot is a good argument for reading a top list carefully: `github.com`, `api.nuget.org`, `community.chocolatey.org`, `download.sysinternals.com` and `www.loldrivers.io` are the chamber's own tool installers, and `WIN-T6JBL58QBH8` is a NetBIOS name, not a domain. A host name in a DNS top list is not automatically somewhere the malware went.
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/submit` | Submit sample (multipart). Params: `file`, `target` (agent/litterbox/both) |
-| GET | `/api/detonation/results` | Poll results. Params: `sha256`, `pid`, `litterbox_hash`, `filename` |
+![An own dashboard named Log watch with four tiles: requests by path as a pie, DNS names as bars, sources over time as a line chart and the firewall action-protocol flow as a Sankey, each with the query it was saved from]({{ site.baseurl }}/images/tdc-dashboards.png)
 
-### Hex Editor & Binary Analysis
+**Own dashboards** come out of that search box. Any result that has a form can be saved as a tile with **SAVE**, and the tile stores only the name, the query, the form and the time range — never numbers, so it recomputes against the live log every time. Up to ten dashboards with twelve tiles each, computed one after another rather than all at once. The `Log watch` page above is four of them: requests by path as a pie, `source=dns | top query` as bars, `* | timechart span=5m count by source` as a line chart, and `source=firewall | stats count by action, protocol` as a Sankey — with the warning line a tile inherits honestly from the tab, *only the newest 10,000 matches went into the pipes*.
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/file/hex` | Hex dump. Params: `path`, `offset`, `bytes` |
-| POST | `/api/file/hex/upload` | Upload file for hex viewing |
-| GET | `/api/file/pe` | PE header analysis. Param: `path` |
-| GET | `/api/file/elf` | ELF binary analysis. Param: `path` |
+**The ETW browser** reads twelve event-log channels — Sysmon, Security, PowerShell, Defender, WMI, Task Scheduler, BITS, DNS, Firewall, AppLocker, WinRM, Application — probes each for whether it has data at all (● ACTIVE / ○ NO DATA), refreshes every five seconds, and highlights events it classifies as malicious with a reason: encoded PowerShell, LOLBin abuse, credential access, persistence, defense evasion, lateral movement, C2 indicators, Sysmon IOCs.
 
-### Sysmon & Scanner
+![The ETW browser: the Sysmon channel with one event expanded, all of its fields listed and the suspicious values highlighted]({{ site.baseurl }}/images/tdc-etw-browser.png)
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/sysmon` | Sysmon events. Params: `max`, `event_id`, `pid` |
-| GET | `/api/sysmon/stats` | Sysmon statistics and diagnostics |
-| POST | `/api/scan/threatcheck` | ThreatCheck scan. Params: `file`/`path`, `engine`, `type` |
-| POST | `/api/scan/defendercheck` | DefenderCheck scan. Params: `file`/`path` |
-| GET | `/api/scan/status` | Scanner tool availability |
+**Two themes.** Cyberpunk is the default, neon on deep violet; Telemetry is cyan, magenta and acid green on near-black blue, with a fine grid and scanlines. **✶** switches between them instantly, without reloading — the open tab, any open detail view, the filters, the drilldown steps, sort orders, the graph and even running pipe interception sessions all stay exactly as they were. That works because the UI draws its charts itself as SVG, with no chart library, so a palette change is a repaint.
 
-### Proxy Endpoints
+![The service dashboard in the Telemetry theme: cyan, magenta and acid green on near-black blue, with a fine grid and scanlines]({{ site.baseurl }}/images/tdc-theme-telemetry.png)
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET/POST | `/api/litterbox/<path>` | Proxy to LitterBox API (:1337) |
-| GET | `/api/fibratus/<path>` | Proxy to Fibratus API (:8180) |
+**Tool updates** keep the box current without re-provisioning it. Every tool is listed with its installed and available version, checked through `choco outdated`, `winget list --upgrade-available`, commits behind upstream for the git-based ones, GitHub releases, and — for Sysmon — the `ETag` of the download against the one recorded at install. Three tools are pinned for compatibility (Rustinel **1.1.1**, Fibratus **3.0.0**, Rizin via Cutter **2.5.0**) and `python312` is held back because the Web UI runs on it; it is always updated last. A script gets at most 45 minutes, a failure of one tool does not stop the run, and there is no rollback.
 
-## Configuration
+![The tool updates panel: every tool with its installed and available version, the pinned ones marked, and the skull button that updates all of them]({{ site.baseurl }}/images/tdc-tool-updates.png)
 
-### Environment Variables
+**The offline wiki** is the part I did not expect to need. `make docs` builds the whole guide into a single `wiki.html` — every page, the screenshots embedded, the Mermaid diagrams drawn, the search box working — that opens without a network. On a VM that has no internet at all, which is how the chamber should be run, that file *is* the documentation.
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `RUSTINEL_ALERTS_DIR` | `C:\tools\rustinel\logs` | Rustinel NDJSON alert directory |
-| `RUSTINEL_INSTALL_DIR` | `C:\tools\rustinel` | Rustinel installation root |
-| `DETONATOR_API` | `http://127.0.0.1:8000` | Detonator REST API |
-| `DETONATOR_AGENT_API` | `http://127.0.0.1:8080` | DetonatorAgent API |
-| `LITTERBOX_API` | `http://127.0.0.1:1337` | LitterBox API |
-| `WEBUI_PORT` | `9000` | Web UI listen port |
+![The offline wiki: the navigation of all fifteen pages with a search box, and the index page with the architecture diagram drawn by the embedded Mermaid]({{ site.baseurl }}/images/tdc-wiki.png)
 
-### Custom Detection Rules
+## Running It
 
-Detection rules support hot-reload — changes take effect without restarting services:
+```bash
+# macOS on Apple Silicon - guided setup: tools, VM, provisioning
+./scripts/setup-macos-utm.sh
+make open                    # http://<vm-ip>:9000
 
-- **Sigma rules:** `C:\tools\detection-rules\rustinel-rules\dist\windows-advanced\rules\sigma\`
-- **YARA rules:** `C:\tools\detection-rules\yara-combined\`
-- **IOC hashes:** `C:\tools\detection-rules\rustinel-rules\dist\windows-advanced\rules\ioc\` (SHA-256, one per line)
+# Just the Web UI, no VM - every tab renders, the services are absent
+make install
+make run                     # http://localhost:9000
+```
+
+```powershell
+.\make.ps1 up                # Windows with Hyper-V, as Administrator
+.\make.ps1 open
+```
+
+First boot takes about 20-30 minutes on Windows and 30-45 on macOS ARM.
+
+| Host | Hypervisor | Guest | Notes |
+|------|-----------|-------|-------|
+| Windows 10/11 (x86_64) | Hyper-V | Windows 11 x86_64 | Native, `Vagrantfile` |
+| macOS Apple Silicon (M1-M4) | UTM (or QEMU, experimental) | Windows 11 ARM64 | Near-native via hvf |
+
+On ARM64 the OS, the execution agent and the runtimes are native. Fibratus, Rustinel, Aether, the beacon scanners and rizin have no ARM64 build and run under Windows' x86_64 emulation — which is also what x64 samples do, so they meet the sample on its own terms. The interesting consequence is in memory analysis: the emulator's translation cache *is* private executable memory, exactly what an injected payload looks like. Exit Capture and Process Dump classify those regions by content — ARM64 instruction density, single-RET stub pages — and list them as host artifacts instead of scoring them. `pd64.exe -closemon` is deliberately not used, because it writes x64 hook bytes into every process and decides the architecture from "PE32+" alone, which is also true of native ARM64 processes.
+
+Security, briefly, because this is a box built to run malware:
+
+- Snapshot before each detonation, and keep it on an isolated network.
+- The Web UI has **no login**, and `/api/submit` executes files by design.
+- Rustinel's active response is off by default; Defender exclusions cover the detonation paths only.
+- What hardening there is protects the *host* from the VM, not the VM from the sample: state-changing requests whose `Origin` or `Referer` names another site are refused, so a page opened in the VM's browser cannot submit a sample; only IP addresses, `localhost` and names in `TDC_ALLOWED_HOSTS` are accepted in the `Host` header; writes are confined to the hex-upload folder, `C:\Temp`, `C:\Users\Public\Downloads` and `C:\dumps`; and the rizin console has the allowlist from Act 2.
+
+## What I Would Change Next
+
+The honest list, taken from the limitations the guide documents rather than invented for the occasion:
+
+- **Exit Capture is armed by image name.** A child process that renames itself is covered only by the live scanners and the network log. The dump that caught `injectsim.exe` would have missed a second-stage process called something else.
+- **Live-memory findings depend on timing.** `injectsim.exe` exited before Aether's first sample, which is why its verdict came from the exit dump. Anything you want to compare across builds needs several samples, not one.
+- **The download detection has a known gap.** It sees a URL in a PowerShell script block, in a Sysmon command line, or in the BITS log. A compiled loader that calls WinHTTP itself shows up as a bare connection, with nothing to decide about.
+- **A cut box cannot preserve a stage 2.** While the catch-all Block rule stands, the chamber's own fetch is blocked along with everything else, so isolation and sample capture are mutually exclusive by construction.
 
 ## Links
 
-- [GitHub Repository](https://github.com/BenjiTrapp/transportable-detonation-chamber)
+- Source: [github.com/BenjiTrapp/transportable-detonation-chamber](https://github.com/BenjiTrapp/transportable-detonation-chamber)
+- The guide: [`docs/`](https://github.com/BenjiTrapp/transportable-detonation-chamber/blob/main/docs/README.md) — one page per topic, including [the API and MCP tools](https://github.com/BenjiTrapp/transportable-detonation-chamber/blob/main/docs/api.md), [configuration](https://github.com/BenjiTrapp/transportable-detonation-chamber/blob/main/docs/configuration.md), [live memory](https://github.com/BenjiTrapp/transportable-detonation-chamber/blob/main/docs/memory.md), [named pipes](https://github.com/BenjiTrapp/transportable-detonation-chamber/blob/main/docs/pipes.md), [the firewall](https://github.com/BenjiTrapp/transportable-detonation-chamber/blob/main/docs/firewall.md), [the logs](https://github.com/BenjiTrapp/transportable-detonation-chamber/blob/main/docs/logs.md) and [rizin](https://github.com/BenjiTrapp/transportable-detonation-chamber/blob/main/docs/rizin.md)
+- [A walk through the Web UI as a GIF](https://github.com/BenjiTrapp/transportable-detonation-chamber/blob/main/static/demo.gif) — 10 MB, so it is a link rather than an embed
+
+The chamber is mostly other people's work, wired together. The engines and scanners that do the actual detecting:
+
+| Project | Role |
+|---------|------|
+| [dobin/detonator](https://github.com/dobin/detonator) and [DetonatorAgent](https://github.com/dobin/DetonatorAgent) | Orchestration and execution |
+| [rabbitstack/fibratus](https://github.com/rabbitstack/fibratus) | Kernel ETW detection engine |
+| [Karib0u/rustinel](https://github.com/Karib0u/rustinel) | Sigma / YARA EDR agent |
+| [BlackSnufkin/LitterBox](https://github.com/BlackSnufkin/LitterBox) | Payload analysis sandbox |
+| [0xsp-SRD/aether](https://github.com/0xsp-SRD/aether) | Live-process memory forensics |
+| [glmcdona/Process-Dump](https://github.com/glmcdona/Process-Dump) | Memory component dumper |
+| [thefLink/Hunt-Sleeping-Beacons](https://github.com/thefLink/Hunt-Sleeping-Beacons) | Sleeping beacon callstack scanner |
+| [mandiant/capa](https://github.com/mandiant/capa) | Static capability detection |
+| [FutureComputing4AI/EMBER2024](https://github.com/FutureComputing4AI/EMBER2024) | ML malware classifier |
+| [rizinorg/rizin](https://github.com/rizinorg/rizin) and [rz-ghidra](https://github.com/rizinorg/rz-ghidra) | Reverse engineering and decompilation |
+| [ytisf/theZoo](https://github.com/ytisf/theZoo) | Malware sample repository |
