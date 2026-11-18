@@ -194,213 +194,67 @@ flowchart TB
 
 The memory tools run one after another in a single background thread on purpose: three scanners reading the same process at the same time would each see the others' handles and allocations. Live-memory results arrive one to two minutes after the start, and the verdict rises while they come in.
 
-## Detection Engines
+## Act 1: One Sample, End to End
 
-| Engine | Technology | Capabilities |
-|--------|-----------|-------------|
-| **Rustinel** | Rust + ETW | 20 Sigma rules, 717 YARA rules, IOC hash matching, real-time NDJSON alerts |
-| **Fibratus** | Go + Kernel ETW | Process/file/registry/network telemetry, behavior rules |
-| **Sysmon** | Sysinternals | Event logging (process creation, network, file, registry, image loads) |
-| **LitterBox** | Python | Static (YARA, strings) + Dynamic (PE-Sieve, Moneta, HollowsHunter, RedEdr) |
+Drop a file on the Submit tab, pick the target — **Agent** for execution, **LitterBox** for analysis, or **Both** — pick the EDR mode, and press **Detonate**. The stages report as they finish, and the verdict fills in behind them.
 
-Detection rule coverage includes 14 process_creation rules (encoded PowerShell, schtasks, LOLBins, credential dumping), 3 registry_event rules (Run key persistence, Defender tampering, WDigest), plus task_creation, ps_script, and service_creation rules.
+What makes that verdict worth reading is that no scanner's own severity label survives into it. Every finding, wherever it came from, goes through one model. A finding the clean host's baseline already knows is set aside before anything is counted — shown collapsed, never silently dropped. What is left is weighted by what kind of evidence it is (a structural fact like a thread starting in private RX memory outranks a behavioural pattern, which outranks an extracted artifact, which outranks a byte pattern), then by how persistently it appears across the samples (**×1.0** in every sample, **×0.55** in at least half, **×0.25** in one), then by corroboration: the kinds that legitimate software also shows — a hidden module, private RWX, a heap API table, low-risk strings — count at **40 %** until an independent source agrees on the same process. Saturation caps one kind of finding in one process at **twice** its strongest instance, so a hundred identical hits cannot carry a verdict on their own.
 
-## Web UI
+The sum is the memory evidence score, on a fixed scale: **≥ 2.0 is SUSPICIOUS, ≥ 6.0 is MALICIOUS**. And a scan that read no memory reports **NOT OBSERVED** rather than CLEAN, which is the distinction most tools quietly refuse to make.
 
-The single-page dark-themed interface aggregates telemetry from all engines across seven tabs:
+![Detonation results of injectsim.exe: verdict MALICIOUS score 6.54, the note that the process exited before the live scan, five scored findings with their weights, the exit capture summary and the images extracted from memory]({{ site.baseurl }}/images/tdc-detonation-results.png)
 
-### Dashboard
+Here is `injectsim.exe`, one of the project's own simulators, at **MALICIOUS 6.54**. The banner above the findings is the interesting part: *the process exited before the live scan; it was analyzed from its exit-time memory dump instead*. The sample was too short-lived for Aether, so the verdict rests on the dump Windows wrote as the process died — **9 modules, 233 regions, 1 thread, 29.3 MB captured**. Five findings carry a weight: a **3.00** for a PE header sitting in private memory at `0x1cd6b0e0000`, **2.50** for an in-memory signature match on a Cobalt Strike 64-bit beacon DLL, **0.80** for a private RWX allocation marked *uncorroborated — weight reduced*, and two more at 0.16 and 0.08 for common reflective-load references, each annotated with why its weight was cut. Three files were carved out of the dump — the main image, the reflective PE and a code chunk — each with a button into the hex editor, the file map or rizin.
 
-Stats strip showing alerts by severity, active processes, service health, loaded rules, and available tools. Six service health cards provide at-a-glance status for all detection components, and a recent activity feed shows detection alerts with severity coloring and rule names.
+That is the verdict. Everything below answers a question the verdict raises.
 
-![Dashboard - Unified view with stats, health cards, and activity feed]({{ site.baseurl }}/images/tdc-dashboard.png)
+### Which rules fired
 
-### Tracing & Detection
+The Alerts tab holds every detection of Rustinel, Fibratus and LitterBox in one table, newest first, under charts of whatever the filters currently let through. The drilldown is the point: a click on a pie slice, a bar or a Sankey band narrows table and charts together and becomes a *step*, and **BACK** walks the path back out.
 
-Real-time ETW event console with process filtering, timeline visualization, and click-through to full detail panels including raw JSON, ATT&CK tags, and related processes.
+![The Alerts tab after three drilldown steps: BACK and the path above the charts, 1,345 of 9,950 alerts, severity and engine pies, two hours in bars of five minutes, and the engine-rule-process Sankey]({{ site.baseurl }}/images/tdc-alerts-drilldown.png)
 
-![Rustinel real-time analysis showing detection alerts]({{ site.baseurl }}/images/tdc-rustinel-analysis.png)
+Three steps in — `ALL ALERTS › 27 Jul – 02 Aug › 27 Jul › 27 Jul 10:00–12:00` — the view is down to **1,345 of 9,950 alerts**. The bars re-divide themselves for whatever range they now cover: these two hours are **24 bars of five minutes**, and the busiest holds **373** alerts. The pies say 6 critical, 784 high, 555 medium, and 1,339 of the 1,345 came from Sigma against 6 from YARA. The Sankey names the two flows that produced almost all of it: *Suspicious Encoded PowerShell Command Line* (766) into `powershell.exe`, and *Registry Run Key Persistence* (506) landing mostly on `MsMpEng.exe`.
 
-![Rustinel detection detail view with rule matches and severity]({{ site.baseurl }}/images/tdc-rustinel-analysis-details.png)
+One honest note about that diagram: the bands are drawn by square roots so that small flows stay visible at all, and **LINEAR** switches to true proportions. The six most frequent rules and processes get their own band; the rest collapse into *other rules* and *other processes*, and those buckets deliberately set no filter, because they stand for names the table would not actually list.
 
-### Process Graph
+### What one process did
 
-Interactive process relationship visualization with 5 layout modes (Force-directed, Hierarchical, Radial, Circular, Grid), zoom controls, search by name/PID, time-range filtering, and detail panels for each process node.
+![The Rustinel trace console for MsMpEng.exe: verdict MALICIOUS 100/100, 760 events, a timeline split by event type, the process tree with alert counts, and the verdict table of rules that fired]({{ site.baseurl }}/images/tdc-tracing.png)
 
-### Scanner
+The Tracing console takes one process and lays its whole life out: the verdict badge (**MALICIOUS · 100/100** for this `MsMpEng.exe`, **760 events** over **59m 37s**), a timeline split into Critical/High, Process, Network, DNS, File and Registry rows, the process tree with the alert count of every process in it, and a verdict table where each row is a rule that fired — severity, offset from the start, rule and engine, PID, process, details — with the raw event one click away. The tabs beside VERDICT are the breakdown: **HTTP REQUESTS 0, CONNECTIONS 0, DNS REQUESTS 0, FILES 0, REGISTRY 760**. This one never touched the network; everything it did, it did to the registry.
 
-ThreatCheck + DefenderCheck integration identifies the exact bytes triggering Defender/AMSI detection. Results show detection status, byte offset of the trigger, and link directly to the hex editor for inspection.
+### Who started it
 
-### Hex Editor & Binary Analysis
+![The process graph focused on an explorer.exe instance: ancestors above, children below, and a detail panel with image, status, parent, activity counters, the signature check, the children and the Sysmon events it triggered]({{ site.baseurl }}/images/tdc-graph-tree.png)
 
-Full binary file viewer with drag-and-drop upload, data inspector (Int8/16/32/64, Float32/64, ASCII, UTF-16), and deep PE/ELF analysis capabilities.
+The Graph tab draws the processes around one process — ancestors above, children below — as a tree, a force-directed layout or an isometric view where two processes on the same named pipe are joined by a raised bridge. The detail panel is where the correlation happens: image, command line, status, parent, activity counters, a **Check who signed this** button, the children, and then the two lists that save the most time — **TRIGGERED SYSMON EVENTS** (for this `explorer.exe`: EID 1 ProcessCreate 58×, EID 18 PipeConnected 11×, EID 11 FileCreate 6×, EID 17 PipeCreated 5×, EID 22 DNSQuery 3×, EID 3 NetworkConnect 2×) and **CORRELATED WINDOWS EVENT IDS**, which maps those to what the Security log would have recorded: 4688 Process Creation, 4689 Process Exit, 5156 WFP Connection Allowed, 5157 WFP Connection Blocked, 5158 WFP Bind Allowed, 4663 Object Access.
 
-![Hex Editor with binary viewer and data inspector]({{ site.baseurl }}/images/tdc-hex-editor.png)
+Note the focus key in the breadcrumb: `PID 7420@1785739535`. Windows reuses PIDs, so every process in the UI is an *instance*. The newest holder of a PID is addressed by the plain number and earlier ones as `<pid>@<start epoch>`, and alerts, events and children are attributed to the instance that was alive at the time. Without that, a long session turns into one long case of mistaken identity.
 
-### PE Analysis
+### Which Windows events correspond
 
-Parses full PE structure including DOS/File/Optional headers, section table with entropy bars, security feature detection (ASLR/DEP/SEH/CFG), suspicious import categorization, packer identification, and RWX section flagging.
+![The Sysmon tab: events over time stacked by event type, a process to event type Sankey, the type counters, and a table of events with their command lines and the Windows Event IDs they correspond to]({{ site.baseurl }}/images/tdc-sysmon-events.png)
 
-![PE Header Analyzer showing security features and section details]({{ site.baseurl }}/images/tdc-pe-header-analyzer.png)
+The Sysmon tab is the same correlation at log scale, with the Windows Event IDs in their own column. The charts narrow the table: a bar of **EVENTS OVER TIME** sets a time window (Shift-click widens it to another bar), and a node of the process → event type Sankey sets an image or an event type.
 
-![PE Analyzer - text header section with entropy visualization]({{ site.baseurl }}/images/tdc-pe-analyzer-text-header-section.png)
+The screenshot is from a quiet box, which makes it a good illustration of something else: **PipeConnected 201 (40.2 %), PipeCreated 198 (39.6 %), ProcessCreate 100 (20 %), FileCreate 1** — and almost all of it is `python.exe`, `wevtutil.exe`, `tasklist.exe` and `sc.exe`, which is the chamber checking on its own services. Named pipes dominate because provisioning rewrites SwiftOnSecurity's `PipeEvent` filter from its short include list into **exclude** mode: every pipe is logged except a handful of noisy image-*and*-name pairs, never by name alone, and the Sysmon log is enlarged to **512 MB** to hold it. That trade is what makes the next act's pipe work possible.
 
-### Submit & Detonation
+### Whom it talked to, and how to cut it off
 
-Multi-target sample detonation with stage-by-stage progress tracking (Upload, Execute, Static, Dynamic, EDR). Supports DetonatorAgent only, LitterBox only, or both targets simultaneously.
+![The Firewall tab in MAP view: a process tree with each process's endpoints and tags, arcs from the chamber to every public destination, the summary, and the red skull of the network cut]({{ site.baseurl }}/images/tdc-firewall.png)
 
-![Mimikatz detonation showing multi-stage pipeline progress]({{ site.baseurl }}/images/tdc-mimikatz-detonation.png)
+The Firewall tab is built entirely out of telemetry Windows already produces: Sysmon 1, 3 and 22, `pfirewall.log`, PowerShell 4104/4103 and the BITS client log. Everything is re-read every **10 seconds**, and while a detonation runs the Sysmon and BITS sources drop to **1 second**. Being honest about what that means: the tab sees a connection *after* it was made. It does not hold one back.
 
-## Analysis Capabilities
+Each flow is one process to one endpoint, tagged by what makes it interesting — `ioc` and `beacon` are critical, `direct-ip` (no DNS answer explains the address, so it was hard-coded) and `download` are high, `dga`, `dead-drop`, `lolbin` and `rare-port` (anything outside the usual list, plus 4444, 5555, 6666, 8888, 9999 and 31337) are medium, and `newborn` — the process was under **60 seconds** old when it connected — is low. A row and its arc take the colour of their most severe tag. Geo and ASN come from an offline table shipped with the repo, because the chamber never asks anyone online about an address it saw from malware, and every sample-derived URL or host name is defanged and never a link. There are **no byte counts** anywhere in the tab, for the plain reason that Sysmon records none; the bars and arcs scale with connection counts instead, and the summary says so rather than pretending.
 
-Beyond basic detection, TDC provides deep binary analysis:
+The second half of the tab is where it stops being a monitor. **ASK** decides what happens when a process fetches a file: `Detonation`, the default, blocks a download by a submission or its descendants at once and *then* asks; `All` blocks every download except the chamber's own and the tool-update hosts; `Off` only tags. The decision toast offers **CUT + FETCH** (keep the block, let TDC fetch the file itself), **CUT ONLY** or **ALLOW** — and if nobody answers within **30 seconds**, TDC keeps the block and fetches the file anyway, because a stage-2 URL is often good for exactly one download. That also means the chamber contacts the C2 unattended, which is a thing worth knowing about a tool before it does it on your behalf.
 
-- **PE Header Analysis** — DOS/File/Optional headers, section table with entropy bars, ASLR/DEP/SEH/CFG detection
-- **ELF Binary Analysis** — ELF32/64 header, program headers, section table, dynamic linking, symbol imports/exports
-- **ELF Security Audit** — PIE, NX stack, RELRO (Full/Partial), stack canary, Fortify, stripped detection
-- **Entropy Visualization** — Per-section Shannon entropy with color coding (red >= 7.0 indicates packed/encrypted)
-- **Packer Identification** — UPX, Themida, VMProtect, ASPack, MPRESS via section name matching
-- **Suspicious Import Detection** — Categorized by injection, evasion, credential access, networking, crypto, shellcode
-- **Hunt-Sleeping-Beacons** — Callstack scanner for identifying sleeping C2 beacons (unbacked memory, module stomping, APC/Timer sleepmasks, return address spoofing)
+![The Firewall tab during a cut: the red band explaining that one catch-all Block rule stands and was read back, the connection list with its tags, and the summary still reading BLOCKED 0]({{ site.baseurl }}/images/tdc-firewall-cut.png)
 
-## Reverse Engineering Tools
+And then there is the panic button. **CUT THE NETWORK**, the red skull under the summary, and the **ISOLATED** switch in the head are one state and one press, with no confirmation. The first stage writes a single outbound Block rule for every program and every address (`TDC-FW-ISO-cut`) and reads it back in the same PowerShell call — **8.8 seconds** on a quiet VM, measured, against **38.5 s** for the version this replaced. One rule is enough because in Windows Firewall a Block rule beats every Allow rule: with it standing, DNS and `1.1.1.1` were dead while all **135** of Windows' own outbound Allow rules were still enabled. A background worker then spends about **59 seconds** switching those 135 off, recording exactly which ones it touched first, and setting each profile's outbound default to Block; only then does the catch-all rule go away.
 
-The VM comes pre-installed with:
-
-- **Detect It Easy (DiE)** — PE/ELF/Mach-O identification (packers, compilers, protectors, linkers)
-- **WinDbg Preview** — Kernel/user-mode debugger with crash dumps, live debugging, and TTD
-- **Ghidra** — NSA reverse engineering framework for disassembly, decompilation, and scripting
-
-## Quick Start
-
-```bash
-# macOS / Linux - Full VM
-make up         # Provisions the Windows 11 VM (~20-30 min first boot)
-make open       # Opens http://<vm-ip>:9000 in browser
-
-# Windows (PowerShell, run as Administrator)
-.\make.ps1 up
-.\make.ps1 open
-
-# Local UI development only (no VM needed)
-make install    # Creates venv, installs Flask + deps
-make run        # Starts on http://localhost:9000
-```
-
-## Detonation Workflow
-
-1. Open the Web UI at `http://localhost:9000`
-2. Navigate to the **Submit** tab
-3. Drag and drop a malware sample
-4. Select target: **Agent** (execution), **LitterBox** (analysis), or **Both**
-5. Click Submit and watch the pipeline stages progress
-6. Switch to **Tracing** for real-time ETW alerts
-7. Switch to **Graph** for process relationship visualization
-8. Check **Dashboard** for severity breakdown
-
-CLI submission is also supported:
-
-```bash
-# macOS / Linux
-make submit FILE=./samples/mimikatz.exe TARGET=both
-
-# Windows
-.\make.ps1 submit -File .\samples\mimikatz.exe -Target2 both
-```
-
-## Developer Experience
-
-TDC is designed to be iterable for detection engineering work:
-
-- **`make deploy-restart`** — Edit locally, push to VM, restart Flask in one command
-- **`make run-debug`** — Flask auto-reload on file changes (local dev)
-- **Loading Spinner** — Global overlay with 300ms delay threshold
-- **Help Modal** — Built-in documentation (press "? Help" in sidebar)
-- **Submissions History** — Persisted to JSON, with Hex button for quick inspection
-
-## Platform Support
-
-| Host OS | Hypervisor | Guest Arch | Performance |
-|---------|-----------|-----------|-------------|
-| Windows 10/11 (x86_64) | Hyper-V | x86_64 | Native |
-| macOS Apple Silicon (M1-M4) | QEMU via vagrant-qemu | ARM64 | Near-native via hvf |
-
-ARM64 compatibility: Sysmon runs natively (ARM64 binary), while Fibratus and Rustinel run under x86_64 emulation with ~10-20% overhead. .NET 8, Python 3.12, DetonatorAgent, and LitterBox all run natively on ARM64.
-
-## Security Considerations
-
-- Treat the VM as compromised after any detonation
-- Use snapshots before each analysis session (`vagrant snapshot save clean_state`)
-- Network isolation is recommended (Hyper-V internal/private switch)
-- The Web UI has no authentication — bind to localhost or isolated networks only
-- Defender exclusions are configured for detonation paths only
-- Rustinel active response is disabled by default
-
-## Demo
-
-The following walkthroughs show TDC in action — from initial detonation through detection, analysis, and correlation.
-
-### Service Dashboard
-
-![Dashboard - real-time health monitoring, alert feed, and detection metrics]({{ site.baseurl }}/images/tdc-dashboard.png)
-
-The main landing page shows a stats strip with total alerts, tracked processes, service health (online/degraded), loaded detection rules (Sigma + YARA), and available scanner tools. Six service health cards cover Rustinel, DetonatorAgent, LitterBox, Sysmon, Fibratus, and AV/AMSI Scanner — each displaying port, version, and quick-action buttons. The Recent Activity feed streams live detections with severity coloring (LOW for Sigma rules like Whoami Execution, CRITICAL for YARA hits like SuspiciousPEImports). The sidebar lists all tracked processes with alert counts and a color-coded timeline per engine.
-
-### Sample Detonation (Mimikatz)
-
-![Mimikatz detonation showing multi-stage pipeline progress]({{ site.baseurl }}/images/tdc-mimikatz-detonation.png)
-
-The Submit tab after detonating `mimikatz.exe` (1.3 MB) with target "Both (Agent + LitterBox)" and Fibratus EDR mode. The pipeline shows all 5 stages completed: DetonatorAgent execution (HTTP 200, PID 18612), LitterBox upload, Static Analysis (YARA + CheckPlz + Strings), Dynamic Analysis (PE-Sieve, Moneta, HollowsHunter), and Fibratus/Rustinel EDR (24 alerts). Below lists all CRITICAL detections — SuspiciousPEImports on docker.exe, mimikatz.exe, and gk.exe. Dynamic results include PE-Sieve (Suspicious: 0) and Moneta (IOCs: 0).
-
-### Rustinel Trace Analysis
-
-![Rustinel real-time analysis with scoring and detection timeline]({{ site.baseurl }}/images/tdc-rustinel-analysis.png)
-
-The Tracing console for a process scored "Malicious 100/100" with 23 events. Filter pills show severity breakdown ("23 Critical", "SuspiciousPEImports (23)"). A timeline bar visualizes event distribution by type (Critical/High, Process, Network, DNS, File, Registry). The verdict table lists each hit with severity, timestamp offset, rule name, and PID. Tabs allow switching between Live, HTTP Requests, Connections, DNS, Files, Registry, Artifacts, and Modules views.
-
-![Rustinel detection detail with Sigma rule match and ECS fields]({{ site.baseurl }}/images/tdc-rustinel-analysis-details.png)
-
-The alert detail panel for a Sigma hit: "Example - Whoami Execution (CommandLine + Image)". Shows severity (Low), engine (SIGMA), PID (1304), process (whoami.exe), command line, parent info (powershell.exe PID 10912), and full parent command. MATCH DETAILS shows condition logic (`selection_img AND selection_cmd`) with JSON patterns. The EVENT section contains complete ECS fields (@timestamp, event.action: process-start, event.kind: alert, event.provider: etw).
-
-### Process Relationship Graph
-
-![Process relationship graph - hierarchical layout with 178 nodes]({{ site.baseurl }}/images/tdc-process-rollup.png)
-
-Hierarchical layout showing 178 nodes, 107 edges. Color-coded nodes represent different categories: blue squares (system processes — winlogon.exe, explorer.exe, userinit.exe), yellow/orange with red badges (malicious/detonated — fibratus.exe, MsMpEng.exe), green diamonds (network connections — pypi.org, github.com, loldrivers.io), and purple circles (DNS). Edge types: solid lines for process spawn, dashed for network connections, red for injection. Filters allow toggling Network, DNS, Files, Registry, and Detonated nodes. Time ranges span from 30s to All.
-
-![Process details with scan correlation panel]({{ site.baseurl }}/images/tdc-process-rollup-details.png)
-
-Force-directed layout with a selected process node (e.g. `docker.exe PID 1148`). The detail panel shows image path, process status (Exited), and activity breakdown (Threats, Network, DNS, File, Registry, Injection). Multiple large red nodes (processes with 21-24 alerts each) are surrounded by a dense network/DNS web connecting to destinations like discord.com, shodan.io, github.com, google.com, storage.googleapis, and more.
-
-### PE Binary Analysis & Packer Detection
-
-![PE Header Analyzer showing security features and section details]({{ site.baseurl }}/images/tdc-pe-header-analyzer.png)
-
-PE Header Analysis for a binary showing IOC flags detected — suspicious APIs categorized by privilege_escalation, defense_evasion, and shellcode, plus high entropy indicating packing. Three-column layout: FILE HEADER (architecture, timestamp, section count), OPTIONAL HEADER (PE type, entry point, linker version, subsystem), and SECURITY FEATURES (ASLR/DEP enabled, SEH status, CFG status, overall entropy). Section table with entropy bars and "Inspect" buttons for each section.
-
-![DiE-Style Packing Analysis with entropy heatmap]({{ site.baseurl }}/images/tdc-pe-packing-analyzer.png)
-
-DiE-style detection overview with assessment badge (SUSPICIOUS/CLEAN). Detection cards identify compiler ("LINKER: Microsoft Visual C++ 6.0"), overlays, and protectors. An ENTROPY MAP color bar visualizes per-section entropy — green for low entropy sections (.text/.rdata), large red blocks for packed/compressed data (e.g. .ndata = NSIS compressed). FILE STRUCTURE shows a section layout diagram with legend (Code, Data, High Entropy, Overlay). Expandable sections include RICH HEADER entries.
-
-### Section Inspection & Hex Editor
-
-![PE section inspection with hex dump and strings]({{ site.baseurl }}/images/tdc-pe-analyzer-text-header-section.png)
-
-Section inspection expands in-line, showing metadata (Raw Offset, Raw Size, Virtual Address, Entropy) and characteristic badges (CNT_CODE, MEM_EXECUTE, MEM_READ). A live hex dump displays the first 4 KB with offsets, bytes, and ASCII representation, with "Load more..." for paging. Below the hex, extracted strings are listed (ASCII and UTF-16LE).
-
-![Hex Editor with MZ header and data inspector]({{ site.baseurl }}/images/tdc-hex-editor.png)
-
-Raw hex editor showing 512-byte pages with offset navigation. The MZ header (4D 5A 90...) and DOS stub are visible with ASCII interpretation in the right column. The Data Inspector panel decodes the cursor position as Int8/16/32/64, Float32/64, ASCII, and UTF-16 LE. Quick-access buttons for PE/ELF Analysis sit in the toolbar alongside offset input and page navigation (Prev/Next).
-
-### Sysmon Event Monitoring
-
-![Sysmon events with filtering and search]({{ site.baseurl }}/images/tdc-sysmon-events.png)
-
-The Sysmon tab displays captured events with filter pills by type: ProcessCreate, RegistryValueSet, FileCreate, NetworkConnect, DNSQuery. The table shows TIME, TYPE (color-coded), PID, IMAGE, DETAILS (full command lines), and Windows Event ID column (4688, 4689, 4663, 4656, 11707). Search, type/PID dropdowns, max events slider, and Refresh/Correlate buttons allow targeted investigation.
-
-![Sysmon event correlation with Windows Event IDs]({{ site.baseurl }}/images/tdc-sysmon-correlation.png)
-
-The detail panel for a FileCreate event shows timestamp, Sysmon Event ID, and originating image. "Correlated Windows Events" maps to related Security and Application log entries: 4663 "Object Access (File)", 4656 "Handle to Object Requested", and 11707 "Installation Completed (MSI)" — providing cross-log context for the same operation.
+Two things in that screenshot deserve pointing at. The band says **TDC cannot secure a sample in this state** — a catch-all Block rule blocks the chamber's own fetch too, so a stage-2 payload cannot be preserved while the box is cut. And **BLOCKED still reads 0**, because that counter counts per-endpoint and per-process rules and the cut is neither. The egress is shut and the counter says zero; the band is what tells you the truth. The way back without the Web UI is `scripts/tdc-unisolate.ps1`, run as Administrator in the VM, which restores exactly the rules that were recorded and removes every `TDC-FW-*` rule and nothing else.
 
 ## API Reference
 
