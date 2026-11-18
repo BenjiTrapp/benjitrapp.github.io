@@ -3,11 +3,11 @@ layout: post
 title: Transportable Detonation Chamber - A Malware Lab That Also Grades My Own Payloads
 ---
 
-<img height="200" align="left" src="/images/tdc-logo.png"> The Transportable Detonation Chamber (TDC) is a pre-configured Windows 11 VM that runs a sample while every engine on the box watches it: Sigma, YARA and IOC rules in real time, kernel ETW telemetry, Sysmon, a sandbox, and four scanners that read the memory of the running process. One Web UI on port 9000 shows all of it — the alerts, the process tree, the pipes the sample opened, its memory, its bytes — and turns it into one verdict with the evidence that produced it. It runs on Hyper-V on an x86_64 Windows host, and under UTM on Apple Silicon.
+<img height="200" align="left" src="/images/tdc-logo.png"> The Transportable Detonation Chamber (TDC) is a Windows 11 VM I can afford to throw away. You hand it a file; it runs the file and writes down what happened — which rules matched, what the kernel saw, what sat in the process's memory while it lived and in its dump after it died, whom it phoned, which named pipes it opened — and then it grades all of that into a single verdict you are able to argue with, because every point in the score says where it came from. There is one browser tab for the whole thing, on port 9000. It runs on Hyper-V on an x86_64 Windows host, and under UTM on Apple Silicon.
 
 I built it to answer two questions with the same box. The first is the obvious one: *what did this sample do*. The second is the one I reach for more often: *what does my own payload look like to the engines watching it* — which rule fires, which byte Defender hates, and whether anybody would have seen it in memory at all. This post is the tour, told as those two runs.
 
-![The service dashboard in the Cyberpunk theme: detection metrics with 45-day sparklines, alert activity by severity and category, and the health of the five services]({{ site.baseurl }}/images/tdc-dashboard.png)
+![The service dashboard in the Cyberpunk theme: detection metrics with 45-day sparklines, alert activity by severity and category, and the health of its six services]({{ site.baseurl }}/images/tdc-dashboard.png)
 
 > The chamber executes what you hand it, on purpose. `/api/submit` runs files by design and the Web UI has no login. Treat the VM as compromised from the first detonation, and never put it on a network you care about.
 
@@ -30,7 +30,7 @@ So the box grades findings itself instead of believing each scanner's severity l
 
 ## What Runs Inside
 
-Everything but the browser runs inside the VM, and the host reaches all of it through port 9000.
+Everything but the browser, the MCP server and `make` runs inside the VM, and the host reaches all of it through port 9000.
 
 <div class="ghidra-mock" style="overflow-x:auto;">
   <div class="gm-bar">
@@ -48,7 +48,7 @@ Everything but the browser runs inside the VM, and the host reaches all of it th
         <div style="color:#60a5fa;font-family:'Courier New',monospace;font-size:13px;font-weight:600;">Web UI</div>
         <div style="color:#3b82f6;font-family:'Courier New',monospace;font-size:11px;margin-top:2px;">:9000</div>
         <div style="color:#4b5563;font-size:11px;margin-top:8px;">Python / Flask</div>
-        <div style="color:#374151;font-size:10px;margin-top:2px;">17 tabs &amp; the REST API</div>
+        <div style="color:#374151;font-size:10px;margin-top:2px;">15 tabs &amp; the REST API</div>
       </div>
 
       <div style="display:flex;align-items:center;color:#f97316;font-size:18px;font-weight:700;padding:0 2px;">→</div>
@@ -159,7 +159,7 @@ Everything but the browser runs inside the VM, and the host reaches all of it th
 
 | Service | Port | Purpose | Technology |
 |---------|------|---------|-----------|
-| **Web UI** | 9000 | The 17 tabs, the REST API and the MCP endpoint | Python / Flask |
+| **Web UI** | 9000 | The 15 tabs, the REST API and the MCP endpoint | Python / Flask |
 | **DetonatorAgent** | 8080 | Executes the sample, returns its PID | .NET 8.0 |
 | **LitterBox** | 1337 | Static + dynamic analysis sandbox | Python / Flask |
 | **Fibratus** | 8180 | Kernel ETW telemetry and behaviour rules | Go |
@@ -177,7 +177,7 @@ A detonation is a fan-out, not a pipeline. The hash goes into the IOC list, Wind
 <pre class="mermaid">
 flowchart TB
     SUBMIT["Submit tab, make submit or the MCP tool"] --> IOC["The sample's SHA-256 joins Rustinel's IOC list"]
-    IOC --> ARM["Exit Capture armed for the image name, for a window of 120 s"]
+    IOC -->|"target agent or both"| ARM["Exit Capture armed for the image name, for a window of 120 s"]
     ARM --> RUN["DetonatorAgent runs the file and answers its PID"]
     RUN --> ENGINES["Rustinel, Fibratus and Sysmon record all the time; their output is matched to the PID afterwards"]
     RUN --> MEM["Against the PID, one after another in one background thread: Hunt-Sleeping-Beacons, BeaconEye, Aether with 3 samples 3 s apart, Process Dump last"]
@@ -192,7 +192,7 @@ flowchart TB
     RESULTS --> VERDICT["One verdict, filling in as the stages report"]
 </pre>
 
-The memory tools run one after another in a single background thread on purpose: three scanners reading the same process at the same time would each see the others' handles and allocations. Live-memory results arrive one to two minutes after the start, and the verdict rises while they come in.
+The memory tools run one after another in a single background thread, so that their view of the process stays undisturbed. Live-memory results arrive one to two minutes after the start, and the verdict rises while they come in.
 
 ## Act 1: One Sample, End to End
 
@@ -260,7 +260,7 @@ Two things in that screenshot deserve pointing at. The band says **TDC cannot se
 
 The engines do not know who wrote the sample. That is the whole reason this works in both directions: the model that grades a piece of commodity malware grades an implant I compiled an hour ago on exactly the same scale, and it will tell me which of my tricks survived contact with a defender and which one gave the whole thing away.
 
-Two things have to be true first, or the answer is worthless. The host baseline has to be captured on a **clean** box, before anything has been detonated — **Sweep as baseline** takes about four minutes, **Full dump baseline** twenty or more — because anything that lands in the baseline stops counting as evidence forever after. And the scale has to be calibrated, which it is: three harmless test programs on the ARM64 VM score **CLEAN 0.75** for one that does nothing, **MALICIOUS 6.54** for the private RWX thread, PE copy and heap string of Act 1's `injectsim.exe`, and **SUSPICIOUS 2.9** for one that merely connects every two seconds — while a system-wide sweep of the clean VM, 139 processes, scores **0**.
+Two things have to be true first, or the answer is worthless. The host baseline has to be captured on a **clean** box, before anything has been detonated — **Sweep as baseline** takes about four minutes, **Full dump baseline** twenty or more — because anything that lands in the baseline stops counting as evidence forever after. And the scale has to be calibrated, which it is: three harmless test programs on the ARM64 VM score **CLEAN 0.75** for one that does nothing, **MALICIOUS 6.54** for the private RWX thread, PE copy and heap string of Act 1's `injectsim.exe`, and **SUSPICIOUS 2.9** for one that merely connects every two seconds — while a system-wide sweep of the clean VM, 139 processes, scores **0** once its baseline has been taken.
 
 So when something comes back at 3.8 rather than 6.5, the difference is information and not noise.
 
@@ -278,9 +278,9 @@ The **SCORE HISTORY** chart is the other half of the value: a point per scan, ol
 
 ![Detonation results of beaconsim.exe: SUSPICIOUS score 3.8, the beaconing finding at weight 3.00 with its interval and coefficient of variation, two in-memory matches at 0.40 and two at 0.00 marked cap reached, and the connection periodicity panel]({{ site.baseurl }}/images/tdc-detonation-beaconing.png)
 
-This is the finding I care about most when I am testing a tunnel, and it is a nice illustration of the scoring model doing real work. `beaconsim.exe` comes back **SUSPICIOUS 3.8**, and almost all of it is one finding at weight **3.00**: *periodic outbound connections* — **8 connections to 192.168.64.1:8769, every 2.0 s, 100 % of intervals on rhythm, robust CoV 0.00**. It is derived from Sysmon EID 3, not from memory, which means it keeps working after the process has exited. For anyone who has read my [ViperTunnel](https://benjitrapp.github.io/vipertunnel-reverse-socks/) post: this is the same arithmetic that post runs on the network side, taken here from the endpoint's own log.
+This is the finding I care about most when I am testing a tunnel, and it is a nice illustration of the scoring model doing real work. `beaconsim.exe` comes back **SUSPICIOUS 3.8** — the same shape as the 2.9 calibration row above, in a run that also picked up two memory findings — and almost all of it is one finding at weight **3.00**: *periodic outbound connections* — **8 connections to 192.168.64.1:8769, every 2.0 s, 100 % of intervals on rhythm, robust CoV 0.00**. It is derived from Sysmon EID 3, not from memory, which means it keeps working after the process has exited. For anyone who has read my [ViperTunnel](https://benjitrapp.github.io/vipertunnel-reverse-socks/) post: this is the same arithmetic that post runs on the network side, taken here from the endpoint's own log.
 
-Look at what happens to the rest. Two in-memory signature matches land at **0.40** each — a `VirtualProtect` reflective-load pattern seen in **3 of 3 samples**, corroborated by the network source, rule risk 5, and then explicitly annotated *1 of 4 findings of this kind · group capped at 0.8*. The next two identical matches score **0.00**, marked *cap reached, not counted*. That is saturation: four hits of the same common kind cannot inflate a verdict past twice the strongest one. A tool that simply summed its hits would have called this thing malicious, and it would have been wrong.
+Look at what happens to the rest. Two in-memory signature matches land at **0.40** each — a `VirtualProtect` reflective-load pattern seen in **3 of 3 samples**, and an `mscoree.dll` CLR shim reference — both corroborated by the network source at rule risk 5, and both explicitly annotated as *1 of 4* and *2 of 4 findings of this kind · group capped at 0.8*. The next two identical matches score **0.00**, marked *cap reached, not counted*. That is saturation: four hits of the same common kind cannot inflate a verdict past twice the strongest one. A tool that simply summed its hits would have called this thing malicious, and it would have been wrong.
 
 ### Is my pipe name a name everybody knows
 
@@ -312,7 +312,7 @@ And when the question stops being "is it detected" and becomes "what did I actua
 
 The screenshot is the two-minute version of a real question. `pipesim.exe` — **PE64, x86-64, 186.5 KB, analysed with `aaa` in 3.3 s, 127 functions** — and the console session underneath finds the pipe name and walks back to the code that uses it: `iz~msagent` turns up `\\.\pipe\msagent_%04x%02x` in `.rdata` at `0x140026056`, `s` seeks there, `axt` reports the one reference — `fcn.140001000` at `0x1400010a7`, a `lea r8` of that string — and seeking to it brings the disassembly, the decompiler and the 31-block control-flow graph of that function along with it.
 
-The engineering detail I like most here is the console. rizin 0.9.1 has no sandbox mode of its own, and the Web UI runs as SYSTEM with no login, so every command is checked against a server-side allowlist before rizin ever sees it. The families `a p i f C s / ? x t b e` are permitted — analysis, print, info, flags, comments, seek, search, help, hexdump, types, block size, settings — while `!`, `|`, `>`, backticks, `o` (open), `w` (write), `d` (debug), `.` (scripts) and `(` (macros) come back as a single line, `refused: '!' is not allowed: no shell commands`, and nothing moves. Even `aa` and `aaa` are refused from the console, because they outlast a command's 60-second budget; the **Full analysis** button runs their steps one at a time instead. Measured under x64 emulation on the ARM64 VM: `aaa` up to 20 MB, and `aa` of a **31 MB** exit dump with **10,295 functions** in under four seconds, with Full analysis taking another 23.
+The engineering detail I like most here is the console. rizin 0.9.1 has no sandbox mode of its own, and the Web UI runs as SYSTEM with no login, so every command is checked against a server-side allowlist before rizin ever sees it. The families `a p i f C s / ? x t b e` are permitted — analysis, print, info, flags, comments, seek, search, help, hexdump, types, block size, settings — while `!`, `|`, `>`, backticks, `o` (open), `w` (write), `d` (debug), `.` (scripts) and `(` (macros) come back as a single line, `refused: '!' is not allowed: no shell commands`, and nothing moves. Even `aa` and `aaa` are refused from the console, because they outlast a command's 60-second budget; the **Full analysis** button runs their steps one at a time instead. The threshold between the two is file size — `aaa` up to 20 MB, `aa` above it — and measured under x64 emulation on the ARM64 VM, `aa` of a **31 MB** exit dump with **10,295 functions** takes under four seconds, with a Full analysis of it another 23 to 24.
 
 ## The Rest of the Box
 
@@ -322,7 +322,7 @@ Two acts do not use every tab. Here is what is left, in one paragraph each.
 
 ![The LOGS tab running source=dns top 10 query: the six source chips with their counts, events over time, the field bar, and the result as a sortable table]({{ site.baseurl }}/images/tdc-logs.png)
 
-`source=dns | top 10 query` over seven days: **10 rows from 252 events in 93.9 ms**. The Firewall tab's **HUNT FURTHER** card hands over ready-made versions of the ones worth having — `source=firewall action=DROP | stats count by dst_ip, dst_port` for what was dropped, `source=dns result="-" | top query` for names that never resolved (the DGA suspects), `source=powershell "http" | head 50` for download cradles in clear text. And the screenshot is a good argument for reading a top list carefully: `github.com`, `api.nuget.org`, `community.chocolatey.org`, `download.sysinternals.com` and `www.loldrivers.io` are the chamber's own tool installers, and `WIN-T6JBL58QBH8` is a NetBIOS name, not a domain. A host name in a DNS top list is not automatically somewhere the malware went.
+`source=dns | top 10 query` over seven days: **10 rows from 252 events in 93.9 ms**. The Firewall tab's **HUNT FURTHER** card hands over ready-made versions of the ones worth having — `source=firewall action=DROP | stats count by dst_ip, dst_port` for what was dropped, `source=dns result="-" | top query` for names that never resolved (the DGA suspects), `source=powershell "http" | head 50` for download cradles in clear text. And the screenshot is a good argument for reading a top list carefully: most of it is the chamber installing and updating its own tools — the docs vouch for `www.loldrivers.io` and `download.sysinternals.com` as installer downloads, `dc.services.visualstudio.com` is telemetry — and `WIN-T6JBL58QBH8` is a NetBIOS name, not a domain at all. A host name in a DNS top list is not automatically somewhere the malware went.
 
 ![An own dashboard named Log watch with four tiles: requests by path as a pie, DNS names as bars, sources over time as a line chart and the firewall action-protocol flow as a Sankey, each with the query it was saved from]({{ site.baseurl }}/images/tdc-dashboards.png)
 
@@ -368,7 +368,7 @@ First boot takes about 20-30 minutes on Windows and 30-45 on macOS ARM.
 | Windows 10/11 (x86_64) | Hyper-V | Windows 11 x86_64 | Native, `Vagrantfile` |
 | macOS Apple Silicon (M1-M4) | UTM (or QEMU, experimental) | Windows 11 ARM64 | Near-native via hvf |
 
-On ARM64 the OS, the execution agent and the runtimes are native. Fibratus, Rustinel, Aether, the beacon scanners and rizin have no ARM64 build and run under Windows' x86_64 emulation — which is also what x64 samples do, so they meet the sample on its own terms. The interesting consequence is in memory analysis: the emulator's translation cache *is* private executable memory, exactly what an injected payload looks like. Exit Capture and Process Dump classify those regions by content — ARM64 instruction density, single-RET stub pages — and list them as host artifacts instead of scoring them. `pd64.exe -closemon` is deliberately not used, because it writes x64 hook bytes into every process and decides the architecture from "PE32+" alone, which is also true of native ARM64 processes.
+On ARM64 the OS, the execution agent and the runtimes are native. Fibratus, Rustinel, the beacon scanners and rizin have no ARM64 build and run under Windows' x86_64 emulation — which is also what x64 samples do, so they meet the sample on its own terms — and Aether is x64 *deliberately*, because its thread-context probe uses the AMD64 `CONTEXT` layout and a native ARM64 build would misread it. The interesting consequence is in memory analysis: the emulator's translation cache *is* private executable memory, exactly what an injected payload looks like. Exit Capture and Process Dump classify those regions by content — ARM64 instruction density, single-RET stub pages — and list them as host artifacts instead of scoring them. `pd64.exe -closemon` is deliberately not used, because it writes x64 hook bytes into every process and decides the architecture from "PE32+" alone, which is also true of native ARM64 processes.
 
 Security, briefly, because this is a box built to run malware:
 
@@ -392,7 +392,7 @@ The honest list, taken from the limitations the guide documents rather than inve
 - The guide: [`docs/`](https://github.com/BenjiTrapp/transportable-detonation-chamber/blob/main/docs/README.md) — one page per topic, including [the API and MCP tools](https://github.com/BenjiTrapp/transportable-detonation-chamber/blob/main/docs/api.md), [configuration](https://github.com/BenjiTrapp/transportable-detonation-chamber/blob/main/docs/configuration.md), [live memory](https://github.com/BenjiTrapp/transportable-detonation-chamber/blob/main/docs/memory.md), [named pipes](https://github.com/BenjiTrapp/transportable-detonation-chamber/blob/main/docs/pipes.md), [the firewall](https://github.com/BenjiTrapp/transportable-detonation-chamber/blob/main/docs/firewall.md), [the logs](https://github.com/BenjiTrapp/transportable-detonation-chamber/blob/main/docs/logs.md) and [rizin](https://github.com/BenjiTrapp/transportable-detonation-chamber/blob/main/docs/rizin.md)
 - [A walk through the Web UI as a GIF](https://github.com/BenjiTrapp/transportable-detonation-chamber/blob/main/static/demo.gif) — 10 MB, so it is a link rather than an embed
 
-The chamber is mostly other people's work, wired together. The engines and scanners that do the actual detecting:
+The chamber is mostly other people's work, wired together. These are the engines and scanners that do the actual detecting; the full list, including the reverse engineering tools and the sample browser, is in the repository's credits:
 
 | Project | Role |
 |---------|------|
