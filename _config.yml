@@ -103,3 +103,4 @@ exclude:
   - LICENSE
   - README.md
   - CNAME
+  - docs
