@@ -256,6 +256,64 @@ And then there is the panic button. **CUT THE NETWORK**, the red skull under the
 
 Two things in that screenshot deserve pointing at. The band says **TDC cannot secure a sample in this state** — a catch-all Block rule blocks the chamber's own fetch too, so a stage-2 payload cannot be preserved while the box is cut. And **BLOCKED still reads 0**, because that counter counts per-endpoint and per-process rules and the cut is neither. The egress is shut and the counter says zero; the band is what tells you the truth. The way back without the Web UI is `scripts/tdc-unisolate.ps1`, run as Administrator in the VM, which restores exactly the rules that were recorded and removes every `TDC-FW-*` rule and nothing else.
 
+## Act 2: My Own Payload Against the Same Engines
+
+The engines do not know who wrote the sample. That is the whole reason this works in both directions: the model that grades a piece of commodity malware grades an implant I compiled an hour ago on exactly the same scale, and it will tell me which of my tricks survived contact with a defender and which one gave the whole thing away.
+
+Two things have to be true first, or the answer is worthless. The host baseline has to be captured on a **clean** box, before anything has been detonated — **Sweep as baseline** takes about four minutes, **Full dump baseline** twenty or more — because anything that lands in the baseline stops counting as evidence forever after. And the scale has to be calibrated, which it is: three harmless test programs on the ARM64 VM score **CLEAN 0.75** (does nothing), **MALICIOUS 6.54** (private RWX thread, a PE copy in private memory, an implant string on the heap) and **SUSPICIOUS 2.9** (connects every two seconds), and a system-wide sweep of the clean VM — 139 processes — scores **0**.
+
+So when my own build comes back at 3.8, that number means something.
+
+### Does anything see it in memory
+
+![The ThreatScan tab: the live process memory panel with Aether scan, memory dump, host baseline and whole-system sweep, and the scan history with the score history of 61 scans against the suspicious and malicious lines]({{ site.baseurl }}/images/tdc-live-memory.png)
+
+ThreatScan is two halves. On a file it runs **ThreatCheck**, **DefenderCheck**, **EMBER2024** (eight models) and **capa**; against a running process it runs the **Live Process Memory** panel — an Aether scan by PID or by name, a memory dump, the host baseline, or a sweep of every process on the box. The baseline readout says what it currently knows: **575 keys**, 574 memory signatures and one reflective PE, captured on a date it shows you, so there is never any doubt about whether it predates the sample.
+
+For payload work the single most useful button in the chamber is ThreatCheck, because it does not say *detected*, it says **at which offset** — and links that offset straight into the hex editor. That is the difference between knowing an engine hates your binary and knowing which 32 bytes to go and change.
+
+The **SCORE HISTORY** chart is the other half of the value: a point per scan, oldest left, with dashed lines at **SUSPICIOUS 2** and **MALICIOUS 6**, so a series of builds reads as a trend instead of a pile of verdicts. Over the **61 scans** in that screenshot: 29 clean, 12 suspicious, 3 malicious, and 17 with no score at all — the tools that return a classification rather than a number live in their own lane. The history rows below mix my own builds with the simulators: `rascal-linux-amd641` came back **CLEAN** from ThreatCheck and **TIMEOUT** from capa, while an Aether scan of PID 5876 scored **SUSPICIOUS 5.00** and an Exit Capture of PID 7824 **SUSPICIOUS 2.24**. A capa timeout is not a verdict, and the chamber does not dress it up as one.
+
+### Does the beacon tick
+
+![Detonation results of beaconsim.exe: SUSPICIOUS score 3.8, the beaconing finding at weight 3.00 with its interval and coefficient of variation, two in-memory matches at 0.40 and two at 0.00 marked cap reached, and the connection periodicity panel]({{ site.baseurl }}/images/tdc-detonation-beaconing.png)
+
+This is the finding I care about most when I am testing a tunnel, and it is a nice illustration of the scoring model doing real work. `beaconsim.exe` comes back **SUSPICIOUS 3.8**, and almost all of it is one finding at weight **3.00**: *periodic outbound connections* — **8 connections to 192.168.64.1:8769, every 2.0 s, 100 % of intervals on rhythm, robust CoV 0.00**. It is derived from Sysmon EID 3, not from memory, which means it keeps working after the process has exited. For anyone who has read my [ViperTunnel](https://benjitrapp.github.io/vipertunnel-reverse-socks/) post: this is the same arithmetic that post runs on the network side, taken here from the endpoint's own log.
+
+Look at what happens to the rest. Two in-memory signature matches land at **0.40** each — a `VirtualProtect` reflective-load pattern seen in **3 of 3 samples**, corroborated by the network source, rule risk 5, and then explicitly annotated *1 of 4 findings of this kind · group capped at 0.8*. The next two identical matches score **0.00**, marked *cap reached, not counted*. That is saturation: four hits of the same common kind cannot inflate a verdict past twice the strongest one. A tool that simply summed its hits would have called this thing malicious, and it would have been wrong.
+
+### Is my pipe name a name everybody knows
+
+![The Named Pipes tab: Sysmon pipe events with PID, process, pipe and C2 family column, and an interception session that relayed 58 messages of a detonation, each in hex and ASCII and marked PASSED]({{ site.baseurl }}/images/tdc-pipes.png)
+
+Beacons talk to their children and to each other over named pipes, and the names are a give-away: Cobalt Strike's `\msagent_##`, `\postex_*` and `\status_*`, PsExec's `\PSEXESVC`, Covenant's `\gruntsvc`. The chamber flags a pipe in four ways, each weighted differently: `c2_default` is a structural fact taken from a catalogue (**4.0** for a C2 default, **3.0** for a remote-exec tool) and is never baseline-suppressed, so a default C2 pipe name on its own is enough to make a sample SUSPICIOUS; `cross_process` (created inside the sample's tree and connected from outside it, or the reverse) is behavioural at **1.5**; `sensitive_system` — connecting to `\svcctl`, `\lsarpc`, `\samr`, `\netlogon` or `\atsvc` — is **1.0**; and `random_name`, for GUIDs, hex runs and high-entropy tokens, is **0.8**. The last three all need corroboration before they count fully.
+
+The catalogue is plain JSON, so adding a family is an entry with a pattern, a match mode, a weight and a note, no code. It carries Metasploit's `\msf-pipe`, the default of `reverse_named_pipe` — and deliberately has no entry for Sliver, because Sliver has no default pipe name at all; the operator always picks one. Which is exactly the kind of thing you want to know before you ship an implant with a hardcoded one.
+
+Then there is the half that makes this more than observation. The Pipes tab runs interception sessions: **attach** to a pipe that already exists, or **arm** for the first *new* pipe matching an exact name, a prefix such as `postex_`, or a regex, and then either **observe** (relay and record) or **hold**, where every message waits until you forward it, edit it or drop it. The screenshot shows a session armed on the prefix `\msagent_` catching `\msagent_5e62b5` during a detonation and relaying **58 messages, 446 bytes recorded**, each one in hex and ASCII and marked **PASSED** — `task 27`, `beacon 28`, `task 28`, `beacon 29`. Sitting in the middle of your own implant's control channel and editing a task before it arrives is a very direct way to test how it handles a hostile server.
+
+The limits are real and the docs are blunt about them: sessions are 10 minutes by default (an hour at most), 16 at a time, 1 MiB logged per message and 50 MiB per session; `\lsass`, `\ntsvcs`, `\protected_storage` and their NPFS aliases are refused outright; a client that was already connected before the session started is not intercepted; and a server that creates its pipe with `FILE_FLAG_FIRST_PIPE_INSTANCE` can notice or defeat the proxy entirely.
+
+### Does it look packed from the outside
+
+![PE header analysis of capa.exe in the hex tab: the SUSPICIOUS badge, the linker and overlay detection cards, an entropy map that is red across the whole file, and the file structure bar that is almost all overlay]({{ site.baseurl }}/images/tdc-pe-packing-analysis.png)
+
+The PE analysis in the Hex tab gives a DiE-style overview: an assessment badge, cards naming the linker and anything that looks like a protector or an overlay, an entropy map coloured per block (**red at ≥ 7.0**), and a file-structure bar with the regions laid out to scale. The example is honest about what the view is good at — this is `capa.exe`, a legitimate PyInstaller bundle of **35 MB**, and it is flagged **SUSPICIOUS** because of a **36 MB data overlay at entropy 8.00**. Almost the entire file is overlay. That is also precisely what a packed payload looks like from the outside, which is the point: the view tells you what an engine's heuristic will see, not what the file is.
+
+![The file map of injectsim.exe: byteplot, local entropy and PE structure planes side by side with their legends]({{ site.baseurl }}/images/tdc-file-map.png)
+
+The FileMap tab puts three planes of the same file side by side at one byte per cell: a byteplot (0xFF, 0x00, visible ASCII, invisible ASCII, non-ASCII), local entropy (repetition, code, packed), and the PE structure — headers, section table, `.text`, `.rdata`, `.data`, `.pdata`, `.tls`, `.reloc`, the TLS directory, imports, the IAT, debug info, the exception table, relocations and the entry point, each in its own colour. `injectsim.exe` reads **184.0 KB, overall entropy 6.468, 19 regions**. A click on any plane jumps to that offset in the hex editor, which is how a suspicious band becomes a hex dump in one step.
+
+### What does it actually do
+
+![The Rizin tab with pipesim.exe: the function list, the disassembly at the instruction that loads the pipe name, the control flow graph of that function, and a console session that found the string and followed its reference]({{ site.baseurl }}/images/tdc-rizin.png)
+
+And when the question stops being "is it detected" and becomes "what did I actually compile", there is **rizin 0.9.1** with the **rz-ghidra** decompiler on the VM, driven from the browser. FUNCTIONS, DISASSEMBLY, DECOMPILER and HEX sit beside the control-flow GRAPH, all pinned to one current address that a click, `SEEK` + `GO`, the back and forward arrows, or a seek in the console moves together. The file is only ever read: nothing is written to it or next to it, and there is no debugging.
+
+The screenshot is the two-minute version of a real question. `pipesim.exe` — **PE64, x86-64, 186.5 KB, analysed with `aaa` in 3.3 s, 127 functions** — and the console session underneath finds the pipe name and walks back to the code that uses it: `iz~msagent` turns up `\\.\pipe\msagent_%04x%02x` in `.rdata` at `0x140026056`, `s` seeks there, `axt` reports the one reference — `fcn.140001000` at `0x1400010a7`, a `lea r8` of that string — and seeking to it brings the disassembly, the decompiler and the 31-block control-flow graph of that function along with it.
+
+The engineering detail I like most here is the console. rizin 0.9.1 has no sandbox mode of its own, and the Web UI runs as SYSTEM with no login, so every command is checked against a server-side allowlist before rizin ever sees it. The families `a p i f C s / ? x t b e` are permitted — analysis, print, info, flags, comments, seek, search, help, hexdump, types, block size, settings — while `!`, `|`, `>`, backticks, `o` (open), `w` (write), `d` (debug), `.` (scripts) and `(` (macros) come back as a single line, `refused: '!' is not allowed: no shell commands`, and nothing moves. Even `aa` and `aaa` are refused from the console, because they outlast a command's 60-second budget; the **Full analysis** button runs their steps one at a time instead. Measured under x64 emulation on the ARM64 VM: `aaa` up to 20 MB, and `aa` of a **31 MB** exit dump with **10,295 functions** in under four seconds, with Full analysis taking another 23.
+
 ## API Reference
 
 All endpoints are served on port `9000` and return JSON.
