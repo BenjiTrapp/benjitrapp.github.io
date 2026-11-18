@@ -1,61 +1,67 @@
 ---
 layout: post
-title: Transportable Detonation Chamber - Malware Detonation Lab in a Box
+title: Transportable Detonation Chamber - A Malware Lab That Also Grades My Own Payloads
 ---
 
-<img height="200" align="left" src="/images/tdc-logo.png"> The Transportable Detonation Chamber (TDC) is a pre-configured Windows 11 VM for malware detonation testing against multiple EDR solutions. It ships with a unified dark-themed Web UI, real-time Sigma/YARA/IOC detection, kernel ETW telemetry, and supports both Windows (Hyper-V) and macOS Apple Silicon (QEMU/UTM). The goal: spin up an isolated analysis environment in minutes, detonate samples, and observe detection coverage across multiple engines simultaneously.
+<img height="200" align="left" src="/images/tdc-logo.png"> The Transportable Detonation Chamber (TDC) is a pre-configured Windows 11 VM that runs a sample while every engine on the box watches it: Sigma, YARA and IOC rules in real time, kernel ETW telemetry, Sysmon, a sandbox, and four scanners that read the memory of the running process. One Web UI on port 9000 shows all of it — the alerts, the process tree, the pipes the sample opened, its memory, its bytes — and turns it into one verdict with the evidence that produced it. It runs on Hyper-V on an x86_64 Windows host, and under UTM on Apple Silicon.
 
+I built it to answer two questions with the same box. The first is the obvious one: *what did this sample do*. The second is the one I reach for more often: *what does my own payload look like to the engines watching it* — which rule fires, which byte Defender hates, and whether anybody would have seen it in memory at all. This post is the tour, told as those two runs.
 
+![The service dashboard in the Cyberpunk theme: detection metrics with 45-day sparklines, alert activity by severity and category, and the health of the five services]({{ site.baseurl }}/images/tdc-dashboard.png)
 
+> The chamber executes what you hand it, on purpose. `/api/submit` runs files by design and the Web UI has no login. Treat the VM as compromised from the first detonation, and never put it on a network you care about.
 
-## The Problem
+- [Why a Box of My Own](#why-a-box-of-my-own)
+- [What Runs Inside](#what-runs-inside)
+- [Act 1: One Sample, End to End](#act-1-one-sample-end-to-end)
+- [Act 2: My Own Payload Against the Same Engines](#act-2-my-own-payload-against-the-same-engines)
+- [The Rest of the Box](#the-rest-of-the-box)
+- [Running It](#running-it)
+- [What I Would Change Next](#what-i-would-change-next)
+- [Links](#links)
 
-Testing malware samples against EDR solutions typically requires maintaining multiple VMs, manually installing and configuring detection tools, and correlating outputs across disparate interfaces. This is time-consuming, error-prone, and makes it hard to get a holistic view of detection coverage for a given sample. You end up context-switching between Sysmon logs, YARA scanners, ETW traces, and sandbox results without a unified picture.
+## Why a Box of My Own
 
-## The Solution
+Detonating a sample against several engines is not hard. Reading the result is. Sysmon writes to an event log, a YARA scanner prints to a console, a kernel ETW agent streams NDJSON into a directory, and a sandbox returns a report — four interfaces, four clocks, four ideas of what a process is. The work that actually tells you something, lining those up for one PID, is the work nobody wants to do twice, which in practice means it happens once and badly.
 
-TDC packages everything into a single Vagrant-provisioned VM with a unified web interface on port 9000. Submit a sample, and watch as multiple detection engines analyze it in parallel while a single dashboard aggregates all findings. One command to spin up, one interface to view everything.
+The second problem is the one that made me build the memory side. Asking "does my payload get caught" has no answer until you say *by what*. Static detection, a Sigma rule on the command line, a YARA hit in memory, a beacon that ticks like a clock, a pipe name that is in everybody's signature set — those are five different questions with five different answers, and an EDR console that says CLEAN is only reporting on the one it asked.
 
-## Architecture
+So the box grades findings itself instead of believing each scanner's severity label. Every finding from every source goes through one model: it gets weighed by what kind of evidence it is, by how persistently it shows up, and by whether a second, independent source agrees — and anything the clean host produces on its own is set aside before the counting starts. The result is a number on a scale that means the same thing for a piece of commodity malware and for something I compiled an hour ago. That is the part worth having.
 
-The system runs multiple core services inside the VM, each handling a different layer of analysis:
+## What Runs Inside
+
+Everything but the browser runs inside the VM, and the host reaches all of it through port 9000.
 
 <div class="ghidra-mock" style="overflow-x:auto;">
   <div class="gm-bar">
     <span style="color:#ff5f56">●</span>&nbsp;<span style="color:#ffbd2e">●</span>&nbsp;<span style="color:#27c93f">●</span>
-    <span style="margin-left:12px;color:#8b949e;font-size:11px;font-family:'Courier New',monospace;">Windows 11 VM · Hyper-V / QEMU</span>
+    <span style="margin-left:12px;color:#8b949e;font-size:11px;font-family:'Courier New',monospace;">Windows 11 VM · Hyper-V x64 / UTM ARM64</span>
   </div>
   <div style="padding:20px 22px 24px;">
 
-    <!-- Intake layer label -->
-    <div style="color:#484f58;font-size:10px;text-transform:uppercase;letter-spacing:2px;margin-bottom:12px;font-family:'Courier New',monospace;">Intake Layer</div>
+    <!-- Intake layer -->
+    <div style="color:#484f58;font-size:10px;text-transform:uppercase;letter-spacing:2px;margin-bottom:12px;font-family:'Courier New',monospace;">Intake</div>
 
-    <!-- Top row: Web UI → DetonatorAgent  |  LitterBox -->
     <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:stretch;">
 
-      <!-- Web UI -->
       <div style="flex:1;min-width:130px;background:#0c1829;border:1px solid #1d4ed8;border-radius:6px;padding:12px 14px;">
         <div style="color:#60a5fa;font-family:'Courier New',monospace;font-size:13px;font-weight:600;">Web UI</div>
         <div style="color:#3b82f6;font-family:'Courier New',monospace;font-size:11px;margin-top:2px;">:9000</div>
         <div style="color:#4b5563;font-size:11px;margin-top:8px;">Python / Flask</div>
-        <div style="color:#374151;font-size:10px;margin-top:2px;">Dashboard &amp; API gateway</div>
+        <div style="color:#374151;font-size:10px;margin-top:2px;">17 tabs &amp; the REST API</div>
       </div>
 
-      <!-- Arrow -->
       <div style="display:flex;align-items:center;color:#f97316;font-size:18px;font-weight:700;padding:0 2px;">→</div>
 
-      <!-- DetonatorAgent -->
       <div style="flex:1.4;min-width:155px;background:#1a0a00;border:1px solid #c2410c;border-radius:6px;padding:12px 14px;">
         <div style="color:#fb923c;font-family:'Courier New',monospace;font-size:13px;font-weight:600;">DetonatorAgent</div>
         <div style="color:#f97316;font-family:'Courier New',monospace;font-size:11px;margin-top:2px;">:8080</div>
         <div style="color:#4b5563;font-size:11px;margin-top:8px;">.NET 8.0</div>
-        <div style="color:#374151;font-size:10px;margin-top:2px;">Executes samples · returns PID</div>
+        <div style="color:#374151;font-size:10px;margin-top:2px;">Runs the sample · answers its PID</div>
       </div>
 
-      <!-- Gap between execution and analysis -->
       <div style="flex:0 0 10px;"></div>
 
-      <!-- LitterBox -->
       <div style="flex:1;min-width:130px;background:#03180d;border:1px solid #166534;border-radius:6px;padding:12px 14px;">
         <div style="color:#4ade80;font-family:'Courier New',monospace;font-size:13px;font-weight:600;">LitterBox</div>
         <div style="color:#22c55e;font-family:'Courier New',monospace;font-size:11px;margin-top:2px;">:1337</div>
@@ -65,44 +71,85 @@ The system runs multiple core services inside the VM, each handling a different 
 
     </div>
 
-    <!-- Flow connector -->
     <div style="display:flex;align-items:center;padding:14px 0;gap:10px;">
       <div style="flex:1;height:1px;background:#21262d;"></div>
       <div style="color:#484f58;font-size:10px;font-family:'Courier New',monospace;white-space:nowrap;">▼&nbsp;&nbsp;events · telemetry · alerts&nbsp;&nbsp;▼</div>
       <div style="flex:1;height:1px;background:#21262d;"></div>
     </div>
 
-    <!-- Analysis layer label -->
-    <div style="color:#484f58;font-size:10px;text-transform:uppercase;letter-spacing:2px;margin-bottom:12px;font-family:'Courier New',monospace;">Analysis Layer</div>
+    <!-- Detection layer -->
+    <div style="color:#484f58;font-size:10px;text-transform:uppercase;letter-spacing:2px;margin-bottom:12px;font-family:'Courier New',monospace;">Detection</div>
 
-    <!-- Bottom row: Fibratus | Rustinel | Sysmon -->
     <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:stretch;">
 
-      <!-- Fibratus -->
+      <div style="flex:1;min-width:155px;background:#130606;border:1px solid #991b1b;border-radius:6px;padding:12px 14px;">
+        <div style="color:#fca5a5;font-family:'Courier New',monospace;font-size:13px;font-weight:600;">Rustinel</div>
+        <div style="color:#f87171;font-family:'Courier New',monospace;font-size:11px;margin-top:2px;">Sigma · YARA · IOC</div>
+        <div style="color:#4b5563;font-size:11px;margin-top:8px;">Rust</div>
+        <div style="color:#374151;font-size:10px;margin-top:2px;">Hot-reloaded rules</div>
+        <div style="color:#374151;font-size:10px;">NDJSON alerts, read every 5 s</div>
+      </div>
+
       <div style="flex:1;min-width:155px;background:#170530;border:1px solid #7c3aed;border-radius:6px;padding:12px 14px;">
         <div style="color:#c084fc;font-family:'Courier New',monospace;font-size:13px;font-weight:600;">Fibratus</div>
         <div style="color:#a78bfa;font-family:'Courier New',monospace;font-size:11px;margin-top:2px;">:8180 · Kernel ETW</div>
         <div style="color:#4b5563;font-size:11px;margin-top:8px;">Go</div>
         <div style="color:#374151;font-size:10px;margin-top:2px;">Process / file / registry / network</div>
-        <div style="color:#374151;font-size:10px;">Behavior rules engine</div>
+        <div style="color:#374151;font-size:10px;">Behaviour rules</div>
       </div>
 
-      <!-- Rustinel -->
-      <div style="flex:1;min-width:155px;background:#130606;border:1px solid #991b1b;border-radius:6px;padding:12px 14px;">
-        <div style="color:#fca5a5;font-family:'Courier New',monospace;font-size:13px;font-weight:600;">Rustinel</div>
-        <div style="color:#f87171;font-family:'Courier New',monospace;font-size:11px;margin-top:2px;">Sigma · YARA · IOC</div>
-        <div style="color:#4b5563;font-size:11px;margin-top:8px;">Rust</div>
-        <div style="color:#374151;font-size:10px;margin-top:2px;">20 Sigma · 717 YARA rules</div>
-        <div style="color:#374151;font-size:10px;">Real-time NDJSON alerts</div>
-      </div>
-
-      <!-- Sysmon -->
       <div style="flex:1;min-width:130px;background:#161000;border:1px solid #b45309;border-radius:6px;padding:12px 14px;">
         <div style="color:#fcd34d;font-family:'Courier New',monospace;font-size:13px;font-weight:600;">Sysmon</div>
-        <div style="color:#fbbf24;font-family:'Courier New',monospace;font-size:11px;margin-top:2px;">Event Log</div>
+        <div style="color:#fbbf24;font-family:'Courier New',monospace;font-size:11px;margin-top:2px;">Event Log, 512 MB</div>
         <div style="color:#4b5563;font-size:11px;margin-top:8px;">Sysinternals</div>
-        <div style="color:#374151;font-size:10px;margin-top:2px;">Windows event logging</div>
+        <div style="color:#374151;font-size:10px;margin-top:2px;">Every named pipe logged</div>
         <div style="color:#374151;font-size:10px;">ARM64 native binary</div>
+      </div>
+
+    </div>
+
+    <div style="display:flex;align-items:center;padding:14px 0;gap:10px;">
+      <div style="flex:1;height:1px;background:#21262d;"></div>
+      <div style="color:#484f58;font-size:10px;font-family:'Courier New',monospace;white-space:nowrap;">▼&nbsp;&nbsp;against the PID, one after another&nbsp;&nbsp;▼</div>
+      <div style="flex:1;height:1px;background:#21262d;"></div>
+    </div>
+
+    <!-- Memory layer -->
+    <div style="color:#484f58;font-size:10px;text-transform:uppercase;letter-spacing:2px;margin-bottom:12px;font-family:'Courier New',monospace;">Memory</div>
+
+    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:stretch;">
+
+      <div style="flex:1;min-width:120px;background:#04171a;border:1px solid #0e7490;border-radius:6px;padding:12px 14px;">
+        <div style="color:#67e8f9;font-family:'Courier New',monospace;font-size:12px;font-weight:600;">Hunt-Sleeping-Beacons</div>
+        <div style="color:#4b5563;font-size:11px;margin-top:8px;">C++</div>
+        <div style="color:#374151;font-size:10px;margin-top:2px;">Callstacks of sleeping beacons</div>
+      </div>
+
+      <div style="flex:1;min-width:120px;background:#04171a;border:1px solid #0e7490;border-radius:6px;padding:12px 14px;">
+        <div style="color:#67e8f9;font-family:'Courier New',monospace;font-size:12px;font-weight:600;">BeaconEye</div>
+        <div style="color:#4b5563;font-size:11px;margin-top:8px;">.NET</div>
+        <div style="color:#374151;font-size:10px;margin-top:2px;">Cobalt Strike beacon configs</div>
+      </div>
+
+      <div style="flex:1;min-width:120px;background:#04171a;border:1px solid #0e7490;border-radius:6px;padding:12px 14px;">
+        <div style="color:#67e8f9;font-family:'Courier New',monospace;font-size:12px;font-weight:600;">Aether</div>
+        <div style="color:#4b5563;font-size:11px;margin-top:8px;">Zig</div>
+        <div style="color:#374151;font-size:10px;margin-top:2px;">380 in-memory signatures</div>
+        <div style="color:#374151;font-size:10px;">3 samples, 3 s apart</div>
+      </div>
+
+      <div style="flex:1;min-width:120px;background:#04171a;border:1px solid #0e7490;border-radius:6px;padding:12px 14px;">
+        <div style="color:#67e8f9;font-family:'Courier New',monospace;font-size:12px;font-weight:600;">Process Dump</div>
+        <div style="color:#4b5563;font-size:11px;margin-top:8px;">C++</div>
+        <div style="color:#374151;font-size:10px;margin-top:2px;">Writes components to disk</div>
+        <div style="color:#374151;font-size:10px;">Skips clean-hash modules</div>
+      </div>
+
+      <div style="flex:1;min-width:120px;background:#1a0618;border:1px solid #a21caf;border-radius:6px;padding:12px 14px;">
+        <div style="color:#f0abfc;font-family:'Courier New',monospace;font-size:12px;font-weight:600;">Exit Capture</div>
+        <div style="color:#4b5563;font-size:11px;margin-top:8px;">Windows feature</div>
+        <div style="color:#374151;font-size:10px;margin-top:2px;">Full dump as the process exits</div>
+        <div style="color:#374151;font-size:10px;">Armed per image name</div>
       </div>
 
     </div>
@@ -110,25 +157,42 @@ The system runs multiple core services inside the VM, each handling a different 
   </div>
 </div>
 
-**Data flow:**
-
-1. Sample submitted via Web UI is forwarded to DetonatorAgent + LitterBox
-2. DetonatorAgent executes the sample and returns the PID
-3. LitterBox runs static (YARA, CheckPlz, Stringnalyzer) + dynamic (PE-Sieve, Moneta, HollowsHunter, RedEdr) analysis
-4. Fibratus captures kernel-level ETW events for the process
-5. Rustinel matches events against Sigma + YARA rules + IOC hashes
-6. Web UI aggregates alerts from all engines into a unified timeline
-
 | Service | Port | Purpose | Technology |
 |---------|------|---------|-----------|
-| **Web UI** | 9000 | Unified dashboard & API gateway | Python / Flask |
-| **DetonatorAgent** | 8080 | Executes malware samples, returns PID | .NET 8.0 |
+| **Web UI** | 9000 | The 17 tabs, the REST API and the MCP endpoint | Python / Flask |
+| **DetonatorAgent** | 8080 | Executes the sample, returns its PID | .NET 8.0 |
 | **LitterBox** | 1337 | Static + dynamic analysis sandbox | Python / Flask |
-| **Fibratus** | 8180 | Kernel ETW telemetry & behavior rules | Go |
-| **Rustinel** | — | Sigma/YARA/IOC real-time detection | Rust |
-| **Sysmon** | — | Windows event logging | Sysinternals |
-| **Hunt-Sleeping-Beacons** | — | Sleeping C2 beacon callstack scanner | C++ / MSVC |
+| **Fibratus** | 8180 | Kernel ETW telemetry and behaviour rules | Go |
+| **Rustinel** | — | Sigma / YARA / IOC detection in real time | Rust |
+| **Sysmon** | — | Windows event logging, incl. every named pipe | Sysinternals |
+| **Hunt-Sleeping-Beacons** | — | Callstack scanner for sleeping C2 beacons | C++ |
+| **BeaconEye** | — | Cobalt Strike beacon config scanner | .NET |
+| **Aether** | — | Live-process memory forensics | Zig |
+| **Process Dump** | — | Memory component dumper with a clean-hash database | C++ |
+| **Detonator** | 5000 / 8000 | Orchestration UI and REST API | Python |
 | **theZoo-WebUI** | 8888 | Malware sample browser | PHP |
+
+A detonation is a fan-out, not a pipeline. The hash goes into the IOC list, Windows gets armed to dump the process the moment it exits, and only then does anything run:
+
+<pre class="mermaid">
+flowchart TB
+    SUBMIT["Submit tab, make submit or the MCP tool"] --> IOC["The sample's SHA-256 joins Rustinel's IOC list"]
+    IOC --> ARM["Exit Capture armed for the image name, for a window of 120 s"]
+    ARM --> RUN["DetonatorAgent runs the file and answers its PID"]
+    RUN --> ENGINES["Rustinel, Fibratus and Sysmon record all the time; their output is matched to the PID afterwards"]
+    RUN --> MEM["Against the PID, one after another in one background thread: Hunt-Sleeping-Beacons, BeaconEye, Aether with 3 samples 3 s apart, Process Dump last"]
+    RUN --> LB["LitterBox: upload, then static, then dynamic analysis"]
+    RUN --> EXIT["Exit Capture waits for the dump until the window closes, then reads it"]
+    RUN --> LOG["From the Sysmon log: the connections it made and the pipes it opened"]
+    ENGINES --> RESULTS["The results route"]
+    MEM --> RESULTS
+    LB --> RESULTS
+    EXIT --> RESULTS
+    LOG --> RESULTS
+    RESULTS --> VERDICT["One verdict, filling in as the stages report"]
+</pre>
+
+The memory tools run one after another in a single background thread on purpose: three scanners reading the same process at the same time would each see the others' handles and allocations. Live-memory results arrive one to two minutes after the start, and the verdict rises while they come in.
 
 ## Detection Engines
 
