@@ -119,6 +119,12 @@ rewritten content onto the new path.
 
 The constraint above that the URL stays `/transportable-detonation-chamber/` is
 therefore no longer true: with `permalink: /:title/` the post now publishes at
-**`/transportable-detonation-chamber-lab/`**, and the old address, which has been
-live since June, will 404. A redirect stub was not added — that is the author's
-call.
+**`/transportable-detonation-chamber-lab/`**.
+
+The rename was necessary, and **no redirect must be added**. The old path belongs
+to the project repository's own GitHub Pages site: project pages publish to
+`<user>.github.io/<repo>/`, so `benjitrapp.github.io/transportable-detonation-chamber/`
+serves the chamber's documentation site (verified: it returns 200 with its own
+`data-theme="cyberpunk"` layout and `assets/style.css`, not the blog's). The post
+and the project site were colliding on one path; the `-lab` suffix resolves it,
+and a redirect stub at the old slug would break the documentation site.
