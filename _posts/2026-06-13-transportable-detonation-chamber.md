@@ -384,3 +384,70 @@ That chart is the loop I actually work in. Build, detonate, read the scored find
 
 And because a tool you stare at for hours should be bearable: two themes. Cyberpunk is the default, neon on deep violet, and everything above is in it. Telemetry is cyan, magenta and acid green on near-black blue with a fine grid and scanlines. **✶** switches between them instantly, without reloading — the open tab, any detail view, the filters, the drilldown steps, sort orders, the graph and even running pipe interception sessions all stay exactly as they were. That works because the UI draws its charts itself as SVG, with no chart library, so a palette change is just a repaint.
 
+## Running It
+
+```bash
+# macOS on Apple Silicon - guided setup: tools, VM, provisioning
+./scripts/setup-macos-utm.sh
+make open                    # http://<vm-ip>:9000
+
+# Just the Web UI, no VM - every tab renders, the services are absent
+make install
+make run                     # http://localhost:9000
+```
+
+```powershell
+.\make.ps1 up                # Windows with Hyper-V, as Administrator
+.\make.ps1 open
+```
+
+First boot takes about 20-30 minutes on Windows and 30-45 on macOS ARM.
+
+| Host | Hypervisor | Guest | Notes |
+|------|-----------|-------|-------|
+| Windows 10/11 (x86_64) | Hyper-V | Windows 11 x86_64 | Native, `Vagrantfile` |
+| macOS Apple Silicon (M1-M4) | UTM (or QEMU, experimental) | Windows 11 ARM64 | Near-native via hvf |
+
+On ARM64 the OS, the execution agent and the runtimes are native. Fibratus, Rustinel, the beacon scanners and rizin have no ARM64 build and run under Windows' x86_64 emulation — which is also what x64 samples do, so they meet the sample on its own terms — and Aether is x64 *deliberately*, because its thread-context probe uses the AMD64 `CONTEXT` layout and a native ARM64 build would misread it. The interesting consequence is in memory analysis: the emulator's translation cache *is* private executable memory, exactly what an injected payload looks like. Exit Capture and Process Dump classify those regions by content — ARM64 instruction density, single-RET stub pages — and list them as host artifacts instead of scoring them. `pd64.exe -closemon` is deliberately not used, because it writes x64 hook bytes into every process and decides the architecture from "PE32+" alone, which is also true of native ARM64 processes.
+
+Security, briefly, because this is a box built to run malware:
+
+- Snapshot before each detonation, and keep it on an isolated network.
+- The Web UI has **no login**, and `/api/submit` executes files by design.
+- Rustinel's active response is off by default; Defender exclusions cover the detonation paths only.
+- What hardening there is protects the *host* from the VM, not the VM from the sample: state-changing requests whose `Origin` or `Referer` names another site are refused, so a page opened in the VM's browser cannot submit a sample; only IP addresses, `localhost` and names in `TDC_ALLOWED_HOSTS` are accepted in the `Host` header; writes are confined to the hex-upload folder, `C:\Temp`, `C:\Users\Public\Downloads` and `C:\dumps`; and the rizin console has the allowlist described above.
+
+## What It Is Not
+
+The limits are documented in the guide, and they are the kind that change how you read a result:
+
+- **Exit Capture is armed by image name.** A child process that renames itself is covered only by the live scanners and the network log.
+- **Live-memory findings depend on timing.** A sample that exits in under a second is read from its exit dump instead, and anything you want to compare across builds needs several samples rather than one.
+- **The download detection has a known gap.** It sees a URL in a PowerShell script block, in a Sysmon command line, or in the BITS log. A compiled loader that calls WinHTTP itself shows up as a bare connection with nothing to decide about.
+- **A cut box cannot preserve a stage 2.** Isolation and sample capture are mutually exclusive by construction.
+- **A capa timeout is not a verdict,** and the chamber will not pretend otherwise — it says TIMEOUT and leaves the card empty.
+- **It is a lab box, not an appliance.** The dashboard in this post reads 5/6 services online because I had one switched off, the Sysmon view is mostly the chamber watching itself, and two of the names in a DNS top list are its own tool installers. That is what an honest analysis VM looks like between jobs.
+
+## Links
+
+- Source: [github.com/BenjiTrapp/transportable-detonation-chamber](https://github.com/BenjiTrapp/transportable-detonation-chamber)
+- The guide: [`docs/`](https://github.com/BenjiTrapp/transportable-detonation-chamber/blob/main/docs/README.md) — one page per topic, including [the API and MCP tools](https://github.com/BenjiTrapp/transportable-detonation-chamber/blob/main/docs/api.md), [configuration](https://github.com/BenjiTrapp/transportable-detonation-chamber/blob/main/docs/configuration.md), [live memory](https://github.com/BenjiTrapp/transportable-detonation-chamber/blob/main/docs/memory.md), [named pipes](https://github.com/BenjiTrapp/transportable-detonation-chamber/blob/main/docs/pipes.md), [the firewall](https://github.com/BenjiTrapp/transportable-detonation-chamber/blob/main/docs/firewall.md), [the logs](https://github.com/BenjiTrapp/transportable-detonation-chamber/blob/main/docs/logs.md), [rizin](https://github.com/BenjiTrapp/transportable-detonation-chamber/blob/main/docs/rizin.md) and [every view in detail](https://github.com/BenjiTrapp/transportable-detonation-chamber/blob/main/docs/web-ui.md)
+- [A walk through the Web UI as a GIF](https://github.com/BenjiTrapp/transportable-detonation-chamber/blob/main/static/demo.gif) — 10 MB, so it is a link rather than an embed
+- `make docs` builds the whole guide into a single `wiki.html` that opens without a network, which is what the documentation is on a VM that has no internet at all
+
+The chamber is mostly other people's work, wired together. These are the engines and scanners that do the actual detecting; the full list, including the reverse engineering tools and the sample browser, is in the repository's credits:
+
+| Project | Role |
+|---------|------|
+| [dobin/detonator](https://github.com/dobin/detonator) and [DetonatorAgent](https://github.com/dobin/DetonatorAgent) | Orchestration and execution |
+| [rabbitstack/fibratus](https://github.com/rabbitstack/fibratus) | Kernel ETW detection engine |
+| [Karib0u/rustinel](https://github.com/Karib0u/rustinel) | Sigma / YARA EDR agent |
+| [BlackSnufkin/LitterBox](https://github.com/BlackSnufkin/LitterBox) | Payload analysis sandbox |
+| [0xsp-SRD/aether](https://github.com/0xsp-SRD/aether) | Live-process memory forensics |
+| [glmcdona/Process-Dump](https://github.com/glmcdona/Process-Dump) | Memory component dumper |
+| [thefLink/Hunt-Sleeping-Beacons](https://github.com/thefLink/Hunt-Sleeping-Beacons) | Sleeping beacon callstack scanner |
+| [mandiant/capa](https://github.com/mandiant/capa) | Static capability detection |
+| [FutureComputing4AI/EMBER2024](https://github.com/FutureComputing4AI/EMBER2024) | ML malware classifier |
+| [elastic/protections-artifacts](https://github.com/elastic/protections-artifacts) | The YARA rules that named the COFF loader |
+| [rizinorg/rizin](https://github.com/rizinorg/rizin) and [rz-ghidra](https://github.com/rizinorg/rz-ghidra) | Reverse engineering and decompilation |
+| [ytisf/theZoo](https://github.com/ytisf/theZoo) | Malware sample repository |
