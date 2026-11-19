@@ -7,7 +7,7 @@ title: Transportable Detonation Chamber - Fifteen Views of One Detonation
 
 I built it to answer two questions with the same box. The first is the obvious one: *what did this sample do*. The second is the one I reach for more often: *what does my own payload look like to the engines watching it* — which rule fires, which string in memory gives it away, and whether anybody would have seen it at all. This post is a tour of all fifteen views, and for each one, what it is good for when the thing under the microscope is something you compiled yourself.
 
-Every screenshot below was taken on 19 November 2026 from the running box, so the numbers are a real analysis VM with a few weeks of work on it rather than a clean demo. The post keeps its original date because the project has not changed its name. A couple of services were switched off while I was shooting — the dashboard reads 5/6 and the top bar 4/5 — and I left that in.
+Every screenshot below was taken on 19 November 2026 from the running box, so the numbers are a real analysis VM with a few weeks of work on it rather than a clean demo. The post keeps the date it was first written on. A couple of services were switched off while I was shooting — the dashboard reads 5/6 and the top bar 4/5 — and I left that in.
 
 > The chamber executes what you hand it, on purpose. `/api/submit` runs files by design and the Web UI has no login. Treat the VM as compromised from the first detonation, and never put it on a network you care about.
 

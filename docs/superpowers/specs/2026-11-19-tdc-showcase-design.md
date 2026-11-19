@@ -109,3 +109,16 @@ weight, and why it was or was not counted*.
 - The grouping of the 15 tabs into `##` sections.
 - Which of the two firewall views and which LOGS shot carries which point.
 - Whether the scoring model sits in section 2 or gets its own section.
+
+## Addendum, after the merge
+
+While this work was in progress the author renamed the post on `origin/master`
+(commit `ac83c5b`, a pure rename): `2026-06-13-transportable-detonation-chamber.md`
+became `2026-06-13-transportable-detonation-chamber-lab.md`. The merge carried the
+rewritten content onto the new path.
+
+The constraint above that the URL stays `/transportable-detonation-chamber/` is
+therefore no longer true: with `permalink: /:title/` the post now publishes at
+**`/transportable-detonation-chamber-lab/`**, and the old address, which has been
+live since June, will 404. A redirect stub was not added — that is the author's
+call.
