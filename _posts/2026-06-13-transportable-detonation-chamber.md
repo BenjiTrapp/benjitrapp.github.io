@@ -1,32 +1,58 @@
 ---
 layout: post
-title: Transportable Detonation Chamber - A Malware Lab That Also Grades My Own Payloads
+title: Transportable Detonation Chamber - Fifteen Views of One Detonation
 ---
 
-<img height="200" align="left" src="/images/tdc-logo.png"> The Transportable Detonation Chamber (TDC) is a Windows 11 VM I can afford to throw away. You hand it a file; it runs the file and writes down what happened — which rules matched, what the kernel saw, what sat in the process's memory while it lived and in its dump after it died, whom it phoned, which named pipes it opened — and then it grades all of that into a single verdict you are able to argue with, because every point in the score says where it came from. There is one browser tab for the whole thing, on port 9000. It runs on Hyper-V on an x86_64 Windows host, and under UTM on Apple Silicon.
+<img height="200" align="left" src="/images/tdc-logo.png"> The Transportable Detonation Chamber (TDC) is a Windows 11 VM I can afford to throw away. You hand it a file; it runs the file and writes down what happened — which rules matched, what the kernel saw, what sat in the process's memory while it lived and in its dump after it died, whom it phoned, which named pipes it opened — and then it grades all of that into one verdict you are able to argue with, because every point in the score says where it came from. There is one browser tab for the whole thing, on port 9000, and fifteen views inside it. It runs on Hyper-V on an x86_64 Windows host, and under UTM on Apple Silicon.
 
-I built it to answer two questions with the same box. The first is the obvious one: *what did this sample do*. The second is the one I reach for more often: *what does my own payload look like to the engines watching it* — which rule fires, which byte Defender hates, and whether anybody would have seen it in memory at all. This post is the tour, told as those two runs.
+I built it to answer two questions with the same box. The first is the obvious one: *what did this sample do*. The second is the one I reach for more often: *what does my own payload look like to the engines watching it* — which rule fires, which string in memory gives it away, and whether anybody would have seen it at all. This post is a tour of all fifteen views, and for each one, what it is good for when the thing under the microscope is something you compiled yourself.
 
-![The service dashboard in the Cyberpunk theme: detection metrics with 45-day sparklines, alert activity by severity and category, and the health of its six services]({{ site.baseurl }}/images/tdc-dashboard.png)
+Every screenshot below was taken on 19 November 2026 from the running box, so the numbers are a real analysis VM with a few weeks of work on it rather than a clean demo. The post keeps its original date because the project has not changed its name. A couple of services were switched off while I was shooting — the dashboard reads 5/6 and the top bar 4/5 — and I left that in.
 
 > The chamber executes what you hand it, on purpose. `/api/submit` runs files by design and the Web UI has no login. Treat the VM as compromised from the first detonation, and never put it on a network you care about.
 
-- [Why a Box of My Own](#why-a-box-of-my-own)
+- [One Screenshot, the Whole Idea](#one-screenshot-the-whole-idea)
 - [What Runs Inside](#what-runs-inside)
-- [Act 1: One Sample, End to End](#act-1-one-sample-end-to-end)
-- [Act 2: My Own Payload Against the Same Engines](#act-2-my-own-payload-against-the-same-engines)
-- [The Rest of the Box](#the-rest-of-the-box)
+- [What Fired: Alerts, Tracing, Graph](#what-fired-alerts-tracing-graph)
+- [What It Touched: Pipes, Sysmon, ETW](#what-it-touched-pipes-sysmon-etw)
+- [Whom It Talked To: Firewall and LOGS](#whom-it-talked-to-firewall-and-logs)
+- [What It Is Made Of: ThreatScan, Hex, FileMap, Rizin, LitterBox](#what-it-is-made-of-threatscan-hex-filemap-rizin-litterbox)
+- [Submitting, and the Two Themes](#submitting-and-the-two-themes)
 - [Running It](#running-it)
-- [What I Would Change Next](#what-i-would-change-next)
+- [What It Is Not](#what-it-is-not)
 - [Links](#links)
 
-## Why a Box of My Own
+## One Screenshot, the Whole Idea
 
-Detonating a sample against several engines is not hard. Reading the result is. Sysmon writes to an event log, a YARA scanner prints to a console, a kernel ETW agent streams NDJSON into a directory, and a sandbox returns a report — four interfaces, four clocks, four ideas of what a process is. The work that actually tells you something, lining those up for one PID, is the work nobody wants to do twice, which in practice means it happens once and badly.
+Before the tour, the picture that explains why I kept building this thing. It is the detonation result of one of my own implant builds.
 
-The second problem is the one that made me build the memory side. Asking "does my payload get caught" has no answer until you say *by what*. Static detection, a Sigma rule on the command line, a YARA hit in memory, a beacon that ticks like a clock, a pipe name that is in everybody's signature set — those are five different questions with five different answers, and an EDR console that says CLEAN is only reporting on the one it asked.
+![Detonation results of rascal-windows-amd64.exe: the MALICIOUS banner with its reasons, the verdict flow Sankey, and sixteen scored in-memory findings with their weights and why each weight was cut]({{ site.baseurl }}/images/tdc-detonation.png)
 
-So the box grades findings itself instead of believing each scanner's severity label. Every finding from every source goes through one model: it gets weighed by what kind of evidence it is, by how persistently it shows up, and by whether a second, independent source agrees — and anything the clean host produces on its own is set aside before the counting starts. The result is a number on a scale that means the same thing for a piece of commodity malware and for something I compiled an hour ago. That is the part worth having.
+`rascal-windows-amd64.exe`, my own build, PID 5876, comes back **MALICIOUS**. A scanner would stop there. This does not. The **VERDICT FLOW** splits the verdict into where it came from — 19 findings, 3 from EDR alerts and 16 from live memory, of which **6 counted and 13 did not** — and under it, every one of those sixteen findings with its weight and the arithmetic behind it:
+
+| Weight | What was found in memory | Why that weight |
+|---|---|---|
+| **2.50** | `REFLECTIVE_LOAD: CLRCreateInstance` — the Win32 function that bootstraps the CLR | rule risk 9, seen in 3/3 samples, 1 of 16 of this kind, group capped at 5 |
+| **2.00** | `ENGINE_MANAGED: kerberoast` — a Rubeus Kerberoasting command | rule risk 8, 3/3 samples, 2 of 16 |
+| **0.50** | `ENGINE_MANAGED: AmsiScanBuffer` — the AMSI function every bypass targets | rule risk 8, 3/3 samples, 3 of 16 |
+| **0.00** | `ENGINE_MANAGED: -EncodedCommand` — PowerShell encoded command execution | uncorroborated, weight reduced, rule risk 6, 6 of 16, **cap reached, not counted** |
+| **0.00** | `C2_HTTP: /task` — an HTTP beacon task endpoint | rule risk 2, 11 of 16, **cap reached, not counted** |
+
+Read that as a developer rather than as a defender and it stops being a verdict. It is a punch list. My loader leaves the name of the function it uses to start the CLR in plain sight, a Rubeus command string sits in the heap where any memory scanner will trip over it, I named the AMSI function I patch, and my beacon's task endpoint is the literal string `/task`. None of that needed a reverse engineer. It needed a box that looks at a running process and prints what it reads.
+
+And the banner above it — *"Hash added to Rustinel IOC watchlist"* — means the next time that exact build runs anywhere on this VM, the EDR knows it on sight.
+
+### How a finding becomes a number
+
+Every verdict in this post leans on one model, so it is worth a paragraph. No scanner's own severity label survives into the score. Instead:
+
+- A finding the clean host's **baseline** already knows is set aside before anything is counted. It is shown collapsed, never silently dropped.
+- What is left is weighted by its **evidence class**: a structural fact (a thread starting in private RX memory, a PE header in private memory) outranks a behavioural pattern, which outranks an extracted artifact, which outranks a byte pattern. String rules carry their own `risk_score`, which is the "rule risk" in the table above.
+- Then by **persistence** across the samples: in every sample ×1.0, in at least half ×0.55, in one ×0.25. That is what `seen in 3/3 samples` buys.
+- Then by **corroboration**: kinds that legitimate software also shows count at 40 % until an independent source agrees on the same process. That is the `uncorroborated — weight reduced` line.
+- Then **saturation**: one kind of finding in one process counts at most twice its strongest instance. The group here is capped at 5, which is exactly twice that 2.50 — so by the time the sixth and the eleventh finding of those sixteen come up, the budget is spent and they score zero with `cap reached, not counted` beside them. A long tail of the same common pattern cannot carry a verdict on its own.
+
+The sum is the memory evidence score, on a fixed scale: **≥ 2.0 is SUSPICIOUS, ≥ 6.0 is MALICIOUS**. The `rascal` build lands at **5** on that scale and MALICIOUS overall once its three critical EDR alerts join in. And a scan that read no memory at all reports **NOT OBSERVED** rather than CLEAN, which is the distinction most tools quietly refuse to make.
 
 ## What Runs Inside
 
@@ -134,7 +160,7 @@ Everything but the browser, the MCP server and `make` runs inside the VM, and th
       <div style="flex:1;min-width:120px;background:#04171a;border:1px solid #0e7490;border-radius:6px;padding:12px 14px;">
         <div style="color:#67e8f9;font-family:'Courier New',monospace;font-size:12px;font-weight:600;">Aether</div>
         <div style="color:#4b5563;font-size:11px;margin-top:8px;">Zig</div>
-        <div style="color:#374151;font-size:10px;margin-top:2px;">380 in-memory signatures</div>
+        <div style="color:#374151;font-size:10px;margin-top:2px;">In-memory signatures</div>
         <div style="color:#374151;font-size:10px;">3 samples, 3 s apart</div>
       </div>
 
@@ -183,7 +209,7 @@ flowchart TB
     RUN --> MEM["Against the PID, one after another in one background thread: Hunt-Sleeping-Beacons, BeaconEye, Aether with 3 samples 3 s apart, Process Dump last"]
     RUN --> LB["LitterBox: upload, then static, then dynamic analysis"]
     RUN --> EXIT["Exit Capture waits for the dump until the window closes, then reads it"]
-    RUN --> LOG["From the Sysmon log: the connections it made and the pipes it opened"]
+    RUN --> LOG["From the Sysmon log: beaconing and named pipes"]
     ENGINES --> RESULTS["The results route"]
     MEM --> RESULTS
     LB --> RESULTS
@@ -194,155 +220,173 @@ flowchart TB
 
 The memory tools run one after another in a single background thread, so that their view of the process stays undisturbed. Live-memory results arrive one to two minutes after the start, and the verdict rises while they come in.
 
-## Act 1: One Sample, End to End
+![The service dashboard: alert and process counters with 45-day sparklines, alert activity by severity, the severity and category donuts, and the service health cards]({{ site.baseurl }}/images/tdc-dashboard.png)
 
-Drop a file on the Submit tab, pick the target — **Agent** for execution, **LitterBox** for analysis, or **Both** — pick the EDR mode, and press **Detonate**. The stages report as they finish, and the verdict fills in behind them.
+The dashboard is the state of the box at a glance. On this one: **11,894 alerts** (238 critical, 4,931 high, 6,720 medium, 5 low) across **376 tracked processes**, sorted into five categories — registry 6,724, process 4,952, api 212, file 4, module 2 — and **15 detection rules** loaded, 13 Sigma and 2 YARA. The service cards below carry each component's version or port, with quick actions into the view that belongs to it.
 
-What makes that verdict worth reading is that no scanner's own severity label survives into it. Every finding, wherever it came from, goes through one model. A finding the clean host's baseline already knows is set aside before anything is counted — shown collapsed, never silently dropped. What is left is weighted by what kind of evidence it is (a structural fact like a thread starting in private RX memory outranks a behavioural pattern, which outranks an extracted artifact, which outranks a byte pattern), then by how persistently it appears across the samples (**×1.0** in every sample, **×0.55** in at least half, **×0.25** in one), then by corroboration: the kinds that legitimate software also shows — a hidden module, private RWX, a heap API table, low-risk strings — count at **40 %** until an independent source agrees on the same process. Saturation caps one kind of finding in one process at **twice** its strongest instance, so a hundred identical hits cannot carry a verdict on their own.
+The reason I look here first after a detonation is less glamorous than the rest of this post: **ALERT ACTIVITY** and **PROCESSES TRACKED** tell me whether my sample registered at all. A build that produced no new bar and no new process did not run, or ran and died before anything watched it — and that is worth knowing before spending twenty minutes hunting through a tab for findings that were never recorded.
 
-The sum is the memory evidence score, on a fixed scale: **≥ 2.0 is SUSPICIOUS, ≥ 6.0 is MALICIOUS**. And a scan that read no memory reports **NOT OBSERVED** rather than CLEAN, which is the distinction most tools quietly refuse to make.
+It also reads **5/6 SERVICES ONLINE**, with Detonator struck through, because I had the orchestration UI switched off while these screenshots were taken. The dashboard says so rather than rounding up, which is the behaviour I want from a box whose whole job is reporting honestly.
 
-![Detonation results of injectsim.exe: verdict MALICIOUS score 6.54, the note that the process exited before the live scan, five scored findings with their weights, the exit capture summary and the images extracted from memory]({{ site.baseurl }}/images/tdc-detonation-results.png)
+## What Fired: Alerts, Tracing, Graph
 
-Here is `injectsim.exe`, one of the project's own simulators, at **MALICIOUS 6.54**. The banner above the findings is the interesting part: *the process exited before the live scan; it was analyzed from its exit-time memory dump instead*. The sample was too short-lived for Aether, so the verdict rests on the dump Windows wrote as the process died — **9 modules, 233 regions, 1 thread, 29.3 MB captured**. Five findings carry a weight: a **3.00** for a PE header sitting in private memory at `0x1cd6b0e0000`, **2.50** for an in-memory signature match on a Cobalt Strike 64-bit beacon DLL, **0.80** for a private RWX allocation marked *uncorroborated — weight reduced*, and two more at 0.16 and 0.08 for common reflective-load references, each annotated with why its weight was cut. Three files were carved out of the dump — the main image, the reflective PE and a code chunk — each with a button into the hex editor, the file map or rizin.
+### Alerts — every detection in one table
 
-That is the verdict. Everything below answers a question the verdict raises.
+![The Alerts tab: severity and engine pies, alerts over time, and the engine to rule to process Sankey with the YARA hacktool and Cobalt Strike rules in it]({{ site.baseurl }}/images/tdc-alerts.png)
 
-### Which rules fired
+Every detection of Rustinel, Fibratus and LitterBox lands here, newest first, under charts of whatever the filters currently let through — **11,894 of 11,894** in this shot, Sigma 11,643 against YARA 237 and fibratus 14. The table lists the newest 2,000 and says so; the charts count all of them.
 
-The Alerts tab holds every detection of Rustinel, Fibratus and LitterBox in one table, newest first, under charts of whatever the filters currently let through. The drilldown is the point: a click on a pie slice, a bar or a Sankey band narrows table and charts together and becomes a *step*, and **BACK** walks the path back out.
+The Sankey is the part I actually use. It reads engine → rule → process, and it says which rule carried which process: *Registry Run Key Persistence* 6,150 almost entirely into `MsMpEng.exe` (6,190), *Suspicious Encoded PowerShell Command Line* 4,691 into `powershell.exe` (4,716), then the long tail — *Winlogon Helper DLL or Shell Modification* 570, *WMI Event Subscription Persistence* 212.
 
-![The Alerts tab after three drilldown steps: BACK and the path above the charts, 1,345 of 9,950 alerts, severity and engine pies, two hours in bars of five minutes, and the engine-rule-process Sankey]({{ site.baseurl }}/images/tdc-alerts-drilldown.png)
+And then the two bands worth staring at if you build tooling: **`Windows_Hacktool_COFFLoader_81ba13b8`** and **`Windows_Trojan_CobaltStrike_a56b820f`**, 81 hits each. Those are Elastic's YARA rules firing on this box, and the Sankey names the process that carried each one. If your loader is a COFF loader, this is the view that tells you a stock rule set already has a name for it — and clicking the band gets you to the alerts, the process and the raw event behind it.
 
-Three steps in — `ALL ALERTS › 27 Jul – 02 Aug › 27 Jul › 27 Jul 10:00–12:00` — the view is down to **1,345 of 9,950 alerts**. The bars re-divide themselves for whatever range they now cover: these two hours are **24 bars of five minutes**, and the busiest holds **373** alerts. The pies say 6 critical, 784 high, 555 medium, and 1,339 of the 1,345 came from Sigma against 6 from YARA. The Sankey names the two flows that produced almost all of it: *Suspicious Encoded PowerShell Command Line* (766) into `powershell.exe`, and *Registry Run Key Persistence* (506) landing mostly on `MsMpEng.exe`.
+Clicks are drilldown steps, not filters: pies, bars and bands narrow the table and the charts together, a **BACK** button walks the path back out, and the buckets (*other rules*, *other processes*) deliberately set no filter, because they stand for names the table would not actually list.
 
-One honest note about that diagram: the bands are drawn by square roots so that small flows stay visible at all, and **LINEAR** switches to true proportions. The six most frequent rules and processes get their own band; the rest collapse into *other rules* and *other processes*, and those buckets deliberately set no filter, because they stand for names the table would not actually list.
+### Tracing — one process, start to finish
 
-### What one process did
+![The Rustinel trace console for MsMpEng.exe: the MALICIOUS 100 of 100 verdict badge, the timeline split by event type, the process tree with alert counts and the table of rules that fired]({{ site.baseurl }}/images/tdc-tracing.png)
 
-![The Rustinel trace console for MsMpEng.exe: verdict MALICIOUS 100/100, 760 events, a timeline split by event type, the process tree with alert counts, and the verdict table of rules that fired]({{ site.baseurl }}/images/tdc-tracing.png)
+The trace console takes one process and lays its whole life out. This `MsMpEng.exe` — Defender's own engine, which on an analysis box spends its day touching the registry — scores **MALICIOUS · 100/100** across **345 events** over **34m 37s**, and the tabs beside VERDICT give the breakdown that matters: **HTTP REQUESTS 0, CONNECTIONS 0, DNS REQUESTS 0, FILES 0, REGISTRY 345**. It never touched the network. Everything it did, it did to the registry.
 
-The Tracing console takes one process and lays its whole life out: the verdict badge (**MALICIOUS · 100/100** for this `MsMpEng.exe`, **760 events** over **59m 37s**), a timeline split into Critical/High, Process, Network, DNS, File and Registry rows, the process tree with the alert count of every process in it, and a verdict table where each row is a rule that fired — severity, offset from the start, rule and engine, PID, process, details — with the raw event one click away. The tabs beside VERDICT are the breakdown: **HTTP REQUESTS 0, CONNECTIONS 0, DNS REQUESTS 0, FILES 0, REGISTRY 760**. This one never touched the network; everything it did, it did to the registry.
+For your own payload this is where you check *shape* rather than detection. A beacon that claims to be quiet and shows forty registry writes in its first minute is not quiet, whether or not a rule fired on it.
 
-### Who started it
+### Graph — the inventory, and then the tree
 
-![The process graph focused on an explorer.exe instance: ancestors above, children below, and a detail panel with image, status, parent, activity counters, the signature check, the children and the Sysmon events it triggered]({{ site.baseurl }}/images/tdc-graph-tree.png)
+![The Graph landing page: sample cards with their scan verdicts, and below them the processes worth investigating with their threat counts]({{ site.baseurl }}/images/tdc-graph-landing.png)
 
-The Graph tab draws the processes around one process — ancestors above, children below — as a tree, a force-directed layout or an isometric view where two processes on the same named pipe are joined by a raised bridge. The detail panel is where the correlation happens: image, command line, status, parent, activity counters, a **Check who signed this** button, the children, and then the two lists that save the most time — **TRIGGERED SYSMON EVENTS** (for this `explorer.exe`: EID 1 ProcessCreate 58×, EID 18 PipeConnected 11×, EID 11 FileCreate 6×, EID 17 PipeCreated 5×, EID 22 DNSQuery 3×, EID 3 NetworkConnect 2×) and **CORRELATED WINDOWS EVENT IDS**, which maps those to what the Security log would have recorded: 4688 Process Creation, 4689 Process Exit, 5156 WFP Connection Allowed, 5157 WFP Connection Blocked, 5158 WFP Bind Allowed, 4663 Object Access.
+The Graph tab opens on an inventory rather than a graph, and it is the most useful page in the box for iterating on a build. Every sample ever submitted or scanned, with whatever verdicts it has collected: `rascal-linux-amd641` **CLEAN** with ThreatCheck clean and a capa **TIMEOUT** beside it, `rascal-windows-amd64.exe` at 39.2 MB still **UNSCANNED**, the four harmless simulators that ship with the project — `injectsim.exe`, `pipesim.exe`, `beaconsim.exe` and `shortlived.exe`, which fake one behaviour each so the engines have something safe to catch — and `mimikatz.exe` at 1.3 MB. Below them, the processes worth investigating: `rascal-windows-amd64.exe` PID 5876 **detonated · 3 threats**, `mimikatz.exe` PID 10804 **detonated · 2 threats**.
 
-Note the focus key in the breadcrumb: `PID 7420@1785739535`. Windows reuses PIDs, so every process in the UI is an *instance*. The newest holder of a PID is addressed by the plain number and earlier ones as `<pid>@<start epoch>`, and alerts, events and children are attributed to the instance that was alive at the time. Without that, a long session turns into one long case of mistaken identity.
+Note the capa timeout sitting there as a timeout. It is not quietly folded into "clean".
 
-### Which Windows events correspond
+![The process graph focused on an explorer.exe instance: winlogon to userinit to explorer to its children, each node carrying its alert count]({{ site.baseurl }}/images/tdc-graph-tree.png)
 
-![The Sysmon tab: events over time stacked by event type, a process to event type Sankey, the type counters, and a table of events with their command lines and the Windows Event IDs they correspond to]({{ site.baseurl }}/images/tdc-sysmon-events.png)
+Click a process and you get its tree — ancestors above, children below, each node carrying its alert count. Here `explorer.exe` (2316) with 11 alerts of its own, descended from `winlogon.exe` through `userinit.exe`, with `OneDrive.exe` and `msedge.exe` under it. Tree, force-directed and isometric layouts are a dropdown apart; in the isometric view remote threads are drawn as raised bridges, which makes an injection visible as a shape rather than a line in a table.
 
-The Sysmon tab is the same correlation at log scale, with the Windows Event IDs in their own column. The charts narrow the table: a bar of **EVENTS OVER TIME** sets a time window (Shift-click widens it to another bar), and a node of the process → event type Sankey sets an image or an event type.
+One detail that makes the tree trustworthy: Windows reuses PIDs, so every process here is an *instance*. The newest holder of a PID is addressed by the plain number and earlier ones as `<pid>@<start epoch>`, and alerts, events and children belong to whichever instance was alive at the time. I ran into this while taking these screenshots: focusing PID 5876, which was my implant build a week ago, lands on a `cmd.exe` today, while the submission that detonated the implant still points at the instance that *was* the implant. Without instance keys, a long-lived analysis VM turns into one long case of mistaken identity.
 
-The screenshot is from a quiet box, which makes it a good illustration of something else: **PipeConnected 201 (40.2 %), PipeCreated 198 (39.6 %), ProcessCreate 100 (20 %), FileCreate 1** — and almost all of it is `python.exe`, `wevtutil.exe`, `tasklist.exe` and `sc.exe`, which is the chamber checking on its own services. Named pipes dominate because provisioning rewrites SwiftOnSecurity's `PipeEvent` filter from its short include list into **exclude** mode: every pipe is logged except a handful of noisy image-*and*-name pairs, never by name alone, and the Sysmon log is enlarged to **512 MB** to hold it. That trade is what makes the next act's pipe work possible.
+## What It Touched: Pipes, Sysmon, ETW
 
-### Whom it talked to, and how to cut it off
+### Pipes — and sitting in the middle of your own C2
 
-![The Firewall tab in MAP view: a process tree with each process's endpoints and tags, arcs from the chamber to every public destination, the summary, and the red skull of the network cut]({{ site.baseurl }}/images/tdc-firewall.png)
+![The Named Pipes tab: Sysmon pipe events with their C2 family column, the interception form with its options, and the list of past interception sessions]({{ site.baseurl }}/images/tdc-pipes.png)
 
-The Firewall tab is built entirely out of telemetry Windows already produces: Sysmon 1, 3 and 22, `pfirewall.log`, PowerShell 4104/4103 and the BITS client log. Everything is re-read every **10 seconds**, and while a detonation runs the Sysmon and BITS sources drop to **1 second**. Being honest about what that means: the tab sees a connection *after* it was made. It does not hold one back.
+Beacons talk to their children and to each other over named pipes, and the names give them away: Cobalt Strike's `\msagent_##`, `\postex_*` and `\status_*`, PsExec's `\PSEXESVC`, Covenant's `\gruntsvc`. Sysmon logs every pipe creation and connection on this box — provisioning switches SwiftOnSecurity's `PipeEvent` filter from its short include list into **exclude** mode, so everything is logged except a handful of noisy image-*and*-name pairs, and the log is enlarged to **512 MB** to hold it.
 
-Each flow is one process to one endpoint, tagged by what makes it interesting — `ioc` and `beacon` are critical, `direct-ip` (no DNS answer explains the address, so it was hard-coded) and `download` are high, `dga`, `dead-drop`, `lolbin` and `rare-port` (anything outside the usual list, plus 4444, 5555, 6666, 8888, 9999 and 31337) are medium, and `newborn` — the process was under **60 seconds** old when it connected — is low. A row and its arc take the colour of their most severe tag. Geo and ASN come from an offline table shipped with the repo, because the chamber never asks anyone online about an address it saw from malware, and every sample-derived URL or host name is defanged and never a link. There are **no byte counts** anywhere in the tab, for the plain reason that Sysmon records none; the bars and arcs scale with connection counts instead, and the summary says so rather than pretending.
+The **FAMILY** column is the payoff: it names the C2 family a pipe name belongs to, from a catalogue that is plain JSON. A match flags `c2_default`, which is structural evidence — weight **4.0** for a C2 default, **3.0** for a remote-exec tool — and is never baseline-suppressed, so one default pipe name on its own makes a sample SUSPICIOUS. The other three flags need corroboration: `cross_process` at 1.5, `sensitive_system` at 1.0 for `\svcctl`, `\lsarpc`, `\samr`, `\netlogon` or `\atsvc`, and `random_name` at 0.8 for GUIDs and high-entropy tokens. The catalogue carries Metasploit's `\msf-pipe` and deliberately has **no entry for Sliver**, because Sliver has no default pipe name — the operator always picks one. Which is exactly what you want to know before you ship an implant with a hardcoded one.
 
-The second half of the tab is where it stops being a monitor. **ASK** decides what happens when a process fetches a file: `Detonation`, the default, blocks a download by a submission or its descendants at once and *then* asks; `All` blocks every download except the chamber's own and the tool-update hosts; `Off` only tags. The decision toast offers **CUT + FETCH** (keep the block, let TDC fetch the file itself), **CUT ONLY** or **ALLOW** — and if nobody answers within **30 seconds**, TDC keeps the block and fetches the file anyway, because a stage-2 URL is often good for exactly one download. That also means the chamber contacts the C2 unattended, which is a thing worth knowing about a tool before it does it on your behalf.
+Then the half that is not observation. **INTERCEPTION** puts the Web UI in the middle of a pipe: **attach** to one that exists, or **arm** for the first new pipe matching an exact name, a prefix or a regex, then **observe** (relay and record) or **hold**, where every message waits until you forward it, edit it or drop it. The session list in that screenshot is a working afternoon: `\msagent_7d6e15` armed on a prefix and relaying **58 messages**, `\tdc_test` in hold mode, `\tdc_squat` with squatting on. Editing a task before it reaches your own beacon is a very direct way to find out how it handles a hostile server — and squatting tells you whether it even notices somebody got to its pipe name first.
 
-![The Firewall tab during a cut: the red band explaining that one catch-all Block rule stands and was read back, the connection list with its tags, and the summary still reading BLOCKED 0]({{ site.baseurl }}/images/tdc-firewall-cut.png)
+The limits are blunt: 10-minute sessions by default (an hour at most), 16 at a time, `\lsass`, `\ntsvcs`, `\protected_storage` and their NPFS aliases refused outright, a client already connected before the session is not intercepted, and a server that uses `FILE_FLAG_FIRST_PIPE_INSTANCE` can defeat the proxy entirely.
 
-And then there is the panic button. **CUT THE NETWORK**, the red skull under the summary, and the **ISOLATED** switch in the head are one state and one press, with no confirmation. The first stage writes a single outbound Block rule for every program and every address (`TDC-FW-ISO-cut`) and reads it back in the same PowerShell call — **8.8 seconds** on a quiet VM, measured, against **38.5 s** for the version this replaced. One rule is enough because in Windows Firewall a Block rule beats every Allow rule: with it standing, DNS and `1.1.1.1` were dead while all **135** of Windows' own outbound Allow rules were still enabled. A background worker then spends about **59 seconds** switching those 135 off, recording exactly which ones it touched first, and setting each profile's outbound default to Block; only then does the catch-all rule go away.
+### Sysmon — with the Windows Event IDs beside it
 
-Two things in that screenshot deserve pointing at. The band says **TDC cannot secure a sample in this state** — a catch-all Block rule blocks the chamber's own fetch too, so a stage-2 payload cannot be preserved while the box is cut. And **BLOCKED still reads 0**, because that counter counts per-endpoint and per-process rules and the cut is neither. The egress is shut and the counter says zero; the band is what tells you the truth. The way back without the Web UI is `scripts/tdc-unisolate.ps1`, run as Administrator in the VM, which restores exactly the rules that were recorded and removes every `TDC-FW-*` rule and nothing else.
+![The Sysmon tab: events over time stacked by type, a process to event type Sankey, the type counters and the table with its Windows Event ID column]({{ site.baseurl }}/images/tdc-sysmon.png)
 
-## Act 2: My Own Payload Against the Same Engines
+The same correlation at log scale, and the **WIN. EID** column is the reason this view exists: each Sysmon event carries the Windows Event IDs it corresponds to — 4688 and 4689 for a process create and its exit pair, 4656 for a handle request — so a Sysmon-based detection can be translated into one that works on a box with no Sysmon at all.
 
-The engines do not know who wrote the sample. That is the whole reason this works in both directions: the model that grades a piece of commodity malware grades an implant I compiled an hour ago on exactly the same scale, and it will tell me which of my tricks survived contact with a defender and which one gave the whole thing away.
+The charts narrow the table: a bar of **EVENTS OVER TIME** sets a time window, a node of the process → event type Sankey sets an image or a type. This shot is a quiet box, and that is instructive in itself — of the last 500 events, **PipeConnected 210, PipeCreated 183, ProcessCreate 94, FileCreate 9, NetworkConnect 2, RegistryValueSet 2**, almost all of it `python.exe`, `wevtutil.exe`, `tasklist.exe` and `sc.exe`, which is the chamber checking on its own services. That is the baseline you are hiding in.
 
-Two things have to be true first, or the answer is worthless. The host baseline has to be captured on a **clean** box, before anything has been detonated — **Sweep as baseline** takes about four minutes, **Full dump baseline** twenty or more — because anything that lands in the baseline stops counting as evidence forever after. And the scale has to be calibrated, which it is: three harmless test programs on the ARM64 VM score **CLEAN 0.75** for one that does nothing, **MALICIOUS 6.54** for the private RWX thread, PE copy and heap string of Act 1's `injectsim.exe`, and **SUSPICIOUS 2.9** for one that merely connects every two seconds — while a system-wide sweep of the clean VM, 139 processes, scores **0** once its baseline has been taken.
+### ETW — twelve channels, flagged
 
-So when something comes back at 3.8 rather than 6.5, the difference is information and not noise.
+![The ETW browser: an event log channel with its events listed, each one unfoldable to all of its fields]({{ site.baseurl }}/images/tdc-etw.png)
 
-### Does anything see it in memory
+Beyond Sysmon, the ETW tab reads twelve Windows event log channels — Sysmon, Security, PowerShell, Defender, WMI, Task Scheduler, BITS, DNS, Firewall, AppLocker, WinRM, Application — probes each for whether it has any data at all, refreshes every five seconds, and highlights the events it classifies as malicious with the reason: encoded PowerShell, LOLBin abuse, credential access, persistence, defense evasion, lateral movement, C2 indicators, Sysmon IOCs. It is the "what would a SOC with no EDR have seen" view.
 
-![The ThreatScan tab: the live process memory panel with Aether scan, memory dump, host baseline and whole-system sweep, and the scan history with the score history of 61 scans against the suspicious and malicious lines]({{ site.baseurl }}/images/tdc-live-memory.png)
+## Whom It Talked To: Firewall and LOGS
 
-ThreatScan is two halves. On a file it runs **ThreatCheck**, **DefenderCheck**, **EMBER2024** (eight models) and **capa**; against a running process it runs the **Live Process Memory** panel — an Aether scan by PID or by name, a memory dump, the host baseline, or a sweep of every process on the box. The baseline readout says what it currently knows: **575 keys**, 574 memory signatures and one reflective PE, captured on a date it shows you, so there is never any doubt about whether it predates the sample.
+### Firewall — watch, tag, cut, and still keep the stage 2
 
-For payload work the single most useful button in the chamber is ThreatCheck, because it does not say *detected*, it says **at which offset** — and links that offset straight into the hex editor. That is the difference between knowing an engine hates your binary and knowing which bytes to go and change.
+![The Firewall tab in MAP view: the world map with the chamber at its centre, the ready-made hunting queries, and the red skull of the network cut]({{ site.baseurl }}/images/tdc-firewall.png)
 
-The **SCORE HISTORY** chart is the other half of the value: a point per scan, oldest left, with dashed lines at **SUSPICIOUS 2** and **MALICIOUS 6**, so a series of builds reads as a trend instead of a pile of verdicts. Over the **61 scans** in that screenshot: 29 clean, 12 suspicious, 3 malicious, and 17 with no score at all — the tools that return a classification rather than a number live in their own lane. The history rows below mix my own builds with the simulators: `rascal-linux-amd641` came back **CLEAN** from ThreatCheck and **TIMEOUT** from capa, while an Aether scan of PID 5876 scored **SUSPICIOUS 5.00** and an Exit Capture of PID 7824 **SUSPICIOUS 2.24**. A capa timeout is not a verdict, and the chamber does not dress it up as one.
+This tab is built entirely out of telemetry Windows already produces: Sysmon 1, 3 and 22, `pfirewall.log`, PowerShell 4104/4103 and the BITS client log. Everything is re-read every **10 seconds**, and while a detonation runs the Sysmon and BITS sources drop to **1 second**. Being honest about what that means: it sees a connection *after* it was made. It does not hold one back.
 
-### Does the beacon tick
+![The Firewall tab in LIST view: every flow with its process, endpoint, country, ASN and tags, and the summary with its counters]({{ site.baseurl }}/images/tdc-firewall-list.png)
 
-![Detonation results of beaconsim.exe: SUSPICIOUS score 3.8, the beaconing finding at weight 3.00 with its interval and coefficient of variation, two in-memory matches at 0.40 and two at 0.00 marked cap reached, and the connection periodicity panel]({{ site.baseurl }}/images/tdc-detonation-beaconing.png)
+LIST is where the work happens. **18 connections** on this box, each one process to one endpoint with its country, its ASN and its tags. Three `svchost.exe` instances reaching Microsoft and Fastly and one GCore address in Luxembourg, all tagged **`direct-ip`** — no DNS answer explains the address, so it was hard-coded. And two `powershell.exe` processes on port 5985 tagged **`lolbin`** and **`dga`**, one of them also **`newborn`** because the process was under 60 seconds old when it connected.
 
-This is the finding I care about most when I am testing a tunnel, and it is a nice illustration of the scoring model doing real work. `beaconsim.exe` comes back **SUSPICIOUS 3.8** — the same shape as the 2.9 calibration row above, in a run that also picked up two memory findings — and almost all of it is one finding at weight **3.00**: *periodic outbound connections* — **8 connections to 192.168.64.1:8769, every 2.0 s, 100 % of intervals on rhythm, robust CoV 0.00**. It is derived from Sysmon EID 3, not from memory, which means it keeps working after the process has exited. For anyone who has read my [ViperTunnel](https://benjitrapp.github.io/vipertunnel-reverse-socks/) post: this is the same arithmetic that post runs on the network side, taken here from the endpoint's own log.
+The tag set is the quick read on a flow: `ioc` and `beacon` are critical, `direct-ip` and `download` high, `dga`, `dead-drop`, `lolbin` and `rare-port` medium (anything outside the usual list, plus 4444, 5555, 6666, 8888, 9999 and 31337), `newborn` low. Geo and ASN come from an offline table shipped with the repo, because the chamber never asks anyone online about an address it saw from malware. There are **no byte counts** anywhere — Sysmon records none — so the bars scale with connection counts and the summary says so instead of inventing a number.
 
-Look at what happens to the rest. Two in-memory signature matches land at **0.40** each — a `VirtualProtect` reflective-load pattern seen in **3 of 3 samples**, and an `mscoree.dll` CLR shim reference — both corroborated by the network source at rule risk 5, and both explicitly annotated as *1 of 4* and *2 of 4 findings of this kind · group capped at 0.8*. The next two identical matches score **0.00**, marked *cap reached, not counted*. That is saturation: four hits of the same common kind cannot inflate a verdict past twice the strongest one. A tool that simply summed its hits would have called this thing malicious, and it would have been wrong.
+Then the part I am most pleased with. **ASK** decides what happens when a process fetches a file: `Detonation`, the default, blocks a download by a submission or its descendants at once and *then* asks; `All` blocks every download except the chamber's own and those of the tool-update hosts; `Off` only tags. The toast offers **CUT + FETCH** — keep the block, let TDC fetch the file itself — or **CUT ONLY**, or **ALLOW**. If nobody answers in **30 seconds**, TDC keeps the block and fetches the file anyway, because a stage-2 URL is often good for exactly one download. That also means the chamber contacts the C2 unattended, which is a thing worth knowing about a tool before it does it on your behalf. What it fetches lands in **SECURED SAMPLES**, which are never executed: the buttons beside them are RIZIN, HEX and THREATSCAN.
 
-### Is my pipe name a name everybody knows
+And the skull. **CUT THE NETWORK**, the switch in the head and the red button under the summary are one state and one press, with no confirmation. The first stage writes a single outbound Block rule for every program and every address (`TDC-FW-ISO-cut`) and reads it back in the same call — **8.8 seconds** measured on a quiet VM. One rule is enough because in Windows Firewall a Block rule beats every Allow rule: with it standing, DNS and `1.1.1.1` were dead while all 135 of Windows' own outbound Allow rules were still enabled. A background worker then spends about **59 seconds** switching those 135 off and setting each profile's outbound default to Block.
 
-![The Named Pipes tab: Sysmon pipe events with PID, process, pipe and C2 family column, and an interception session that relayed 58 messages of a detonation, each in hex and ASCII and marked PASSED]({{ site.baseurl }}/images/tdc-pipes.png)
+Two honest notes. While the cut is in place TDC **cannot secure a sample** — a catch-all Block rule blocks its own fetch too, so isolation and stage-2 capture are mutually exclusive by construction. And **BLOCKED keeps reading 0**, because that counter counts per-endpoint and per-process rules and the cut is neither. The egress is shut and the counter says zero; the band above the table is what tells you the truth.
 
-Beacons talk to their children and to each other over named pipes, and the names are a give-away: Cobalt Strike's `\msagent_##`, `\postex_*` and `\status_*`, PsExec's `\PSEXESVC`, Covenant's `\gruntsvc`. The chamber flags a pipe in four ways, each weighted differently: `c2_default` is a structural fact taken from a catalogue (**4.0** for a C2 default, **3.0** for a remote-exec tool) and is never baseline-suppressed, so a default C2 pipe name on its own is enough to make a sample SUSPICIOUS; `cross_process` (created inside the sample's tree and connected from outside it, or the reverse) is behavioural at **1.5**; `sensitive_system` — connecting to `\svcctl`, `\lsarpc`, `\samr`, `\netlogon` or `\atsvc` — is **1.0**; and `random_name`, for GUIDs, hex runs and high-entropy tokens, is **0.8**. The last three all need corroboration before they count fully.
+### LOGS — a small Splunk for one VM
 
-The catalogue is plain JSON, so adding a family is an entry with a pattern, a match mode, a weight and a note, no code. It carries Metasploit's `\msf-pipe`, the default of `reverse_named_pipe` — and deliberately has no entry for Sliver, because Sliver has no default pipe name at all; the operator always picks one. Which is exactly the kind of thing you want to know before you ship an implant with a hardcoded one.
+![The LOGS tab: the six source chips with their counts, events over time, the COMMANDS card listing the whole search language, and the event list]({{ site.baseurl }}/images/tdc-logs.png)
 
-Then there is the half that makes this more than observation. The Pipes tab runs interception sessions: **attach** to a pipe that already exists, or **arm** for the first *new* pipe matching an exact name, a prefix such as `postex_`, or a regex, and then either **observe** (relay and record) or **hold**, where every message waits until you forward it, edit it or drop it. The screenshot shows a session armed on the prefix `\msagent_` catching `\msagent_5e62b5` during a detonation and relaying **58 messages, 446 bytes recorded**, each one in hex and ASCII and marked **PASSED** — `task 27`, `beacon 28`, `task 28`, `beacon 29`. Sitting in the middle of your own implant's control channel and editing a task before it arrives is a very direct way to test how it handles a hostile server.
+Six log sources in one search box: `powershell` (script blocks 4104, module logging 4103, engine errors 4100), `access` (every HTTP request to the Web UI), `mcp` (every action of the MCP server), `netflow` (Sysmon 3 bundled into flows), `dns` (Sysmon 22) and `firewall` (`pfirewall.log`). On this box that is **22,258 events** in the window, answered in 2.7 seconds, with the chips carrying each source's count: POWERSHELL 1,758, ACCESS 10,000, MCP 1, NETFLOW 229, DNS 286, FIREWALL 10,000.
 
-The limits are real and the docs are blunt about them: sessions are 10 minutes by default (an hour at most), 16 at a time, 1 MiB logged per message and 50 MiB per session; `\lsass`, `\ntsvcs`, `\protected_storage` and their NPFS aliases are refused outright; a client that was already connected before the session started is not intercepted; and a server that creates its pipe with `FILE_FLAG_FIRST_PIPE_INSTANCE` can notice or defeat the proxy entirely.
+The **COMMANDS** card on the left is the whole query language on one screen — ten search forms (`word`, `"a phrase"`, `field=value`, `field!=value`, `field>5`, `AND`, `OR`, `NOT`, `( )`, `*`), ten pipes, two time keywords and the six sources — and a click appends the command to the search box rather than replacing it. The field bar underneath lists every field in the matches with its top values; a click adds `field="value"` to the query.
 
-### Does it look packed from the outside
+![The LOGS tab after a stats query: the statistics table with the result forms table, pie, bars, line and Sankey beside it]({{ site.baseurl }}/images/tdc-logs-stats.png)
 
-![PE header analysis of capa.exe in the hex tab: the SUSPICIOUS badge, the linker and overlay detection cards, an entropy map that is red across the whole file, and the file structure bar that is almost all overlay]({{ site.baseurl }}/images/tdc-pe-packing-analysis.png)
+Add a pipe and the answer changes shape. `source=firewall | stats count by action, protocol` returns **4 rows from 10,000 events in 296 ms** — ALLOW/TCP 9,904, ALLOW/UDP 76, ALLOW/ICMP 15 — and the result row offers **TABLE · PIE · BARS · LINE · SANKEY**, greying out the forms this particular answer cannot take, with the reason in the tooltip.
 
-The PE analysis in the Hex tab gives a DiE-style overview: an assessment badge, cards naming the linker and anything that looks like a protector or an overlay, an entropy map coloured per block (**red at ≥ 7.0**), and a file-structure bar with the regions laid out to scale. The example is honest about what the view is good at — this is `capa.exe`, a legitimate PyInstaller bundle of **35 MB**, and it is flagged **SUSPICIOUS** because of a **36 MB data overlay at entropy 8.00**. Almost the entire file is overlay. That is also precisely what a packed payload looks like from the outside, which is the point: the view tells you what an engine's heuristic will see, not what the file is.
+The Firewall tab's **HUNT FURTHER** card hands over the queries worth having pre-written: `source=firewall action=DROP | stats count by dst_ip, dst_port` for what was dropped, `source=dns result="-" | top query` for names that never resolved — the DGA suspects — and `source=powershell "http" | head 50` for download cradles in clear text. A row, a map point or a decision toast opens LOGS with the right query and a five-minute window either side.
 
-![The file map of injectsim.exe: byteplot, local entropy and PE structure planes side by side with their legends]({{ site.baseurl }}/images/tdc-file-map.png)
+For payload work the `powershell` source is the one I keep coming back to. If any part of your chain touches PowerShell, script block logging has the whole script, reassembled from its parts, searchable. You find out what your own loader looks like in a defender's log before a defender does.
 
-The FileMap tab puts three planes of the same file side by side at one byte per cell: a byteplot (0xFF, 0x00, visible ASCII, invisible ASCII, non-ASCII), local entropy (repetition, code, packed), and the PE structure — headers, section table, `.text`, `.rdata`, `.data`, `.pdata`, `.tls`, `.reloc`, the TLS directory, imports, the IAT, debug info, the exception table, relocations and the entry point, each in its own colour. `injectsim.exe` reads **184.0 KB, overall entropy 6.468, 19 regions**. A click on any plane jumps to that offset in the hex editor, which is how a suspicious band becomes a hex dump in one step.
+![An own dashboard named Log watch with four tiles: requests by path as a pie, DNS names as bars, sources over time as a line chart and the firewall flow as a Sankey]({{ site.baseurl }}/images/tdc-dashboards.png)
 
-### What does it actually do
+Any result with a form can be saved as a tile with **SAVE**, onto a dashboard page of your own beside the service dashboard. A tile stores only its name, query, form and time range — never numbers — so it recomputes against the live log every time; up to ten dashboards with twelve tiles each, computed one after another. The `Log watch` page here is four of them, and the honest warning line travels with the tile: *only the newest 10,000 matches went into the pipes*.
 
-![The Rizin tab with pipesim.exe: the function list, the disassembly at the instruction that loads the pipe name, the control flow graph of that function, and a console session that found the string and followed its reference]({{ site.baseurl }}/images/tdc-rizin.png)
+## What It Is Made Of: ThreatScan, Hex, FileMap, Rizin, LitterBox
 
-And when the question stops being "is it detected" and becomes "what did I actually compile", there is **rizin 0.9.1** with the **rz-ghidra** decompiler on the VM, driven from the browser. FUNCTIONS, DISASSEMBLY, DECOMPILER and HEX sit beside the control-flow GRAPH, all pinned to one current address that a click, `SEEK` + `GO`, the back and forward arrows, or a seek in the console moves together. The file is only ever read: nothing is written to it or next to it, and there is no debugging.
+### ThreatScan — which byte, and what is in memory right now
 
-The screenshot is the two-minute version of a real question. `pipesim.exe` — **PE64, x86-64, 186.5 KB, analysed with `aaa` in 3.3 s, 127 functions** — and the console session underneath finds the pipe name and walks back to the code that uses it: `iz~msagent` turns up `\\.\pipe\msagent_%04x%02x` in `.rdata` at `0x140026056`, `s` seeks there, `axt` reports the one reference — `fcn.140001000` at `0x1400010a7`, a `lea r8` of that string — and seeking to it brings the disassembly, the decompiler and the 31-block control-flow graph of that function along with it.
+![The ThreatScan tab: the static scanner row with its tools, the live process memory panel with its baseline controls, and the score history]({{ site.baseurl }}/images/tdc-threatscan.png)
 
-The engineering detail I like most here is the console. rizin 0.9.1 has no sandbox mode of its own, and the Web UI runs as SYSTEM with no login, so every command is checked against a server-side allowlist before rizin ever sees it. The families `a p i f C s / ? x t b e` are permitted — analysis, print, info, flags, comments, seek, search, help, hexdump, types, block size, settings — while `!`, `|`, `>`, backticks, `o` (open), `w` (write), `d` (debug), `.` (scripts) and `(` (macros) come back as a single line, `refused: '!' is not allowed: no shell commands`, and nothing moves. Even `aa` and `aaa` are refused from the console, because they outlast a command's 60-second budget; the **Full analysis** button runs their steps one at a time instead. The threshold between the two is file size — `aaa` up to 20 MB, `aa` above it — and measured under x64 emulation on the ARM64 VM, `aa` of a **31 MB** exit dump with **10,295 functions** takes under four seconds, with a Full analysis of it another 23 to 24.
+Two halves. On a file: **ThreatCheck**, **DefenderCheck**, **EMBER2024** with eight models and a threshold, and **capa** — all static, with the note on the button to prove it: *runs the selected static analyzers on one file — no execution*.
 
-## The Rest of the Box
+ThreatCheck is the single most useful button in the box for payload work, because it does not say *detected*, it says **at which offset** — and links that offset into the hex editor. That is the difference between knowing an engine hates your binary and knowing which bytes to go and change.
 
-Two acts do not use every tab. Here is what is left, in one paragraph each.
+The other half is **LIVE PROCESS MEMORY**: an Aether scan by PID or by name, a memory dump, a whole-system sweep, and the baseline controls that make all of it meaningful. The readout says what the box currently knows — **575 keys**, 574 memory signatures and one reflective PE, captured at a timestamp it shows you — and the discipline is strict: capture the baseline on a **clean** box, before anything has been detonated, because anything that lands in the baseline stops counting as evidence forever after. **SCORE HISTORY** then plots a point per scan against the SUSPICIOUS and MALICIOUS lines, so a series of builds reads as a trend rather than a pile of verdicts.
 
-**LOGS** searches six sources in one place with a subset of Splunk's search language: `powershell` (script blocks 4104, module logging 4103, engine errors 4100), `access` (every HTTP request to the Web UI), `mcp` (every action of the MCP server), `netflow` (Sysmon 3 bundled into flows), `dns` (Sysmon 22) and `firewall` (`pfirewall.log`). Terms take `field=value`, `field>n`, `AND`/`OR`/`NOT` and parentheses; the pipes are `head`, `tail`, `sort`, `dedup`, `table`, `fields`, `stats`, `top`, `rare` and `timechart`.
+### Hex — the bytes, with structure
 
-![The LOGS tab running source=dns top 10 query: the six source chips with their counts, events over time, the field bar, and the result as a sortable table]({{ site.baseurl }}/images/tdc-logs.png)
+![The Hex editor: the structure map above the dump, the dump itself with its ASCII column, and the data inspector]({{ site.baseurl }}/images/tdc-hex.png)
 
-`source=dns | top 10 query` over seven days: **10 rows from 252 events in 93.9 ms**. The Firewall tab's **HUNT FURTHER** card hands over ready-made versions of the ones worth having — `source=firewall action=DROP | stats count by dst_ip, dst_port` for what was dropped, `source=dns result="-" | top query` for names that never resolved (the DGA suspects), `source=powershell "http" | head 50` for download cradles in clear text. And the screenshot is a good argument for reading a top list carefully: most of it is the chamber installing and updating its own tools — the docs vouch for `www.loldrivers.io` and `download.sysinternals.com` as installer downloads, `dc.services.visualstudio.com` is telemetry — and `WIN-T6JBL58QBH8` is a NetBIOS name, not a domain at all. A host name in a DNS top list is not automatically somewhere the malware went.
+A hex editor with a structure minimap above the dump, a data inspector that decodes the byte under the cursor as Int8 through UInt32, Float32/64, ASCII and UTF-16 LE, and **PE ANALYSIS**, **ELF ANALYSIS** and **RIZIN** one button away. It is where a ThreatCheck offset lands, which is most of why it exists.
 
-![An own dashboard named Log watch with four tiles: requests by path as a pie, DNS names as bars, sources over time as a line chart and the firewall action-protocol flow as a Sankey, each with the query it was saved from]({{ site.baseurl }}/images/tdc-dashboards.png)
+### FileMap — the whole file at a glance
 
-**Own dashboards** come out of that search box. Any result that has a form can be saved as a tile with **SAVE**, and the tile stores only the name, the query, the form and the time range — never numbers, so it recomputes against the live log every time. Up to ten dashboards with twelve tiles each, computed one after another rather than all at once. The `Log watch` page above is four of them: requests by path as a pie, `source=dns | top query` as bars, `* | timechart span=5m count by source` as a line chart, and `source=firewall | stats count by action, protocol` as a Sankey — with the warning line a tile inherits honestly from the tab, *only the newest 10,000 matches went into the pipes*.
+![The File Map: byteplot, local entropy and PE structure planes side by side with their legends]({{ site.baseurl }}/images/tdc-filemap.png)
 
-**The ETW browser** reads twelve event-log channels — Sysmon, Security, PowerShell, Defender, WMI, Task Scheduler, BITS, DNS, Firewall, AppLocker, WinRM, Application — probes each for whether it has data at all (● ACTIVE / ○ NO DATA), refreshes every five seconds, and highlights events it classifies as malicious with a reason: encoded PowerShell, LOLBin abuse, credential access, persistence, defense evasion, lateral movement, C2 indicators, Sysmon IOCs.
+Three planes of one file at a byte per cell: a **byteplot** (0xFF, 0x00, visible ASCII, invisible ASCII, non-ASCII), **local entropy** (repetition, code, packed) and the **PE structure** — headers, section table, `.text`, `.rdata`, `.data`, `.pdata`, `.tls`, `.reloc`, the TLS directory, imports, the IAT, debug info, the exception table, relocations, the entry point. `injectsim.exe` reads **184.0 KB, overall entropy 6.468, 19 regions**. A click on any plane jumps to that offset in the hex editor.
 
-![The ETW browser: the Sysmon channel with one event expanded, all of its fields listed and the suspicious values highlighted]({{ site.baseurl }}/images/tdc-etw-browser.png)
+This is the view where a packed blob, an appended payload or a suspiciously high-entropy section announces itself before you have read a single byte — including in your own build, where "wait, why is that region bright" is usually the start of a useful afternoon.
 
-**Two themes.** Cyberpunk is the default, neon on deep violet; Telemetry is cyan, magenta and acid green on near-black blue, with a fine grid and scanlines. **✶** switches between them instantly, without reloading — the open tab, any open detail view, the filters, the drilldown steps, sort orders, the graph and even running pipe interception sessions all stay exactly as they were. That works because the UI draws its charts itself as SVG, with no chart library, so a palette change is a repaint.
+### Rizin — reversing in the browser
 
-![The service dashboard in the Telemetry theme: cyan, magenta and acid green on near-black blue, with a fine grid and scanlines]({{ site.baseurl }}/images/tdc-theme-telemetry.png)
+![The Rizin tab: the function list, the disassembly of the pipe-name function, its control flow graph, and the console session that found the string]({{ site.baseurl }}/images/tdc-rizin.png)
 
-**Tool updates** keep the box current without re-provisioning it. Every tool is listed with its installed and available version, checked through `choco outdated`, `winget list --upgrade-available`, commits behind upstream for the git-based ones, GitHub releases, and — for Sysmon — the `ETag` of the download against the one recorded at install. Three tools are pinned for compatibility (Rustinel **1.1.1**, Fibratus **3.0.0**, Rizin via Cutter **2.5.0**) and `python312` is held back because the Web UI runs on it; it is always updated last. A script gets at most 45 minutes, a failure of one tool does not stop the run, and there is no rollback.
+**rizin 0.9.1** with the **rz-ghidra** decompiler runs on the VM and is driven from the browser: FUNCTIONS, DISASSEMBLY, DECOMPILER and HEX beside the control-flow GRAPH, all pinned to one current address that a click, SEEK, the back and forward arrows or a seek in the console moves together. The file is only ever read — nothing written to it or beside it, and no debugging.
 
-![The tool updates panel: every tool with its installed and available version, the pinned ones marked, and the skull button that updates all of them]({{ site.baseurl }}/images/tdc-tool-updates.png)
+The screenshot is a two-minute question answered. `pipesim.exe`, **PE64, x86-64, 186.5 KB, analysed with `aaa` in 2.5 s, 127 functions**, and the console underneath goes from a string to the code that uses it: `iz~msagent` turns up `\\.\pipe\msagent_%04x%02x` in `.rdata` at `0x140026056`. Its one reference sits inside `fcn.140001000` — 1,312 bytes, **31 blocks** in the graph — and the first few instructions of that function are already the story: a `call qword [sym.imp.KERNEL32.dll_CreateThread]` at `0x140001044`, then `lea rdx, qword str.child` five instructions later feeding a `strcmp`. A pipe name, a thread and a comparison against the string `child`, in one view, without leaving the browser.
 
-**The offline wiki** is the part I did not expect to need. `make docs` builds the whole guide into a single `wiki.html` — every page, the screenshots embedded, the Mermaid diagrams drawn, the search box working — that opens without a network. On a VM that has no internet at all, which is how the chamber should be run, that file *is* the documentation.
+The engineering detail I like most is the console. rizin 0.9.1 has no sandbox mode of its own and the Web UI runs as SYSTEM with no login, so every command is checked against a server-side allowlist first. The families `a p i f C s / ? x t b e` are permitted — analysis, print, info, flags, comments, seek, search, help, hexdump, types, block size, settings — while `!`, `|`, `>`, backticks, `o` (open), `w` (write), `d` (debug), `.` (scripts) and `(` (macros) come back as one line, `refused: '!' is not allowed: no shell commands`, and nothing moves.
 
-![The offline wiki: the navigation of all fifteen pages with a search box, and the index page with the architecture diagram drawn by the embedded Mermaid]({{ site.baseurl }}/images/tdc-wiki.png)
+### LitterBox — the sandbox verdicts beside everything else
+
+![The LitterBox tab: the files in the sandbox with their static, dynamic and EDR results]({{ site.baseurl }}/images/tdc-litterbox.png)
+
+LitterBox does the static and dynamic sandbox pass — YARA, strings, PE-Sieve, Moneta, HollowsHunter — and this tab lists what it holds with its results, so its opinion sits beside the EDR alerts and the memory findings instead of in a second browser tab. Its score only joins the combined verdict once it is high enough to mean something, and the VERDICT FLOW says when it did.
+
+For your own payload this is the second opinion that does not share a code base with the first. Rustinel and Aether both read strings and structures; PE-Sieve and Moneta go looking for the shape of injection. A build that gets past the one and not the other tells you which half of your tradecraft is the weak half.
+
+## Submitting, and the Two Themes
+
+![The Submit tab: the drop zone with its target and EDR mode selectors, and the submission history under the verdict history chart]({{ site.baseurl }}/images/tdc-submit.png)
+
+Submission itself is a drop zone, a target — **Agent** for execution, **LitterBox** for analysis, or **Both** — an EDR mode, and a button. What makes it more than an upload form is **VERDICT HISTORY** above the list: one bar per submission, oldest left, as high as its verdict's score and in that verdict's colour, with dashed lines at SUSPICIOUS and MALICIOUS.
+
+That chart is the loop I actually work in. Build, detonate, read the scored findings, fix the one with the highest weight, build again — and watch the bar come down. The history below it keeps the file name and SHA-256 of every build, so "which version was it that stopped tripping the Rubeus string" has an answer.
+
+![The same dashboard in the Telemetry theme, cyan and magenta on near-black blue with a grid and scanlines, with the detonation results panel still open beside it]({{ site.baseurl }}/images/tdc-theme-telemetry.png)
+
+And because a tool you stare at for hours should be bearable: two themes. Cyberpunk is the default, neon on deep violet, and everything above is in it. Telemetry is cyan, magenta and acid green on near-black blue with a fine grid and scanlines. **✶** switches between them instantly, without reloading — the open tab, any detail view, the filters, the drilldown steps, sort orders, the graph and even running pipe interception sessions all stay exactly as they were. That works because the UI draws its charts itself as SVG, with no chart library, so a palette change is just a repaint.
 
 ## Running It
 
@@ -375,22 +419,25 @@ Security, briefly, because this is a box built to run malware:
 - Snapshot before each detonation, and keep it on an isolated network.
 - The Web UI has **no login**, and `/api/submit` executes files by design.
 - Rustinel's active response is off by default; Defender exclusions cover the detonation paths only.
-- What hardening there is protects the *host* from the VM, not the VM from the sample: state-changing requests whose `Origin` or `Referer` names another site are refused, so a page opened in the VM's browser cannot submit a sample; only IP addresses, `localhost` and names in `TDC_ALLOWED_HOSTS` are accepted in the `Host` header; writes are confined to the hex-upload folder, `C:\Temp`, `C:\Users\Public\Downloads` and `C:\dumps`; and the rizin console has the allowlist from Act 2.
+- What hardening there is protects the *host* from the VM, not the VM from the sample: state-changing requests whose `Origin` or `Referer` names another site are refused, so a page opened in the VM's browser cannot submit a sample; only IP addresses, `localhost` and names in `TDC_ALLOWED_HOSTS` are accepted in the `Host` header; writes are confined to the hex-upload folder, `C:\Temp`, `C:\Users\Public\Downloads` and `C:\dumps`; and the rizin console has the allowlist described above.
 
-## What I Would Change Next
+## What It Is Not
 
-The honest list, taken from the limitations the guide documents rather than invented for the occasion:
+The limits are documented in the guide, and they are the kind that change how you read a result:
 
-- **Exit Capture is armed by image name.** A child process that renames itself is covered only by the live scanners and the network log. The dump that caught `injectsim.exe` would have missed a second-stage process called something else.
-- **Live-memory findings depend on timing.** `injectsim.exe` exited before Aether's first sample, which is why its verdict came from the exit dump. Anything you want to compare across builds needs several samples, not one.
-- **The download detection has a known gap.** It sees a URL in a PowerShell script block, in a Sysmon command line, or in the BITS log. A compiled loader that calls WinHTTP itself shows up as a bare connection, with nothing to decide about.
-- **A cut box cannot preserve a stage 2.** While the catch-all Block rule stands, the chamber's own fetch is blocked along with everything else, so isolation and sample capture are mutually exclusive by construction.
+- **Exit Capture is armed by image name.** A child process that renames itself is covered only by the live scanners and the network log.
+- **Live-memory findings depend on timing.** A sample that exits in under a second is read from its exit dump instead, and anything you want to compare across builds needs several samples rather than one.
+- **The download detection has a known gap.** It sees a URL in a PowerShell script block, in a Sysmon command line, or in the BITS log. A compiled loader that calls WinHTTP itself shows up as a bare connection with nothing to decide about.
+- **A cut box cannot preserve a stage 2.** Isolation and sample capture are mutually exclusive by construction.
+- **A capa timeout is not a verdict,** and the chamber will not pretend otherwise — it says TIMEOUT and leaves it at that.
+- **It is a lab box, not an appliance.** The dashboard in this post reads 5/6 services online because I had one switched off, the Sysmon view is mostly the chamber watching itself, and two of the names in a DNS top list are its own tool installers. That is what an honest analysis VM looks like between jobs.
 
 ## Links
 
 - Source: [github.com/BenjiTrapp/transportable-detonation-chamber](https://github.com/BenjiTrapp/transportable-detonation-chamber)
-- The guide: [`docs/`](https://github.com/BenjiTrapp/transportable-detonation-chamber/blob/main/docs/README.md) — one page per topic, including [the API and MCP tools](https://github.com/BenjiTrapp/transportable-detonation-chamber/blob/main/docs/api.md), [configuration](https://github.com/BenjiTrapp/transportable-detonation-chamber/blob/main/docs/configuration.md), [live memory](https://github.com/BenjiTrapp/transportable-detonation-chamber/blob/main/docs/memory.md), [named pipes](https://github.com/BenjiTrapp/transportable-detonation-chamber/blob/main/docs/pipes.md), [the firewall](https://github.com/BenjiTrapp/transportable-detonation-chamber/blob/main/docs/firewall.md), [the logs](https://github.com/BenjiTrapp/transportable-detonation-chamber/blob/main/docs/logs.md) and [rizin](https://github.com/BenjiTrapp/transportable-detonation-chamber/blob/main/docs/rizin.md)
+- The guide: [`docs/`](https://github.com/BenjiTrapp/transportable-detonation-chamber/blob/main/docs/README.md) — one page per topic, including [the API and MCP tools](https://github.com/BenjiTrapp/transportable-detonation-chamber/blob/main/docs/api.md), [configuration](https://github.com/BenjiTrapp/transportable-detonation-chamber/blob/main/docs/configuration.md), [live memory](https://github.com/BenjiTrapp/transportable-detonation-chamber/blob/main/docs/memory.md), [named pipes](https://github.com/BenjiTrapp/transportable-detonation-chamber/blob/main/docs/pipes.md), [the firewall](https://github.com/BenjiTrapp/transportable-detonation-chamber/blob/main/docs/firewall.md), [the logs](https://github.com/BenjiTrapp/transportable-detonation-chamber/blob/main/docs/logs.md), [rizin](https://github.com/BenjiTrapp/transportable-detonation-chamber/blob/main/docs/rizin.md) and [every view in detail](https://github.com/BenjiTrapp/transportable-detonation-chamber/blob/main/docs/web-ui.md)
 - [A walk through the Web UI as a GIF](https://github.com/BenjiTrapp/transportable-detonation-chamber/blob/main/static/demo.gif) — 10 MB, so it is a link rather than an embed
+- `make docs` builds the whole guide into a single `wiki.html` that opens without a network, which is what the documentation is on a VM that has no internet at all
 
 The chamber is mostly other people's work, wired together. These are the engines and scanners that do the actual detecting; the full list, including the reverse engineering tools and the sample browser, is in the repository's credits:
 
@@ -405,5 +452,6 @@ The chamber is mostly other people's work, wired together. These are the engines
 | [thefLink/Hunt-Sleeping-Beacons](https://github.com/thefLink/Hunt-Sleeping-Beacons) | Sleeping beacon callstack scanner |
 | [mandiant/capa](https://github.com/mandiant/capa) | Static capability detection |
 | [FutureComputing4AI/EMBER2024](https://github.com/FutureComputing4AI/EMBER2024) | ML malware classifier |
+| [elastic/protections-artifacts](https://github.com/elastic/protections-artifacts) | The YARA rules that named the COFF loader |
 | [rizinorg/rizin](https://github.com/rizinorg/rizin) and [rz-ghidra](https://github.com/rizinorg/rz-ghidra) | Reverse engineering and decompilation |
 | [ytisf/theZoo](https://github.com/ytisf/theZoo) | Malware sample repository |
